@@ -20,6 +20,6 @@ setup(
     package_dir={'': 'src'},
     install_requires=REQUIREMENTS,
     entry_points={
-        'console_scripts': 'meth_by_amplicon = meth_by_amplicon.main:main'
+        'console_scripts': 'methamplicons = methamplicons.main:main'
     },
 )
