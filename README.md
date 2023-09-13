@@ -72,23 +72,7 @@ https://ccb.jhu.edu/software/FLASH/
 
 ## Step 2 - Download and extract flash binary from 
 
-## Step 2: Creating a virtual environment (recommended):
-- Create a virtual environment where you can install methamplicons and the python packages it requires (ideal for HPCs)
 
-  ```bash
-  git clone https://github.com/Winfredy/SadTalker.git
-
-  cd SadTalker 
-
-  conda create -n sadtalker python=3.8
-
-  conda activate sadtalker
-
-  pip install -r requirements.txt
-
-  pip install -r requirements.txt
-
-  ``` 
 
 ### Step 2.1 Create virtual environment: 
 - Example command for creating virtual environment named 'mba_env' 
