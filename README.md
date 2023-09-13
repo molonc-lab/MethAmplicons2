@@ -41,7 +41,7 @@ the user's bin folder or the bin in the virtual environment.
 3A. Clone or download the MethAmplicons2 repository (put the files in your working directory) then install the tool using flit.
 3B. Install the methamplicons tool from testpypi: pip install -i https://test.pypi.org/simple/ methamplicons
 
-## 1. Create and activate a virtual environment (recommended):
+## Step 1. Create and activate a virtual environment (recommended):
 - It is recommended to create a virtual environment where the tool can be installed
   ```bash
   #Command for creating virtual environment named 'ma_env'
@@ -50,62 +50,43 @@ the user's bin folder or the bin in the virtual environment.
   source ma_env/bin/activate
   ``` 
 
-## 2. Download the flash binary for your system and move it to the appropriate bin folder: 
-- Get your system's flash binary file from: 
-https://ccb.jhu.edu/software/FLASH/
-- For a Linux system, extract the binary from the FLASH-1.2.11-Linux-x86_64.tar.gz
+## Step 2. (Optional) Download the flash binary for your system and move it to the appropriate bin folder: 
+- If you already have a binary of Johns Hopkins University's FLASH in your bin or the bin of your active virtual environment, methamplicons will use this to run. 
+- Otherwise: when running methamplicons for the first time, respond 'y' when prompted with "Flash binary not found. Would you like to move a copy of the flash binary for Unix to your bin (y/n)?" If you respond with 'n' the program will exit and you can either try again or manually obtain the binary. 
+- methamplicons WILL NOT run without a binary for FLASH in the user's bin so if you prefer not to automatically do this: 
+        - Download and extract the binary for FLASH yourself and move it to the appropriate bin: 
+            - Get your system's flash binary file from: https://ccb.jhu.edu/software/FLASH/
+            - For a Linux system, extract the binary from the FLASH-1.2.11-Linux-x86_64.tar.gz
  ```bash
  #extract the binary 
   tar -xzvf FLASH-1.2.11-Linux-x86_64.tar.gz
 
   ``` 
 
-## Option A: Installing from GitHub
-## Step 1 - Getting the files from the GitHub repo:
+## Step 3 Option A: Installing from GitHub
+
+### Step 3A.1 - Getting the files from the GitHub repo:
 - Clone the methamplicons repository in the directory where you want the code files to go (alternatively download the repo folder and move it to this directory): 
 
   ```bash
   # use ssh link if on an HPC
   git clone https://github.com/molonc-lab/methamplicons.git
+  
+  # cd into the MethAmplicons2 directory
+  cd MethAmplicons2
 
   ``` 
 
-## Step 2 - Download and extract flash binary from 
+## Step 3A.2 - Install the methamplicons tool using flit: 
+  ```bash
+  # Install flit if you have not already 
+  pip install flit
+  # In the repo folder (MethAmplicons2) install methamplicons and all its requirements with:
+  flit install --symlink
+  ``` 
 
-
-
-### Step 2.1 Create virtual environment: 
-- Example command for creating virtual environment named 'mba_env' 
-python3 -m venv mba_env
-
-### Step 2.2 Activate virtual environment:
-- Then you can activate the virtual environment using 
-source <path to virtual environment directory>/bin/activate 
-- Example: 
-source /mba_env/bin/activate
-
-- You may see a prefix before your username after the environment is activated: 
-(mba_env) [brettL@hpcapp01 methamplicons]$
-
-## Step 3 Install the methamplicons tool: 
-
-### Step 3.1 (Optional) Get updates from the main branch of the repostory: 
-From the root folder of methamplicons run:  
-git pull
-
-### Step 3.2 Create a distribution/tarball file of the python package: 
-- Navigate into the methamplicons folder containing all the files (setup.py, MANIFEST.in, etc) and run setup.py: 
-cd methamplicons
-python setup.py sdist
-
-- A directory, dist, will be created in the methamplicons directory, which contains a file, methamplicons-0.1.tar.gz
-
-### Step 3.3 Install the package from the tarball file:
-pip install ./dist/methamplicons-0.1.tar.gz
-- Now the methamplicons package (CLI tool) is installed on the virtual environment
-
-
-## Installing from testpypi
+## Step 3 Option B: Installing from testpypi
+- The command below should install methamplicons and all its requirements (but the version may be less recent than GitHub)
   ```bash
   pip3 install -i https://test.pypi.org/simple/methamplicons
 
