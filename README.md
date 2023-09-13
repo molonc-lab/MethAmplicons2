@@ -3,7 +3,10 @@ Command line tool written in Python for generation of lollipop and ridgleline pl
 - To get started with the tool, follow the steps under INSTALLATION and USE below.  
 
 ## Example command
+
+  ```bash
 methamplicons --PE_read_dir test --amplicon_info test/BS_primers_amplicons_CDS_RC.tsv --sample_labels test/SampleID_labels_amplicon_meth.csv --output_dir output
+  ``` 
 
 ## Requirements for directories and files provided as arguments: 
 - Example tsv and csv files are provided under tests
@@ -31,18 +34,61 @@ SampleID,SampleLabel,ShortLabel
 
 # INSTALLATION: 
 
-- The goal is to be able to run "pip install methamplicons" and be able to install all requirements in one easy step (with or without the virtual environment) and be able to run it. 
-https://betterscientificsoftware.github.io/python-for-hpc/tutorials/python-pypi-packaging/#testing-and-publishing-package-on-pypi
+Currently, to install and use methamplicons:
+1. (Recommended) Create a virtual environment for installation 
+2. Download and extract the binary for the flash read merging tool and move it to 
+the user's bin folder or the bin in the virtual environment. 
+3A. Clone or download the MethAmplicons2 repository (put the files in your working directory) then install the tool using flit.
+3B. Install the methamplicons tool from testpypi: pip install -i https://test.pypi.org/simple/ methamplicons
 
-However, to install it in its current state, the first step is cloning the MethAmplicons2 repository or downloading the files and transferring them to a desired location, followed by installation of the tool in a virtual environment:
+## 1. Create and activate a virtual environment (recommended):
+- It is recommended to create a virtual environment where the tool can be installed
+  ```bash
+  #Command for creating virtual environment named 'ma_env'
+  python3 -m venv ma_env
+  #Command for activating virtual environment 
+  source ma_env/bin/activate
+  ``` 
 
+## 2. Download the flash binary for your system and move it to the appropriate bin folder: 
+- Get your system's flash binary file from: 
+https://ccb.jhu.edu/software/FLASH/
+- For a Linux system, extract the binary from the FLASH-1.2.11-Linux-x86_64.tar.gz
+ ```bash
+ #extract the binary 
+  tar -xzvf FLASH-1.2.11-Linux-x86_64.tar.gz
+
+  ``` 
+
+## Option A: Installing from GitHub
 ## Step 1 - Getting the files from the GitHub repo:
 - Clone the methamplicons repository in the directory where you want the code files to go (alternatively download the repo folder and move it to this directory): 
-cd /working
-git clone https://github.com/molonc-lab/methamplicons.git #use ssh link if on an HPC
+
+  ```bash
+  # use ssh link if on an HPC
+  git clone https://github.com/molonc-lab/methamplicons.git
+
+  ``` 
+
+## Step 2 - Download and extract flash binary from 
 
 ## Step 2: Creating a virtual environment (recommended):
 - Create a virtual environment where you can install methamplicons and the python packages it requires (ideal for HPCs)
+
+  ```bash
+  git clone https://github.com/Winfredy/SadTalker.git
+
+  cd SadTalker 
+
+  conda create -n sadtalker python=3.8
+
+  conda activate sadtalker
+
+  pip install -r requirements.txt
+
+  pip install -r requirements.txt
+
+  ``` 
 
 ### Step 2.1 Create virtual environment: 
 - Example command for creating virtual environment named 'mba_env' 
@@ -73,6 +119,13 @@ python setup.py sdist
 ### Step 3.3 Install the package from the tarball file:
 pip install ./dist/methamplicons-0.1.tar.gz
 - Now the methamplicons package (CLI tool) is installed on the virtual environment
+
+
+## Installing from testpypi
+  ```bash
+  pip3 install -i https://test.pypi.org/simple/methamplicons
+
+  ``` 
 
 # USE 
 
