@@ -14,7 +14,7 @@ class Plotter:
 
         #print(f"df_alleles_sort_all at ridgeline: \n{df_alleles_sort_all}")
         df_alleles_sort_all= df_alleles_sort_all.rename_axis('allele').reset_index()
-        print(f"df_alleles_sort_all {df_alleles_sort_all.columns}")
+        print(f"df_alleles_sort_all: \n{df_alleles_sort_all}")
 
         data_by_amplicon = {}
         
@@ -22,7 +22,7 @@ class Plotter:
             for col_name in df_alleles_sort_all.columns: 
                 #print(f"1. col_name is {col_name}")
                 if amplicon_name in col_name: 
-                    print(f"2. col_name is {col_name}, amplicon name is {amplicon_name}")
+                    #print(f"2. col_name is {col_name}, amplicon name is {amplicon_name}")
 
                     # need to create a dataframe with alleles specific to that amplicon (remove NAN for that column)
                     """
