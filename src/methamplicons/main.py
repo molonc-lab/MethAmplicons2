@@ -1,5 +1,5 @@
-from meth_by_amplicon.plotter import Plotter
-from meth_by_amplicon.extract_meth import ExtractMeth
+from methamplicons.plotter import Plotter
+from methamplicons.extract_meth import ExtractMeth
 import argparse
 import os
 import shutil
