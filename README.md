@@ -50,7 +50,7 @@ the user's bin folder or the bin in the virtual environment.
   ``` 
 
 ## Step 2. (Optional) Download the flash binary for your system and move it to the appropriate bin folder: 
-- If you already have a binary of Johns Hopkins University's FLASH in your bin or the bin of your active virtual environment, methamplicons will use this to run. 
+- If you already have a binary of the FLASH paired-end read merging software in your bin or the bin of your active virtual environment, methamplicons will use this to run. 
 - Otherwise: when running methamplicons for the first time, respond 'y' when prompted with "Flash binary not found. Would you like to move a copy of the flash binary for Unix to your bin (y/n)?" If you respond with 'n' the program will exit and you can either try again or manually obtain the binary. 
 - methamplicons WILL NOT run without a binary for FLASH in the user's bin so if you prefer not to automatically do this: 
         - Download and extract the binary for FLASH yourself and move it to the appropriate bin: 
@@ -61,6 +61,8 @@ the user's bin folder or the bin in the virtual environment.
   tar -xzvf FLASH-1.2.11-Linux-x86_64.tar.gz
 
   ``` 
+Credit to the creators of FLASH: 
+FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Magoc and S. Salzberg. Bioinformatics 27:21 (2011), 2957-63.
 
 ## Step 3 Option A: Installing from GitHub
 
