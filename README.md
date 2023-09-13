@@ -89,7 +89,7 @@ FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Ma
 ## Step 3 Option B: Installing from testpypi
 - The command below should install methamplicons and all its requirements (but the version may be less recent than GitHub)
   ```bash
-  pip3 install -i https://test.pypi.org/simple/methamplicons
+ python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple methamplicons==0.2.2
 
   ``` 
 
@@ -99,8 +99,7 @@ FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Ma
 source mba_env/bin/activate
 
 ## Step 2: Run methamplicons, either by specifying absolute paths to files or giving relative paths 
-- Example with relative paths, using the aforementioned test folder in labdata/Lab_OlgaK/brettL/test: 
-- The output folder does not need to already exist
+- Example with relative paths, using the aforementioned tests folder
 methamplicons --PE_read_dir test --amplicon_info test/BS_primers_amplicons_CDS_RC.tsv --sample_labels test/SampleID_labels_amplicon_meth.csv --output_dir output
 
 Example output files and directories: 
