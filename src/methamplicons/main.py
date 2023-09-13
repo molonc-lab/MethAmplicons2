@@ -139,9 +139,7 @@ class MethAmplicon:
             if amp_name in file_name:
                 if file_name.split(amp_name)[-1:] == [".extendedFrags.fastq"]:
                     amplicon_name = amp_name
-                    print(f"amplicon name: {amplicon_name} in file name")
-            else:
-                print(f"Amplicon name {amp_name} not in file name")
+                    #print(f"amplicon name: {amplicon_name} in file name")
         
         return amplicon_name
     

@@ -70,7 +70,7 @@ class ExtractData:
         new_r1_base_name = os.path.join(parsed_out_dir, base_name + "_R1")
         new_r2_base_name = os.path.join(parsed_out_dir, base_name + "_R2")
 
-        print(f"The new base names from the demulitplexed function (point 1) are {new_r1_base_name} and {new_r2_base_name}")
+        #print(f"The new base names from the demulitplexed function (point 1) are {new_r1_base_name} and {new_r2_base_name}")
 
         # get average read length
         if runflash: 
@@ -83,7 +83,7 @@ class ExtractData:
             r1s_for_region = new_r1_base_name + "_" + amplicon_name + ".fastq"
             r2s_for_region = new_r2_base_name + "_" + amplicon_name + ".fastq"
 
-            print(f"The new base names from the demulitplexed function (point 2) are {r1s_for_region} and {r2s_for_region}")
+            #print(f"The new base names from the demulitplexed function (point 2) are {r1s_for_region} and {r2s_for_region}")
 
             new_fastq_r1 = open(r1s_for_region, "w")
             new_fastq_r2 = open(r2s_for_region, "w")
@@ -117,7 +117,7 @@ class ExtractData:
 
             if runflash: 
                 base_name_reg = base_name + "_" + amplicon_name
-                print(f"The base name for the merged file is {base_name_reg}")
+                #print(f"The base name for the merged file is {base_name_reg}")
                 refseq_len = len(refseqs[amplicon_name])
                 # pass required aruments to run_flash, converting required arguments to strings
                 self.run_flash(r1s_for_region, r2s_for_region, base_name_reg, out_dir, str(int(avg_read_len)), str(refseq_len))
@@ -136,7 +136,7 @@ class ExtractData:
         subprocess.run(cmd, universal_newlines=True, check=True)
 
     def merge_reads(self, r1_seqs_file, r2_seqs_file, refseqs, amplicon_info, output_dir):
-        print(f"The R1 and R2 files at merge_reads are {r1_seqs_file} and {r2_seqs_file}")
+        #print(f"The R1 and R2 files at merge_reads are {r1_seqs_file} and {r2_seqs_file}")
         """
         By default, place the reads in a directory called merged in the preferred output directory,
         which is the current working directory by default, with the base name for the 
@@ -154,7 +154,7 @@ class ExtractData:
         elif r1_seqs_file.endswith(".fq"):
             base_name = os.path.basename(r1_seqs_file).replace("R1", "").replace(".fq", "")
 
-        print(f"The file base name at merge_reads is {base_name}")
+        #print(f"The file base name at merge_reads is {base_name}")
         # sort/demultiplex the fastq files
         # run run_flash in this function as all the required info is there
         # read1_seqs, read2_seqs, refseqs, primer info, base_name, out_dir,

@@ -14,7 +14,7 @@ class Plotter:
 
         #print(f"df_alleles_sort_all at ridgeline: \n{df_alleles_sort_all}")
         df_alleles_sort_all= df_alleles_sort_all.rename_axis('allele').reset_index()
-        print(f"df_alleles_sort_all: \n{df_alleles_sort_all}")
+        #print(f"df_alleles_sort_all: \n{df_alleles_sort_all}")
 
         data_by_amplicon = {}
         
@@ -43,9 +43,9 @@ class Plotter:
             # number of Cs in each allele
             allele_data_by_sample['cpg'] = allele_data_by_sample['allele'].str.count('C')
 
-            print(f"Allele data by sample {allele_data_by_sample.to_string()}")
+            #print(f"Allele data by sample {allele_data_by_sample.to_string()}")
             max_cpg = allele_data_by_sample['allele'].apply(lambda x: len(x)).max()
-            print(f"The value of max cpg is {max_cpg}")
+            #print(f"The value of max cpg is {max_cpg}")
 
 
             melted_df = allele_data_by_sample.melt(id_vars=["allele", "cpg"], 
@@ -134,7 +134,7 @@ class Plotter:
                 for col_name in df_alleles_sort_all.columns: 
                     #print(f"1. col_name is {col_name}")
                     if amplicon_name in col_name: 
-                        print(f"2. col_name is {col_name}, amplicon name is {amplicon_name}")
+                        #print(f"2. col_name is {col_name}, amplicon name is {amplicon_name}")
 
                         # need to create a dataframe with alleles specific to that amplicon (remove NAN for that column)
 
