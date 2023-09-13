@@ -365,7 +365,6 @@ def main():
     # Check if flash exists
     if os.path.exists(flash_path):
         print(f"Attempting to use existing version of flash binary in user's bin directory: {flash_path}")
-        return
 
     # Loop until the user provides a valid input
     while True:
