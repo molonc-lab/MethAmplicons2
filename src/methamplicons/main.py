@@ -365,26 +365,27 @@ def main():
     # Check if flash exists
     if os.path.exists(flash_path):
         print(f"Attempting to use existing version of flash binary in user's bin directory: {flash_path}")
+    
+    else: 
+            # Loop until the user provides a valid input
+        while True:
+            okay_to_move_flash = input("Flash binary not found. Would you like to move a copy of the flash binary for Unix to your bin (y/n)? ").strip().lower()
 
-    # Loop until the user provides a valid input
-    while True:
-        okay_to_move_flash = input("Flash binary not found. Would you like to move a copy of the flash binary for Unix to your bin (y/n)? ").strip().lower()
+            if okay_to_move_flash == 'y':
+                if os.path.exists(flash_source_path):
+                    shutil.copy2(flash_source_path, flash_path)
+                    os.chmod(flash_path, 0o755)
+                    print(f"FLASH COPIED TO {flash_path}")
+                else:
+                    print("Source flash binary not found. Please download it manually.")
+                break
 
-        if okay_to_move_flash == 'y':
-            if os.path.exists(flash_source_path):
-                shutil.copy2(flash_source_path, flash_path)
-                os.chmod(flash_path, 0o755)
-                print(f"FLASH COPIED TO {flash_path}")
+            elif okay_to_move_flash == 'n':
+                print("You chose not to copy the flash binary. If needed, please download the flash binary for your system from https://ccb.jhu.edu/software/FLASH/ then uncompress the file and move it to your bin.")
+                break
+
             else:
-                print("Source flash binary not found. Please download it manually.")
-            break
-
-        elif okay_to_move_flash == 'n':
-            print("You chose not to copy the flash binary. If needed, please download the flash binary for your system from https://ccb.jhu.edu/software/FLASH/ then uncompress the file and move it to your bin.")
-            break
-
-        else:
-            print("Invalid option chosen. Please respond with 'y' or 'n'.")
+                print("Invalid option chosen. Please respond with 'y' or 'n'.")
 
 
     app = MethAmplicon()
