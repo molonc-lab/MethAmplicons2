@@ -147,7 +147,7 @@ class MethAmplicon:
         match = re.search(r'-(.*?)-(.*?)_L00[0-9]', file_name)
         if match:
             sid = match.group(2)
-            print(sid)
+            #print(sid)
         else:
             pattern = r".extendedFrags.fastq"
             replacement = ""
