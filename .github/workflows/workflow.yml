@@ -1,0 +1,31 @@
+name: Publish to TestPyPI
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+        
+    - name: Install flit
+      run: |
+        python -m pip install --upgrade pip
+        pip install flit
+        
+    - name: Build and publish to TestPyPI
+      run: |
+        flit publish --repository testpypi
+      env:
+        FLIT_USERNAME: ${{ secrets.TEST_PYPI_USERNAME }}
+        FLIT_PASSWORD: ${{ secrets.TEST_PYPI_PASSWORD }}
