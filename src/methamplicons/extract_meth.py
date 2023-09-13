@@ -1,4 +1,4 @@
-from meth_by_amplicon.extract_data import ExtractData
+from methamplicons.extract_data import ExtractData
 import pandas as pd
 from collections import defaultdict
 import operator
