@@ -3,7 +3,6 @@ Command line tool written in Python for generation of lollipop and ridgleline pl
 - To get started with the tool, follow the steps under INSTALLATION and USE below.  
 
 ## Example command
-
   ```bash
 methamplicons --PE_read_dir test --amplicon_info test/BS_primers_amplicons_CDS_RC.tsv --sample_labels test/SampleID_labels_amplicon_meth.csv --output_dir output
   ``` 
