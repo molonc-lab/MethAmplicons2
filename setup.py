@@ -11,7 +11,7 @@ requirements_path = os.path.join(setup_dir, "requirements.txt")
 REQUIREMENTS = [i.strip() for i in open(requirements_path).readlines()]
 
 setup(
-    name='meth_by_amplicon',
+    name='methamplicons',
     version='0.1',
     description='CLI tool for plotting targeted bisulfite sequencing',
     author='Brett Liddell, Olga Kondrashova', 
