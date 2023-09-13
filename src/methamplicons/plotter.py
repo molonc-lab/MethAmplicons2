@@ -42,7 +42,7 @@ class Plotter:
                         
             # number of Cs in each allele
             allele_data_by_sample['cpg'] = allele_data_by_sample['allele'].str.count('C')
-            max_cpg = allele_data_by_sample['allele'].mean()
+            max_cpg = allele_data_by_sample['allele'].apply(lambda x: len(x)).max()
 
 
             melted_df = allele_data_by_sample.melt(id_vars=["allele", "cpg"], 
