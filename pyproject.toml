@@ -1,18 +1,17 @@
 [build-system]
-requires = ["flit_core >=2,<4"]
+requires = ["flit_core >=3.2,<4"]
 build-backend = "flit_core.buildapi"
 
-[tool.flit.metadata]
-module = "methamplicons"
-author = "Brett Liddell, Olga Kondrashova"
-author-email = "brett.liddell@qimrberghofer.edu.au, olga.kondrashova@qimrberghofer.edu.au"
-home-page = "https://github.com/molonc-lab/MethAmplicons2" 
-description-file = "README.md"
-classifiers = [
-    "Programming Language :: Python :: 3.6",
-    "License :: OSI Approved :: MIT License"
+[project]
+name = "methamplicons"
+authors = [
+    { name = "Brett Liddell", email = "brett.liddell@qimrberghofer.edu.au" },
+    { name = "Olga Kondrashova", email = "olga.kondrashova@qimrberghofer.edu.au" }
 ]
-requires = [
+description = "Description of your project"
+readme = "README.md"
+license = "MIT"
+dependencies = [
     "pandas >=1.1.5",
     "numpy",
     "pillow ==8.3.2",
@@ -20,11 +19,15 @@ requires = [
     "seaborn ==0.11.1",
     "joypy ==0.2.2"
 ]
-requires-python = ">=3.6"
+python-requires = ">=3.6"
+
+[project.scripts]
+methamplicons = "methamplicons.main:main"
+
+[project.urls]
+homepage = "https://github.com/molonc-lab/MethAmplicons2"
 
 [tool.flit.module]
 data-files = ["flash"]
 
-[tool.flit.scripts]
-methamplicons = "methamplicons.main:main"
 
