@@ -22,9 +22,8 @@ requires = [
 ]
 requires-python = ">=3.6"
 
-non-python-files = [
-    "src/methamplicons/flash"
-]
+[tool.flit.module.data]
+flash = ["flash"]
 
 [tool.flit.scripts]
 methamplicons = "methamplicons.main:main"
