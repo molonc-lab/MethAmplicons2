@@ -9,7 +9,7 @@ author-email = "brett.liddell@qimrberghofer.edu.au, olga.kondrashova@qimrberghof
 home-page = "https://github.com/molonc-lab/MethAmplicons2" 
 description-file = "README.md"
 classifiers = [
-    "Programming Language :: Python :: 3.6.8",
+    "Programming Language :: Python :: 3.6",
     "License :: OSI Approved :: MIT License"
 ]
 requires = [
