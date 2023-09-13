@@ -42,6 +42,8 @@ class Plotter:
                         
             # number of Cs in each allele
             allele_data_by_sample['cpg'] = allele_data_by_sample['allele'].str.count('C')
+            max_cpg = allele_data_by_sample['allele'].mean()
+
 
             melted_df = allele_data_by_sample.melt(id_vars=["allele", "cpg"], 
                                                 var_name="sample", 
@@ -62,7 +64,6 @@ class Plotter:
             }).reset_index()
 
             # all CpG counts for each sample
-            max_cpg = allele_data_by_sample['cpg'].max()
             all_cpgs = np.arange(0, max_cpg + 1)
 
             # Create a dataframe with all combinations of sample and cpg count
