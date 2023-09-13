@@ -1,5 +1,13 @@
 # methamplicons
 Command line tool written in Python for generation of lollipop and ridgleline plots from targeted bisulfite sequencing.
+
+Generate lollipop plots that show the most frequent epialleles for a region of interest as well as a "combined" epiallele that is an average of less frequent (<5%) epialleles e.g. the RAD51C promoter region: 
+
+[34059-Tumour_S9_L001__001_RAD51C (RAD51C)_5perc_barplot copy.pdf](https://github.com/molonc-lab/MethAmplicons2/files/12602587/34059-Tumour_S9_L001__001_RAD51C.RAD51C._5perc_barplot.copy.pdf)
+
+This repo provides a generalised "CLI tool" version of the code from [MethAmplicons](https://github.com/okon/MethAmplicons) which is a collection of scripts used for the analysis of RAD51C methylation data in:
+[Nesic, K, Kondrashova, O et al. "Acquired *RAD51C* promoter methylation loss causes PARP inhibitor resistance in high grade serous ovarian carcinoma." Cancer Research (2021)](https://cancerres.aacrjournals.org/content/early/2021/07/27/0008-5472.CAN-21-0774)
+
 - To get started with the tool, follow the steps under INSTALLATION and USE below.  
 
 ## Example command
