@@ -17,7 +17,6 @@ setup(
     author='Brett Liddell, Olga Kondrashova', 
     author_email='brett.liddell@qimrberghofer.edu.au, olga.kondrashova@qimrberghofer.edu.au',
     packages=find_packages(where='src'),
-    data_files=[('bin', ['src/meth_by_amplicon/flash'])],
     package_dir={'': 'src'},
     install_requires=REQUIREMENTS,
     entry_points={
