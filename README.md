@@ -70,6 +70,7 @@ the user's bin folder or the bin in the virtual environment.
         - Download and extract the binary for FLASH yourself and move it to the appropriate bin: 
             - Get your system's flash binary file from: https://ccb.jhu.edu/software/FLASH/
             - For a Linux system, extract the binary from the FLASH-1.2.11-Linux-x86_64.tar.gz
+            - There is a binary for windows systems (though it may be easier to use Windows Subsystem for Linux) and there is no precompiled binary for Mac, however the original code for FLASH written in C is available and should be able to be compiled with CMake to create an executable file (we will try to add more support for Macs in the future). 
  ```bash
  #extract the binary 
   tar -xzvf FLASH-1.2.11-Linux-x86_64.tar.gz
