@@ -116,7 +116,7 @@ source ma_env/bin/activate
 methamplicons --PE_read_dir test --amplicon_info test/BS_primers_amplicons_CDS_RC.tsv --sample_labels test/SampleID_labels_amplicon_meth.csv --output_dir output
 
 Example output files and directories: 
-5_perc_183--T4_S11 (BRCA1_l) 
+5_perc_183--T4_S11 (BRCA1_l) <br>
 5_perc_183--T4_S11 (BRCA1_l)_no_legend 
 5_perc_183--T4_S11 (BRCA1_s) 
 5_perc_183--T4_S11 (BRCA1_s)_no_legend 
