@@ -1,4 +1,4 @@
-# methamplicons
+# MethAmplicons2
 Command line tool written in Python for generation of lollipop and ridgleline plots from targeted bisulfite sequencing.
 
 Generate lollipop plots that show the most frequent epialleles for a region of interest as well as a "combined" epiallele that is an average of less frequent (<5%) epialleles e.g. the RAD51C promoter region: 
@@ -14,38 +14,14 @@ Lastly, you can plot ridgeline plots that allow one to view the distribution of 
 This repo provides a generalised "CLI tool" version of the code from [MethAmplicons](https://github.com/okon/MethAmplicons) which is a collection of scripts used for the analysis of RAD51C methylation data in:
 [Nesic, K, Kondrashova, O et al. "Acquired *RAD51C* promoter methylation loss causes PARP inhibitor resistance in high grade serous ovarian carcinoma." Cancer Research (2021)](https://cancerres.aacrjournals.org/content/early/2021/07/27/0008-5472.CAN-21-0774)
 
-- To get started with the tool, follow the steps under INSTALLATION and USE below.  
 
-## Example command
-  ```bash
-methamplicons --PE_read_dir test --amplicon_info test/BS_primers_amplicons_CDS_RC.tsv --sample_labels test/SampleID_labels_amplicon_meth.csv --output_dir output
-  ``` 
+This tool uses [FLASH](https://ccb.jhu.edu/software/FLASH/) paired-end read merging software for merging reads: [FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Magoc and S. Salzberg. Bioinformatics 27:21 (2011), 2957-63](https://doi.org/10.1093/bioinformatics/btr507)
 
-## Requirements for directories and files provided as arguments: 
-- Example tsv and csv files are provided under tests
 
-### --PE_read_dir - directory containing paired end read files:
-- An assumption of the program is that the last instance of R1 or R2 before the file extension (.fastq, .fastq.gz) indicates that a file contains read 1s of a pair or read 2s of a pair. 
-- The tested files had read 1s at the same line (position) as the read 2s in the other file, however order shouldn't be important as each fastq files reads are placed in dictionaries and so a read's counterpart can be searched. 
+# Getting Started
+- To get started with the tool, follow the steps INSTALLATION and USE below.  
 
-### --amplicon_info - tsv file containing the information about the amplified regions: 
-- The tsv file should have data organised into 'columns' AmpliconName, Primer1, Primer2, Sequence, and CDS where: 
-    - Primer1 and Primer2 are the primers that will match the reads (they ARE bisulfite converted) and the reference sequence is NOT bisulfite converted.
-        - Primer2 is assumed to be the reverse primer and therefore its reverse complement is used by the program (the user can provide the reverse primer sequence as is).
-    - CDS is the distance of the first base in the reference sequence relative to the first base in the CDS (this can be found by using BLAT with the reference sequence in IGV). 0 may be put as a stand in value. 
-    - Reference sequence for the amplified region: an assumption is that the reference sequence starts with primer 1's sequence and ends with primer 2's (reverse complement) sequence.
-
-Example tsv file: 
-Amplicon_Name 	Primer1   	Primer2   	Sequence	CDS
-RAD51C	GAAAATTTATAAGATTGCGTAAAGTTGTAAGG	CTAACCCCGAAACAACCAAACTCC	GAAAATTTACAAGACTGCGCAAAGCTGCAAGGCCCGGAGCCCCGTGCGGCCAGGCCGCAGAGCCGGCCCCTTCCGCTTTACGTCTGACGTCACGCCGCACGCCCCAGCGAGGGCGTGCGGAGTTTGGCTGCTCCGGGGTTAG	-156
-BRCA1_l	TTGTTGTTTAGCGGTAGTTTTTTGGTT	AACCTATCCCCCGTCCAAAAA	CTGCTGCTTAGCGGTAGCCCCTTGGTTTCCGTGGCAACGGAAAAGCGCGGGAATTACAGATAAATTAAAACTGCGACTGCGCGGCGTGAGCTCGCTGAGACTTCCTGGACGGGGGACAGGCT	-1361
-BRCA1_s	TTGTTGTTTAGCGGTAGTTTTTTGGTT	CAATCGCAATTTTAATTTATCTATAATTCCC	CTGCTGCTTAGCGGTAGCCCCTTGGTTTCCGTGGCAACGGAAAAGCGCGGGAATTACAGATAAATTAAAACTGCGACTG	-1361
-
-### csv file:
-This file is not required, however it can be used to map the SampleId (which may be in a file name) to the SampleLabel or ShortLabel if the CSV includes the following columns: 
-SampleID,SampleLabel,ShortLabel
-
-# INSTALLATION: 
+## INSTALLATION: 
 
 Currently, to install and use methamplicons:
 1. (Recommended) Create a virtual environment for installation 
@@ -54,7 +30,7 @@ the user's bin folder or the bin in the virtual environment.
 3A. Clone or download the MethAmplicons2 repository (put the files in your working directory) then install the tool using flit.
 3B. Install the methamplicons tool from testpypi: pip install -i https://test.pypi.org/simple/ methamplicons
 
-## Step 1. Create and activate a virtual environment (recommended):
+### Step 1. Create and activate a virtual environment (recommended):
 - It is recommended to create a virtual environment where the tool can be installed
   ```bash
   #Command for creating virtual environment named 'ma_env'
@@ -63,7 +39,7 @@ the user's bin folder or the bin in the virtual environment.
   source ma_env/bin/activate
   ``` 
 
-## Step 2. (Optional) Download the flash binary for your system and move it to the appropriate bin folder: 
+### Step 2. (Optional) Download the flash binary for your system and move it to the appropriate bin folder: 
 - If you already have a binary of the FLASH paired-end read merging software in your bin or the bin of your active virtual environment, methamplicons will use this to run. 
 - Otherwise: when running methamplicons for the first time, respond 'y' when prompted with "Flash binary not found. Would you like to move a copy of the flash binary for Unix to your bin (y/n)?" If you respond with 'n' the program will exit and you can either try again or manually obtain the binary. 
 - methamplicons WILL NOT run without a binary for FLASH in the user's bin so if you prefer not to automatically do this: 
@@ -79,9 +55,9 @@ the user's bin folder or the bin in the virtual environment.
 Credit to the creators of FLASH: 
 FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Magoc and S. Salzberg. Bioinformatics 27:21 (2011), 2957-63.
 
-## Step 3 Option A: Installing from GitHub
+### Step 3 Option A: Installing from GitHub
 
-### Step 3A.1 - Getting the files from the GitHub repo:
+#### Step 3A.1 - Getting the files from the GitHub repo:
 - Clone the methamplicons repository in the directory where you want the code files to go (alternatively download the repo folder and move it to this directory): 
 
   ```bash
@@ -93,7 +69,7 @@ FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Ma
 
   ``` 
 
-## Step 3A.2 - Install the methamplicons tool using flit: 
+#### Step 3A.2 - Install the methamplicons tool using flit: 
   ```bash
   # Install flit if you have not already 
   pip install flit
@@ -101,22 +77,60 @@ FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Ma
   flit install --symlink
   ``` 
 
-## Step 3 Option B: Installing from testpypi
+### Step 3 Option B: Installing from testpypi
 - The command below should install methamplicons and all its requirements (but the version may be less recent than GitHub)
   ```bash
   python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple methamplicons==0.2.2
   ``` 
 
-# USE 
+## USE 
 
-## Step 1: Activate the virtual environment from before if not activated already (using the path to the activate file)
-source ma_env/bin/activate
+### Step 1: Activate the virtual environment from before if not activated already (using the path to the activate file)
+```bash
+  source ma_env/bin/activate
+```
 
-## Step 2: Run methamplicons, either by specifying absolute paths to files or giving relative paths 
-- Example with relative paths, using the aforementioned tests folder: <br />
-methamplicons --PE_read_dir test --amplicon_info test/BS_primers_amplicons_CDS_RC.tsv --sample_labels test/SampleID_labels_amplicon_meth.csv --output_dir output
+### Step 2: Run methamplicons, either by specifying absolute paths to files or giving relative paths 
 
-Example output files and directories: <br />
+#### Example command
+```bash
+  methamplicons --PE_read_dir test \
+    --amplicon_info test/BS_primers_amplicons_CDS_RC.tsv \
+    --sample_labels test/SampleID_labels_amplicon_meth.csv \
+    --output_dir output
+``` 
+
+#### Requirements for directories and files provided as arguments: 
+- Example tsv and csv files are provided under tests
+
+##### --PE_read_dir - directory containing paired end read files:
+- An assumption of the program is that the last instance of R1 or R2 before the file extension (.fastq, .fastq.gz) indicates that a file contains read 1s of a pair or read 2s of a pair. 
+- The tested files had read 1s at the same line (position) as the read 2s in the other file, however order shouldn't be important as each fastq files reads are placed in dictionaries and so a read's counterpart can be searched. 
+
+##### --amplicon_info - tsv file containing the information about the amplified regions: 
+- The tab-delimited (tsv) file should have data organised into 'columns':
+    - AmpliconName, Primer1, Primer2, Sequence, and CDS
+      
+- Columns should contain: 
+    - AmpliconName is the name given to the amplicon.
+    - Primer1 and Primer2 are the primers that will match the reads (they ARE bisulfite converted). Primer2 is assumed to be the reverse primer and therefore its reverse complement is used by the program (the user can provide the reverse primer sequence as is).
+    - Sequence - reference sequence for the amplified region that is NOT bisulfite converted. The reference sequence should start with primer 1's sequence and ends with primer 2's (reverse complement) sequence.
+    - CDS is the distance of the first base in the reference sequence relative to the first base in the CDS. For genes on the reverse strand the direction of the amplicon and primer 1 and 2 need to be considered. 0 may be put as a stand in value. 
+
+- If multiple regions are targeted in a single analysis, multiple amplicon entries can be provided (including overlapping regions/amplicons). These will be extracted from the reads and analysed separately.
+  
+Example tsv file:  
+| Amplicon_Name |	Primer1  | 	Primer2  | 	Sequence | CDS |
+| ------------- | ------------- | ------------- | ------------- | ------------- |
+| RAD51C	| GAAAATTTATAAGATTGCGTAAAGTTGTAAGG |	CTAACCCCGAAACAACCAAACTCC | GAAAATTTACAAGACTGCGCAAAGCTGCAAGGCCCGGAGCCCCGTGCGGCCAGGCCGCAGAGCCGGCCCCTTCCGCTTTACGTCTGACGTCACGCCGCACGCCCCAGCGAGGGCGTGCGGAGTTTGGCTGCTCCGGGGTTAG	| -156 |
+| BRCA1_l	| TTGTTGTTTAGCGGTAGTTTTTTGGTT	| AACCTATCCCCCGTCCAAAAA |	CTGCTGCTTAGCGGTAGCCCCTTGGTTTCCGTGGCAACGGAAAAGCGCGGGAATTACAGATAAATTAAAACTGCGACTGCGCGGCGTGAGCTCGCTGAGACTTCCTGGACGGGGGACAGGCT |	-1361 |
+| BRCA1_s	| TTGTTGTTTAGCGGTAGTTTTTTGGTT	| CAATCGCAATTTTAATTTATCTATAATTCCC |	CTGCTGCTTAGCGGTAGCCCCTTGGTTTCCGTGGCAACGGAAAAGCGCGGGAATTACAGATAAATTAAAACTGCGACTG	| -1361 |
+
+##### --sample_labels - csv file containing sample label information (optional):
+- This file is not required, however it can be used to map the Sample Id (name used in the fastq files) to the SampleLabel or ShortLabel if the CSV includes the following columns:
+    - SampleID, SampleLabel, ShortLabel
+
+#### Example output files and directories: 
 5_perc_183--T4_S11 (BRCA1_l) <br />
 5_perc_183--T4_S11 (BRCA1_l)_no_legend <br />
 5_perc_183--T4_S11 (BRCA1_s) <br />
@@ -153,6 +167,7 @@ ridgeline_plot_RAD51C.pdf <br />
 
 ## Argument info 
 
+```
 usage: methamplicons [-h] [--PE_read_dir PE_READ_DIR] <br />
                         [--amplicon_info AMPLICON_INFO] <br />
                         [--sample_labels SAMPLE_LABELS] <br />
@@ -173,3 +188,4 @@ optional arguments: <br />
                         Desired output directory <br />
   --save_data {true,false} <br />
                         Save processed data in csv format (default: true).
+```
