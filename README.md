@@ -97,8 +97,7 @@ FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Ma
 ## Step 3 Option B: Installing from testpypi
 - The command below should install methamplicons and all its requirements (but the version may be less recent than GitHub)
   ```bash
- python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple methamplicons==0.2.2
-
+  python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple methamplicons==0.2.2
   ``` 
 
 # USE 
