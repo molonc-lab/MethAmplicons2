@@ -112,63 +112,63 @@ FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Ma
 source ma_env/bin/activate
 
 ## Step 2: Run methamplicons, either by specifying absolute paths to files or giving relative paths 
-- Example with relative paths, using the aforementioned tests folder
+- Example with relative paths, using the aforementioned tests folder: <br />
 methamplicons --PE_read_dir test --amplicon_info test/BS_primers_amplicons_CDS_RC.tsv --sample_labels test/SampleID_labels_amplicon_meth.csv --output_dir output
 
-Example output files and directories: 
+Example output files and directories: <br />
 5_perc_183--T4_S11 (BRCA1_l) <br />
-5_perc_183--T4_S11 (BRCA1_l)_no_legend 
-5_perc_183--T4_S11 (BRCA1_s) 
-5_perc_183--T4_S11 (BRCA1_s)_no_legend 
-5_perc_183-R2-T1_S14 (BRCA1_s) 
-5_perc_183-R2-T1_S14 (BRCA1_s)_no_legend 
-5_perc_13375_S32 (RAD51C) 
-5_perc_13375_S32 (RAD51C)_no_legend 
-5_perc_NTC--T1_S3 (BRCA1_l) 
-5_perc_NTC--T1_S3 (BRCA1_s) 
-5_perc_NTC--T1_S3 (BRCA1_s)_no_legend 
-5_perc_NTC--T1_S3 (RAD51C) 
-5_perc_OV--T4_S10 (BRCA1_l) 
-5_perc_OV--T4_S10 (BRCA1_l)_no_legend 
-5_perc_OV--T4_S10 (BRCA1_s) 
-5_perc_OV--T4_S10 (BRCA1_s)_no_legend 
-5_perc_OV--T4_S10 (RAD51C) 
-5_perc_OV-R2-T1_S13 (BRCA1_s) 
-5_perc_OV-R2-T1_S13 (BRCA1_s)_no_legend 
-All_samples_combined_colour_meth_BRCA1_l.pdf 
-All_samples_combined_colour_meth_BRCA1_s.pdf 
-All_samples_combined_colour_meth_RAD51C.pdf 
-All_samples_combined_colour_unmeth_BRCA1_l.pdf 
-All_samples_combined_colour_unmeth_BRCA1_s.pdf 
-All_samples_combined_colour_unmeth_RAD51C.pdf 
-demultiplexed 
-df_alleles_sort_all.csv 
-df_exclude_unmeth-alleles_freq.csv 
-df_meth_freq.csv 
-merged
-ridgeline_plot_BRCA1_l.pdf 
-ridgeline_plot_BRCA1_s.pdf 
-ridgeline_plot_RAD51C.pdf
+5_perc_183--T4_S11 (BRCA1_l)_no_legend <br />
+5_perc_183--T4_S11 (BRCA1_s) <br />
+5_perc_183--T4_S11 (BRCA1_s)_no_legend <br />
+5_perc_183-R2-T1_S14 (BRCA1_s) <br />
+5_perc_183-R2-T1_S14 (BRCA1_s)_no_legend <br />
+5_perc_13375_S32 (RAD51C) <br />
+5_perc_13375_S32 (RAD51C)_no_legend <br />
+5_perc_NTC--T1_S3 (BRCA1_l) <br />
+5_perc_NTC--T1_S3 (BRCA1_s) <br />
+5_perc_NTC--T1_S3 (BRCA1_s)_no_legend <br />
+5_perc_NTC--T1_S3 (RAD51C) <br />
+5_perc_OV--T4_S10 (BRCA1_l) <br />
+5_perc_OV--T4_S10 (BRCA1_l)_no_legend <br />
+5_perc_OV--T4_S10 (BRCA1_s) <br />
+5_perc_OV--T4_S10 (BRCA1_s)_no_legend <br />
+5_perc_OV--T4_S10 (RAD51C) <br />
+5_perc_OV-R2-T1_S13 (BRCA1_s) <br />
+5_perc_OV-R2-T1_S13 (BRCA1_s)_no_legend <br />
+All_samples_combined_colour_meth_BRCA1_l.pdf <br />
+All_samples_combined_colour_meth_BRCA1_s.pdf <br />
+All_samples_combined_colour_meth_RAD51C.pdf <br />
+All_samples_combined_colour_unmeth_BRCA1_l.pdf <br />
+All_samples_combined_colour_unmeth_BRCA1_s.pdf <br />
+All_samples_combined_colour_unmeth_RAD51C.pdf <br />
+demultiplexed <br />
+df_alleles_sort_all.csv <br />
+df_exclude_unmeth-alleles_freq.csv <br />
+df_meth_freq.csv <br />
+merged <br />
+ridgeline_plot_BRCA1_l.pdf <br />
+ridgeline_plot_BRCA1_s.pdf <br />
+ridgeline_plot_RAD51C.pdf <br />
 
 ## Argument info 
 
-usage: methamplicons [-h] [--PE_read_dir PE_READ_DIR]
-                        [--amplicon_info AMPLICON_INFO]
-                        [--sample_labels SAMPLE_LABELS]
+usage: methamplicons [-h] [--PE_read_dir PE_READ_DIR] <br />
+                        [--amplicon_info AMPLICON_INFO] <br />
+                        [--sample_labels SAMPLE_LABELS] <br />
                         [--output_dir OUTPUT_DIR] [--save_data {true,false}]
     
 
-optional arguments:
-  -h, --help            show this help message and exit
-  --PE_read_dir PE_READ_DIR
-                        Desired input directory with fastq files, gzipped or
-                        not
-  --amplicon_info AMPLICON_INFO
-                        Path to the amplicon info file in tsv format, e.g.:
-                        AmpliconName Primer1 Primer2 ReferenceSequence
-  --sample_labels SAMPLE_LABELS
-                        Path to sample labels file in csv format - not currently used by the tool
-  --output_dir OUTPUT_DIR
-                        Desired output directory 
-  --save_data {true,false}
+optional arguments: <br />
+  -h, --help            show this help message and exit <br />
+  --PE_read_dir PE_READ_DIR <br />
+                        Desired input directory with fastq files, gzipped or 
+                        not <br />
+  --amplicon_info AMPLICON_INFO <br />
+                        Path to the amplicon info file in tsv format, e.g.: <br />
+                        AmpliconName Primer1 Primer2 ReferenceSequence <br />
+  --sample_labels SAMPLE_LABELS <br />
+                        Path to sample labels file in csv format - not currently used by the tool <br />
+  --output_dir OUTPUT_DIR <br />
+                        Desired output directory <br />
+  --save_data {true,false} <br />
                         Save processed data in csv format (default: true).
