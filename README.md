@@ -5,6 +5,12 @@ Generate lollipop plots that show the most frequent epialleles for a region of i
 
 <img width="515" alt="34059-Tumour_S9_L001__001_RAD51C (RAD51C)_5perc_barplot" src="https://github.com/molonc-lab/MethAmplicons2/assets/128128145/bbf1f840-7d72-4c71-9014-538330ca23c9">
 
+Can also plot the combined/average epialleles for multiple samples of interest together:
+<img width="390" alt="RAD51C methylation combined" src="https://github.com/molonc-lab/MethAmplicons2/assets/128128145/f8ab39a3-0a96-4b2a-9797-0f8a1279e664">
+
+Lastly, you can plot ridgeline plots that allow one to view the distribution of the number of methylated CpGs per epiallele by sample. This provides another visual tool to assess the proportion of non-methylated, partially methylated, and fully methylated epialleles in a sample:  
+<img width="1346" alt="ridgeline_combined_homo" src="https://github.com/molonc-lab/MethAmplicons2/assets/128128145/06a1efd0-4077-46a3-84ff-35efebe99279">
+
 This repo provides a generalised "CLI tool" version of the code from [MethAmplicons](https://github.com/okon/MethAmplicons) which is a collection of scripts used for the analysis of RAD51C methylation data in:
 [Nesic, K, Kondrashova, O et al. "Acquired *RAD51C* promoter methylation loss causes PARP inhibitor resistance in high grade serous ovarian carcinoma." Cancer Research (2021)](https://cancerres.aacrjournals.org/content/early/2021/07/27/0008-5472.CAN-21-0774)
 
