@@ -103,7 +103,7 @@ FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Ma
 # USE 
 
 ## Step 1: Activate the virtual environment from before if not activated already (using the path to the activate file)
-source mba_env/bin/activate
+source ma_env/bin/activate
 
 ## Step 2: Run methamplicons, either by specifying absolute paths to files or giving relative paths 
 - Example with relative paths, using the aforementioned tests folder
