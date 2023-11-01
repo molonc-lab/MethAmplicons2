@@ -57,6 +57,11 @@ class MethAmplicon:
             os.makedirs(dir_path, exist_ok=True)
 
         return dir_path
+    
+    def valid_thresh(self, freq_thresh):
+        freq_thresh = float(freq_thresh)
+        if not (freq_thresh > 0 and freq_thresh < 1): 
+            raise argparse.ArgumentTypeError(f'{freq_thesh} is not a number between 0 and 1')
 
     def setup_parser(self):
         """
@@ -77,6 +82,9 @@ class MethAmplicon:
         #will be current working directory by default. 
         self.parser.add_argument('--output_dir', type=self.valid_out_dir, \
                                  default = os.getcwd(), help="Desired output directory")
+        
+        self.parser.add_argument('--min_seq_freq', type=self.valid_thresh, \
+                                 default = 0.01, help="Threshold frequency an extracted epiallele sequence must have to be included in analysis")
         
         # the save_data argument is true by default, and the user can also set it to false with --save_data false
         self.parser.add_argument('--save_data', type=str, choices=['true', 'false'], \
@@ -334,6 +342,10 @@ class MethAmplicon:
             raise argparse.ArgumentTypeError("--PE_read_dir (Paired end reads directory) is missing!")
         if not self.args.amplicon_info:
             raise argparse.ArgumentTypeError("--amplicon_info (amplicon info tsv file) is missing!")
+        
+        seq_freq_threshold = self.args.min_seq_freq
+
+        self.extract_meth.set_threshold(seq_freq_threshold)
         
         #create df for short/sample name lookup from file name from the provided csv
         try:

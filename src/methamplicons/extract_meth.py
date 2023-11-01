@@ -10,6 +10,7 @@ class ExtractMeth(ExtractData):
 
     def __init__(self):
         super().__init__()
+        self.threshold = 0.01
 
     def get_cpg_positions(self, refseq, fwd_pos, rvs_pos):
         pos=list()
@@ -20,6 +21,10 @@ class ExtractMeth(ExtractData):
                         pos.append(i)
         #print(f"CpG positions from the function are: {pos}")
         return(pos)
+    
+
+    def set_threshold(self, threshold): 
+        self.threshold = threshold
 
     #replaces the function get_all_reads
     def get_all_reads(self, file, fwd_primer, rev_primer): 
@@ -57,6 +62,23 @@ class ExtractMeth(ExtractData):
                 epiallele_counts_region[extracted_sequence] += 1
             else: 
                 epiallele_counts_region[extracted_sequence] = 1
+
+        # now need to add logic to remove reads lower than threshold flag
+        # rather than pass this to the function, pass this to the ExtractMeth object to make it a class
+        # attribute upon its creation? - might be easier
+
+        #get the total counts, sum all values in dict - will be for specific epiallele
+        total_seq_count = sum(epiallele_counts_region.values())
+        thresh_count = self.threshold * total_seq_count
+
+        delete_seqs = [] # as we cannot delete while iterating
+        for extracted_seq, count in epiallele_counts_region.items():
+            if count < thresh_count:
+                delete_seqs.append(extracted_seq)
+        
+        #delete all sequences with count lower than threshold
+        for seq in delete_seqs:
+            del epiallele_counts_region[seq]
                     
         return epiallele_counts_region
 
