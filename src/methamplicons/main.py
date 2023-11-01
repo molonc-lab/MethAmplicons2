@@ -61,7 +61,9 @@ class MethAmplicon:
     def valid_thresh(self, freq_thresh):
         freq_thresh = float(freq_thresh)
         if not (freq_thresh > 0 and freq_thresh < 1): 
-            raise argparse.ArgumentTypeError(f'{freq_thesh} is not a number between 0 and 1')
+            raise argparse.ArgumentTypeError(f'{freq_thresh} is not a number between 0 and 1')
+        
+        return freq_thresh
 
     def setup_parser(self):
         """
@@ -344,6 +346,8 @@ class MethAmplicon:
             raise argparse.ArgumentTypeError("--amplicon_info (amplicon info tsv file) is missing!")
         
         seq_freq_threshold = self.args.min_seq_freq
+
+        print(f"")
 
         self.extract_meth.set_threshold(seq_freq_threshold)
         
