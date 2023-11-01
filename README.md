@@ -23,12 +23,11 @@ This tool uses [FLASH](https://ccb.jhu.edu/software/FLASH/) paired-end read merg
 
 ## INSTALLATION: 
 
-Currently, to install and use methamplicons:
+Currently, to install and use methamplicons: 
 1. (Recommended) Create a virtual environment for installation 
-2. Download and extract the binary for the flash read merging tool and move it to 
-the user's bin folder or the bin in the virtual environment.  
-3A. Clone or download the MethAmplicons2 repository (put the files in your working directory) then install the tool using flit.
-3B. Install the methamplicons tool from testpypi: pip install -i https://test.pypi.org/simple/ methamplicons
+2. Download and extract the binary for the flash read merging tool and move it to the user's bin folder or the bin in the virtual environment. 
+3. A. Clone or download the MethAmplicons2 repository (put the files in your working directory) then install the tool using flit. 
+3. B. Install the methamplicons tool from testpypi: pip install -i https://test.pypi.org/simple/ methamplicons
 
 ### Step 1. Create and activate a virtual environment (recommended):
 - It is recommended to create a virtual environment where the tool can be installed
