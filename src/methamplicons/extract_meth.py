@@ -10,7 +10,7 @@ class ExtractMeth(ExtractData):
 
     def __init__(self):
         super().__init__()
-        self.threshold = 0.01
+        self.threshold = 0.2
 
     def get_cpg_positions(self, refseq, fwd_pos, rvs_pos):
         pos=list()
