@@ -64,7 +64,7 @@ class ExtractMeth(ExtractData):
                 epiallele_counts_region[extracted_sequence] = 1
 
 
-        print(sorted(epiallele_counts_region.values))
+        print(sorted(epiallele_counts_region.values()))
 
         # now need to add logic to remove reads lower than threshold flag
         # rather than pass this to the function, pass this to the ExtractMeth object to make it a class
