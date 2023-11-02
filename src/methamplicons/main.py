@@ -360,6 +360,10 @@ class MethAmplicon:
         #print("Processing tsv file")
         self.amplicon_info, self.refseqs = self.extract_meth.read_primer_seq_file(self.args.amplicon_info)
         
+        # disable print
+        if self.args.verbose == "F":
+            sys.stdout = open(os.devnull, 'w')
+
         # iterate over the paired end read files and process data 
         self.merge_loop()
         self.meth_amplicon_loop()

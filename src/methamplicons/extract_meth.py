@@ -137,8 +137,6 @@ class ExtractMeth(ExtractData):
         # Sort by number of reads supporting the allele
         alleles_sort = sorted(alleles.items(), key=operator.itemgetter(1), reverse=True)
 
-        print(f"a")
-
         # Total number of reads after filtering
         filtered_reads=sum(alleles.values())
         
