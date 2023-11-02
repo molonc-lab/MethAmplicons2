@@ -65,10 +65,7 @@ class ExtractMeth(ExtractData):
 
         print("\n")
         print(file)
-        if len(epiallele_counts_region) < 20:
-            print(sorted(epiallele_counts_region.values()))
-        else:
-            print(print(sorted(epiallele_counts_region.values())[-20:]))
+
 
         # now need to add logic to remove reads lower than threshold flag
         # rather than pass this to the function, pass this to the ExtractMeth object to make it a class
@@ -90,10 +87,15 @@ class ExtractMeth(ExtractData):
             del epiallele_counts_region[seq]
 
         print(f"{len(epiallele_counts_region)} sequences remain of original {total_seq_count}")
+
+        if len(epiallele_counts_region) < 20:
+            print(sorted(epiallele_counts_region.values()))
+        else:
+            print(print(sorted(epiallele_counts_region.values())[-20:]))
                     
         return epiallele_counts_region
 
-    def count_alleles(self, allele_counts, refseq, fwd, rev, min_freq=0.001): 
+    def count_alleles(self, allele_counts, refseq, fwd, rev): 
         #instantiate new dictionary
         alleles = defaultdict(int)
         
@@ -109,7 +111,7 @@ class ExtractMeth(ExtractData):
         refseq_len=len(refseq)
         
         #minimum number of reads to meet the min freq cutoff for 2nd filter
-        min_reads=reads_n*min_freq
+        #min_reads=reads_n*min_freq
 
         for seq,val in allele_counts.items():
             #1st and 2nd filters: exclude all indels, and minimum freq
@@ -122,6 +124,8 @@ class ExtractMeth(ExtractData):
                 testseq=set(allele)
                 #3rd filter, for any errors in the positions of interest
                 if 'A' not in testseq and 'G' not in testseq: 
+                    # this also works to either initialise a count for an allele 
+                    # such as CTCT - this is agnostic to the other bases of the read
                     alleles[allele]+=val
                 #else: 
                     #print("One of the CpG sites had an A or G")
@@ -131,6 +135,8 @@ class ExtractMeth(ExtractData):
 
         # Sort by number of reads supporting the allele
         alleles_sort = sorted(alleles.items(), key=operator.itemgetter(1), reverse=True)
+
+        print(f"a")
 
         # Total number of reads after filtering
         filtered_reads=sum(alleles.values())

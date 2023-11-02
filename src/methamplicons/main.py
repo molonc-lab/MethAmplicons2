@@ -293,7 +293,7 @@ class MethAmplicon:
             refseq = self.refseqs[amplicon_name]
 
             # Count only CpG sites in alleles
-            alleles_sort,filtered_reads=self.extract_meth.count_alleles(d, refseq, fwd_pos, rev_pos, min_freq=0)
+            alleles_sort,filtered_reads=self.extract_meth.count_alleles(d, refseq, fwd_pos, rev_pos)
 
             if alleles_sort == []: 
                 #print(f"No epialleles were found for amplified region: {amplicon_name}, trying next region")
