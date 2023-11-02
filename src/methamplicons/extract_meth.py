@@ -10,7 +10,7 @@ class ExtractMeth(ExtractData):
 
     def __init__(self):
         super().__init__()
-        self.threshold = 0.2
+        self.threshold = 0.01
 
     def get_cpg_positions(self, refseq, fwd_pos, rvs_pos):
         pos=list()
@@ -62,6 +62,9 @@ class ExtractMeth(ExtractData):
                 epiallele_counts_region[extracted_sequence] += 1
             else: 
                 epiallele_counts_region[extracted_sequence] = 1
+
+
+        print(epiallele_counts_region)
 
         # now need to add logic to remove reads lower than threshold flag
         # rather than pass this to the function, pass this to the ExtractMeth object to make it a class
