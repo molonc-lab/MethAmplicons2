@@ -63,6 +63,7 @@ class ExtractMeth(ExtractData):
             else: 
                 epiallele_counts_region[extracted_sequence] = 1
 
+        print("\n")
         print(file)
         if len(epiallele_counts_region) < 20:
             print(sorted(epiallele_counts_region.values()))
