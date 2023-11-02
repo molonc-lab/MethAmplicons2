@@ -116,7 +116,7 @@ class ExtractMeth(ExtractData):
         for seq,val in allele_counts.items():
             #1st and 2nd filters: exclude all indels, and minimum freq
             #print(f"seq: \n{seq}\nrefseq: \n{refseq}")
-            if (len(seq) == refseq_len) & (val > min_reads):
+            if (len(seq) == refseq_len): # & (val > min_reads): - logic now implemented in get_all_reads
                 allele=""
                 for i,nuc in enumerate(seq):
                     if i in pos:
