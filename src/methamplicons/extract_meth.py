@@ -66,6 +66,7 @@ class ExtractMeth(ExtractData):
         print("\n")
         print(file)
 
+        before_thresh = len(epiallele_counts_region)
 
         # now need to add logic to remove reads lower than threshold flag
         # rather than pass this to the function, pass this to the ExtractMeth object to make it a class
@@ -86,7 +87,7 @@ class ExtractMeth(ExtractData):
         for seq in delete_seqs:
             del epiallele_counts_region[seq]
 
-        print(f"{len(epiallele_counts_region)} sequences remain of original {total_seq_count}")
+        print(f"{len(epiallele_counts_region)} sequences remain of original {before_thresh} and their counts are:")
 
         if len(epiallele_counts_region) < 20:
             print(sorted(epiallele_counts_region.values()))
