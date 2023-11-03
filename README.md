@@ -184,6 +184,7 @@ Linux:
 - Take the flash binary from linux_flash and move it to the appropriate bin on your system or the src/methamplicons folder before running the program (and then respond 'y' as above).
 - If the attached binary does not work try other binary files from: https://ccb.jhu.edu/software/FLASH/
 - For a Linux system, extract the binary from the FLASH-1.2.11-Linux-x86_64.tar.gz
+
 Windows:
 - methamplicons attempts to move the flash binary to the bin folder which does not exist on Windows, however such a bin would exist in a Python or Anaconda environment: a virtual environment is therefore required to run methamplicons on Windows. 
 
