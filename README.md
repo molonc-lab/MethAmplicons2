@@ -49,6 +49,7 @@ Currently, to install and use methamplicons:
   ``` 
 
 ### Step 2.2 - Install the methamplicons tool using flit: 
+
   ```bash
   # Install flit if you have not already 
   pip install flit
