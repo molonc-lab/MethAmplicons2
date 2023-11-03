@@ -13,7 +13,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License"
 ]
 requires = [
-    "pandas =1.1.5",
+    "pandas ==1.1.5",
     "numpy",
     "pillow >=8.3.2",
     "matplotlib >=3.3.1",
