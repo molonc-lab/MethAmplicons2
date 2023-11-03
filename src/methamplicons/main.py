@@ -314,14 +314,18 @@ class MethAmplicon:
             df_sample_unmeth=self.extract_meth.calculate_meth_fraction(alleles_sort, refseq, fwd_pos, rev_pos, include_unmeth_alleles=False)
             #print(f"Sample dataframe unmeth: \n {df_sample_unmeth}")
 
+            df_alt = pd.DataFrame() 
+            df_alt_unmeth = pd.DataFrame()
+
+
             df_sample.columns=[sname]
             df_sample_unmeth.columns=[sname]
             if i == 0:
                 df_alt=df_sample
                 df_alt_unmeth=df_sample_unmeth
             elif i > 0:
-                df_alt=df_alt.join(df_sample)
-                df_alt_unmeth=df_alt_unmeth.join(df_sample_unmeth)
+                df_alt=df_alt.join(df_sample, how='outer')
+                df_alt_unmeth=df_alt_unmeth.join(df_sample_unmeth, how='outer')
 
             # Prepare individual sample plots grouping alleles <2% and 5%
             for freq_min in [5]:
