@@ -55,7 +55,8 @@ Currently, to install and use methamplicons:
   # FOR VIRTUAL ENVIRONMENT: in the repo folder (MethAmplicons2) install methamplicons
   # and all its requirements with flit by specifying the path to the virtual environment's python 
   flit install --python ma_env/bin/python
-  # if you are using a non-organisation computer and have decided not to use a virtual environment
+
+  # ALTERNATIVELY: if you are using a non-organisation computer and have decided not to use a virtual environment
   flit install --symlink
   ``` 
 
