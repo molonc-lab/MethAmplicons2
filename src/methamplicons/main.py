@@ -314,6 +314,10 @@ class MethAmplicon:
             df_sample_unmeth=self.extract_meth.calculate_meth_fraction(alleles_sort, refseq, fwd_pos, rev_pos, include_unmeth_alleles=False)
             #print(f"Sample dataframe unmeth: \n {df_sample_unmeth}")
 
+            df_alt = None
+            df_alt_unmeth = None
+
+
             df_sample.columns=[sname]
             df_sample_unmeth.columns=[sname]
             if i == 0:
