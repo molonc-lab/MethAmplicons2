@@ -89,7 +89,7 @@ class MethAmplicon:
                                  default = 0.01, help="Threshold frequency an extracted epiallele sequence must have to be included in analysis")
         
         self.parser.add_argument('--verbose', type=str, choices=['true', 'false'], \
-                                 default='true', help="Save a ridgeline graph (default: true).")
+                                 default='true', help="Print all output after file parsing (default: true).")
         
         # the save_data argument is true by default, and the user can also set it to false with --save_data false
         self.parser.add_argument('--save_data', type=str, choices=['true', 'false'], \
