@@ -324,8 +324,8 @@ class MethAmplicon:
                 df_alt=df_sample
                 df_alt_unmeth=df_sample_unmeth
             elif i > 0:
-                df_alt=df_alt.join(df_sample)
-                df_alt_unmeth=df_alt_unmeth.join(df_sample_unmeth)
+                df_alt=df_alt.join(df_sample, how='outer')
+                df_alt_unmeth=df_alt_unmeth.join(df_sample_unmeth, how='outer')
 
             # Prepare individual sample plots grouping alleles <2% and 5%
             for freq_min in [5]:
