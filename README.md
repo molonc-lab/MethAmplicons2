@@ -72,7 +72,8 @@ Currently, to install and use methamplicons:
 
 #### Example command
 ```bash
-  methamplicons --PE_read_dir test \
+#specify the location of methamplicons - not required if installed to usr/bin of Mac (non-organisation computers)
+  ma_env/bin/methamplicons --PE_read_dir test \
     --amplicon_info test/BS_primers_amplicons_CDS_RC.tsv \
     --sample_labels test/SampleID_labels_amplicon_meth.csv \
     --output_dir output \
