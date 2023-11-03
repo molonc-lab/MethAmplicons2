@@ -185,6 +185,8 @@ class Plotter:
                 data_by_amplicon[amplicon_name] = grouped
 
     def plot_lollipop_colour (self, df, outpath, outname="All_samples_combined_colour.pdf"):  
+        
+        print(f"Dataframe for combined samples pre-melt {df}")
         # Changing default font to Arial
         plt.rcParams['font.sans-serif'] = "Arial"
         plt.rcParams['font.family'] = "sans-serif"
@@ -193,6 +195,8 @@ class Plotter:
         df_melt['variable']= df_melt["variable"].str.split('_').str[0]
         df_melt = df_melt.sort_index(ascending=False)
         #df_melt = df_melt.sort_values(by=['variable'])
+
+        print(f"Dataframe for combined samples melted {df_melt}")
 
         plt.set_cmap('coolwarm')
         plt.figure()

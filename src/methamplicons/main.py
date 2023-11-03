@@ -57,6 +57,13 @@ class MethAmplicon:
             os.makedirs(dir_path, exist_ok=True)
 
         return dir_path
+    
+    def valid_thresh(self, freq_thresh):
+        freq_thresh = float(freq_thresh)
+        if not (freq_thresh > 0 and freq_thresh < 1): 
+            raise argparse.ArgumentTypeError(f'{freq_thresh} is not a number between 0 and 1')
+        
+        return freq_thresh
 
     def setup_parser(self):
         """
@@ -77,6 +84,12 @@ class MethAmplicon:
         #will be current working directory by default. 
         self.parser.add_argument('--output_dir', type=self.valid_out_dir, \
                                  default = os.getcwd(), help="Desired output directory")
+        
+        self.parser.add_argument('--min_seq_freq', type=self.valid_thresh, \
+                                 default = 0.01, help="Threshold frequency an extracted epiallele sequence must have to be included in analysis")
+        
+        self.parser.add_argument('--verbose', type=str, choices=['true', 'false'], \
+                                 default='true', help="Print all output after file parsing (default: true).")
         
         # the save_data argument is true by default, and the user can also set it to false with --save_data false
         self.parser.add_argument('--save_data', type=str, choices=['true', 'false'], \
@@ -283,7 +296,7 @@ class MethAmplicon:
             refseq = self.refseqs[amplicon_name]
 
             # Count only CpG sites in alleles
-            alleles_sort,filtered_reads=self.extract_meth.count_alleles(d, refseq, fwd_pos, rev_pos, min_freq=0)
+            alleles_sort,filtered_reads=self.extract_meth.count_alleles(d, refseq, fwd_pos, rev_pos)
 
             if alleles_sort == []: 
                 #print(f"No epialleles were found for amplified region: {amplicon_name}, trying next region")
@@ -335,6 +348,12 @@ class MethAmplicon:
         if not self.args.amplicon_info:
             raise argparse.ArgumentTypeError("--amplicon_info (amplicon info tsv file) is missing!")
         
+        seq_freq_threshold = self.args.min_seq_freq
+
+        print(f"")
+
+        self.extract_meth.set_threshold(seq_freq_threshold)
+        
         #create df for short/sample name lookup from file name from the provided csv
         try:
             self.labels_df = pd.read_csv(self.args.sample_labels, index_col = 0)
@@ -344,6 +363,10 @@ class MethAmplicon:
         #print("Processing tsv file")
         self.amplicon_info, self.refseqs = self.extract_meth.read_primer_seq_file(self.args.amplicon_info)
         
+        # disable print
+        if self.args.verbose == "false":
+            sys.stdout = open(os.devnull, 'w')
+
         # iterate over the paired end read files and process data 
         self.merge_loop()
         self.meth_amplicon_loop()
