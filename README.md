@@ -157,23 +157,34 @@ ridgeline_plot_RAD51C.pdf <br />
 
 ```
 usage: methamplicons [-h] [--PE_read_dir PE_READ_DIR]
-                        [--amplicon_info AMPLICON_INFO]
-                        [--sample_labels SAMPLE_LABELS]
-                        [--output_dir OUTPUT_DIR] [--save_data {true,false}]
-    
+                     [--amplicon_info AMPLICON_INFO]
+                     [--sample_labels SAMPLE_LABELS] [--output_dir OUTPUT_DIR]
+                     [--min_seq_freq MIN_SEQ_FREQ] [--verbose {true,false}]
+                     [--save_data {true,false}] [--lollipop {true,false}]
+                     [--ridge {true,false}]
 
-optional arguments: 
-  -h, --help            show this help message and exit 
+CLI tool for plotting targeted bisulfite sequencing
+
+optional arguments:
+  -h, --help            show this help message and exit
   --PE_read_dir PE_READ_DIR
-                        Desired input directory with fastq files, gzipped or 
-                        not 
-  --amplicon_info AMPLICON_INFO 
+                        Desired input directory with fastq files, gzipped or
+                        not
+  --amplicon_info AMPLICON_INFO
                         Path to the amplicon info file in tsv format, e.g.:
-                        AmpliconName Primer1 Primer2 ReferenceSequence 
-  --sample_labels SAMPLE_LABELS 
-                        Path to sample labels file in csv format - not currently used by the tool <br />
-  --output_dir OUTPUT_DIR 
-                        Desired output directory 
-  --save_data {true,false} 
+                        AmpliconName Primer1 Primer2 ReferenceSequence
+  --sample_labels SAMPLE_LABELS
+                        Path to sample labels file in csv format
+  --output_dir OUTPUT_DIR
+                        Desired output directory
+  --min_seq_freq MIN_SEQ_FREQ
+                        Threshold frequency an extracted epiallele sequence
+                        must have to be included in analysis
+  --verbose {true,false}
+                        Print all output after file parsing (default: true).
+  --save_data {true,false}
                         Save processed data in csv format (default: true).
+  --lollipop {true,false}
+                        Save a lollipop graph (default: true).
+  --ridge {true,false}  Save a ridgeline graph (default: true).
 ```
