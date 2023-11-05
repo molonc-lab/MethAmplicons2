@@ -7,6 +7,7 @@ import sys
 import pandas as pd
 from functools import reduce
 import re
+import platform
 
 class MethAmplicon:
     
@@ -383,6 +384,8 @@ def main():
     # determine if a virtual environment is being used
     if hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix):
         flash_path = os.path.join(sys.prefix, 'bin', 'flash')
+    elif platform.system() == 'Darwin':  
+        flash_path = '/usr/bin/flash'
     else:
         # if virtual environment isn't active then default to user's local bin
         flash_path = os.path.expanduser('~/bin/flash')
