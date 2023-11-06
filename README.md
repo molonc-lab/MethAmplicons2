@@ -28,19 +28,10 @@ This tool uses [FLASH](https://ccb.jhu.edu/software/FLASH/) paired-end read merg
   ```
 
 ## USE: 
-- Note: the flash binary used to merge reads is only compiled for Macs (arm64 and intel). See Alternative OS Support for where to find binaries for other systems. 
   ```bash
   methamplicons --PE_read_dir test4 --amplicon_info test4/BS_primers_amplicons_CDS_RC.tsv --sample_labels test4/SampleID_labels_amplicon_meth.csv --output_dir AOCS34059
   ```
-
-## Alternative OS support:
-1. After running "pip install methamplicons", navigate to the folder where it was installed - which is the bin folder of the version of Python being used. On Linux you can run "which methamplicons" to find the location. The location should look like <path to python installation>/Python/3.9/bin/methamplicons
-2. In the methamplicons folder are 4 python files and unix executable/binary for flash on mac. Delete the flash binary and replace it with the one for your system, which can be obtained from: https://ccb.jhu.edu/software/FLASH/
-- E.g. for a Linux system, extract the binary from the FLASH-1.2.11-Linux-x86_64.tar.gz
-3. The tool should now run. 
-
-Credit to the creators of FLASH: 
-FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Magoc and S. Salzberg. Bioinformatics 27:21 (2011), 2957-63.
+- Note: the flash binary used to merge reads is only compiled for Macs (arm64 and intel). See Alternative OS Support for where to find binaries for other systems.
 
 #### Requirements for directories and files provided as arguments: 
 - Example tsv and csv files are provided under tests
@@ -132,4 +123,12 @@ optional arguments:
   --ridge {true,false}  Save a ridgeline graph (default: true).
 ```
 
+## Alternative OS support:
+1. After running "pip install methamplicons", navigate to the folder where it was installed - which is the bin folder of the version of Python being used. On Linux you can run "which methamplicons" to find the location. The location should look like <path to python installation>/Python/3.9/bin/methamplicons
+2. In the methamplicons folder are 4 python files and unix executable/binary for flash on mac. Delete the flash binary and replace it with the one for your system, which can be obtained from: https://ccb.jhu.edu/software/FLASH/
+- E.g. for a Linux system, extract the binary from the FLASH-1.2.11-Linux-x86_64.tar.gz
+3. The tool should now run. 
+
+Credit to the creators of FLASH: 
+FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Magoc and S. Salzberg. Bioinformatics 27:21 (2011), 2957-63.
 
