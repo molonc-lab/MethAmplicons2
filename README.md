@@ -18,74 +18,26 @@ This repo provides a generalised "CLI tool" version of the code from [MethAmplic
 This tool uses [FLASH](https://ccb.jhu.edu/software/FLASH/) paired-end read merging software for merging reads: [FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Magoc and S. Salzberg. Bioinformatics 27:21 (2011), 2957-63](https://doi.org/10.1093/bioinformatics/btr507)
 
 
-# Getting Started
+# Getting Started 
 - To get started with the tool, follow the steps INSTALLATION and USE below.  
 
 ## INSTALLATION: 
 
-Currently, to install and use methamplicons: 
-1. (Recommended) Create a virtual environment for installation 
-2. Clone or download the MethAmplicons2 repository (put the files in your working directory) then install the methamplicons tool using flit.
-3. Run methamplicons and approve moving the flash read merging tool to your system's bin folder or the bin folder of your virtual environment. 
-
-### Step 1. Create and activate a virtual environment using a Python version between 3.6.8 and 3.9.6 (recommended):
-- It is recommended to create a virtual environment where the tool can be installed
   ```bash
-  #Command for creating virtual environment named 'ma_env'
-  python3 -m venv ma_env
-  #Command for activating virtual environment 
-  source ma_env/bin/activate
-  ``` 
+  pip install methamplicons
+  ```
 
-### Step 2.1 - Getting the files from the GitHub repo:
-- Clone the methamplicons repository in the directory where you want the code files to go (alternatively download the repo folder and move it to this directory): 
-
+## USE: 
+- Note: the flash binary used to merge reads is only compiled for Macs (arm64 and intel). See Alternative OS Support for where to find binaries for other systems. 
   ```bash
-  # use ssh link if on an HPC
-  git clone https://github.com/molonc-lab/methamplicons.git
-  
-  # cd into the MethAmplicons2 directory
-  cd MethAmplicons2
-  ``` 
+  methamplicons --PE_read_dir test4 --amplicon_info test4/BS_primers_amplicons_CDS_RC.tsv --sample_labels test4/SampleID_labels_amplicon_meth.csv --output_dir AOCS34059
+  ```
 
-### Step 2.2 - Install the methamplicons tool using flit: 
-
-  ```bash
-  # Install flit if you have not already 
-  pip install flit
-  # FOR VIRTUAL ENVIRONMENT: in the repo folder (MethAmplicons2) install methamplicons
-  # and all its requirements with flit by specifying the path to the virtual environment's python 
-  flit install --python ma_env/bin/python
-
-  # ALTERNATIVELY: if you are using a non-organisation computer and have decided not to use a virtual environment
-  flit install --symlink
-  ``` 
-
-## USE 
-
-### Step 1: Activate the virtual environment from before if not activated already (using the path to the activate file)
-```bash
-  source ma_env/bin/activate
-```
-
-### Step 2: Run methamplicons, either by specifying absolute paths to files or giving relative paths 
-
-#### Example command
-```bash
-#specify the location of methamplicons - not required if installed to usr/bin of Mac (non-organisation computers)
-  ma_env/bin/methamplicons --PE_read_dir test \
-    --amplicon_info test/BS_primers_amplicons_CDS_RC.tsv \
-    --sample_labels test/SampleID_labels_amplicon_meth.csv \
-    --output_dir output \
-    --min_seq_freq 0.01 \
-    --verbose true
-
-```
-
-### Step 2. (First time use) Approve moving flash to your system or virtual environment's bin: 
-- methamplicons WILL NOT run without a binary for FLASH in the bin folder containing the version of Python being used to run the command. 
-For Macs:
-- When running methamplicons for the first time, respond 'y' when prompted with "Flash binary not found. Would you like to move a copy of the flash binary for Unix to your bin (y/n)?". A precompiled binary of Flash for Macs will be moved from src/methamplicons to the usr/bin folder or the bin of your active virtual environment (e.g. /Users/brettl/ma_env/bin/). If you happen to already have a binary for Flash in either of these folders you will not be prompted. If you respond with 'n' the program will exit.
+## Alternative OS support:
+1. After running "pip install methamplicons", navigate to the folder where it was installed - which is the bin folder of the version of Python being used. On Linux you can run "which methamplicons" to find the location. The location should look like <path to python installation>/Python/3.9/bin/methamplicons
+2. In the methamplicons folder are 4 python files and unix executable/binary for flash on mac. Delete the flash binary and replace it with the one for your system, which can be obtained from: https://ccb.jhu.edu/software/FLASH/
+- E.g. for a Linux system, extract the binary from the FLASH-1.2.11-Linux-x86_64.tar.gz
+3. The tool should now run. 
 
 Credit to the creators of FLASH: 
 FLASH: Fast length adjustment of short reads to improve genome assemblies. T. Magoc and S. Salzberg. Bioinformatics 27:21 (2011), 2957-63.
@@ -179,12 +131,5 @@ optional arguments:
                         Save a lollipop graph (default: true).
   --ridge {true,false}  Save a ridgeline graph (default: true).
 ```
-## Alternative OS support:
-Linux:
-- Take the flash binary from linux_flash and move it to the appropriate bin on your system or the src/methamplicons folder before running the program (and then respond 'y' as above).
-- If the attached binary does not work try other binary files from: https://ccb.jhu.edu/software/FLASH/
-- For a Linux system, extract the binary from the FLASH-1.2.11-Linux-x86_64.tar.gz
 
-Windows:
-- methamplicons attempts to move the flash binary to the bin folder which does not exist on Windows, however such a bin would exist in a Python or Anaconda environment: a virtual environment is therefore required to run methamplicons on Windows. 
 
