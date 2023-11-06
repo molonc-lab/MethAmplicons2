@@ -278,6 +278,9 @@ class MethAmplicon:
     def meth_amplicon_loop(self):
         
         allele_sort_dfs = []
+
+        df_alt = pd.DataFrame() 
+        df_alt_unmeth = pd.DataFrame()
         merged_path = os.path.join(self.args.output_dir, "merged")
 
         #After merging of reads is completed, program flow is essentially the same as in MethAmplicon
@@ -314,9 +317,6 @@ class MethAmplicon:
             #print(f"Sample dataframe: \n {df_sample}")
             df_sample_unmeth=self.extract_meth.calculate_meth_fraction(alleles_sort, refseq, fwd_pos, rev_pos, include_unmeth_alleles=False)
             #print(f"Sample dataframe unmeth: \n {df_sample_unmeth}")
-
-            df_alt = pd.DataFrame() 
-            df_alt_unmeth = pd.DataFrame()
 
 
             df_sample.columns=[sname]
