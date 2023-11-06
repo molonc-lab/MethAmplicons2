@@ -125,7 +125,7 @@ class ExtractData:
                 self.run_flash(r1s_for_region, r2s_for_region, base_name_reg, out_dir, str(int(avg_read_len)), str(refseq_len))
     def get_flash_binary_path(self):
         #may need to specify specific version of tool
-        return resource_filename('methamplicons', 'src/methamplicons/flash')
+        return resource_filename('methamplicons', 'flash')
 
     def run_flash(self, r1s_for_region, r2s_for_region, base_name_reg, out_dir, avg_read_len, refseq_len):
 
