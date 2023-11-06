@@ -376,45 +376,7 @@ class MethAmplicon:
         self.merge_loop()
         self.meth_amplicon_loop()
 
-def main():    
-
-    current_directory = os.path.dirname(os.path.abspath(__file__))
-    flash_source_path = os.path.join(current_directory, 'flash')
-
-    # determine if a virtual environment is being used
-    if hasattr(sys, 'real_prefix') or (hasattr(sys, 'base_prefix') and sys.base_prefix != sys.prefix):
-        flash_path = os.path.join(sys.prefix, 'bin', 'flash')
-    elif platform.system() == 'Darwin':  
-        flash_path = '/usr/bin/flash'
-    else:
-        # if virtual environment isn't active then default to user's local bin
-        flash_path = os.path.expanduser('~/bin/flash')
-
-    # Check if flash exists
-    if os.path.exists(flash_path):
-        print(f"Attempting to use existing version of flash binary in user's bin directory: {flash_path}")
-    
-    else: 
-            # Loop until the user provides a valid input
-        while True:
-            okay_to_move_flash = input("Flash binary not found. Would you like to move a copy of the flash binary for Unix to your bin (y/n)? ").strip().lower()
-
-            if okay_to_move_flash == 'y':
-                if os.path.exists(flash_source_path):
-                    shutil.copy2(flash_source_path, flash_path)
-                    os.chmod(flash_path, 0o755)
-                    print(f"FLASH COPIED TO {flash_path}")
-                else:
-                    print("Source flash binary not found. Please download it manually.")
-                break
-
-            elif okay_to_move_flash == 'n':
-                print("You chose not to copy the flash binary. If needed, please download the flash binary for your system from https://ccb.jhu.edu/software/FLASH/ then uncompress the file and move it to your bin.")
-                break
-
-            else:
-                print("Invalid option chosen. Please respond with 'y' or 'n'.")
-
+def main():   
 
     app = MethAmplicon()
     app.run()
