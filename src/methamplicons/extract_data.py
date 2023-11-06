@@ -2,6 +2,8 @@ import gzip
 import subprocess
 import os
 import csv
+from pkg_resources import resource_filename
+
 
 class DataExtractionError(Exception):
     pass
@@ -121,6 +123,9 @@ class ExtractData:
                 refseq_len = len(refseqs[amplicon_name])
                 # pass required aruments to run_flash, converting required arguments to strings
                 self.run_flash(r1s_for_region, r2s_for_region, base_name_reg, out_dir, str(int(avg_read_len)), str(refseq_len))
+    def get_flash_binary_path(self):
+        #may need to specify specific version of tool
+        return resource_filename('methamplicons', 'src/methamplicons/flash')
 
     def run_flash(self, r1s_for_region, r2s_for_region, base_name_reg, out_dir, avg_read_len, refseq_len):
 
@@ -129,8 +134,9 @@ class ExtractData:
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
 
+        flash_binary = self.get_flash_binary_path()
         # ALL ARGUMENTS MUST BE STRINGS
-        cmd = ["flash", "-m", "10", "-M", refseq_len, "-x", "0.25", "-O", "-r", avg_read_len, \
+        cmd = [flash_binary, "-m", "10", "-M", refseq_len, "-x", "0.25", "-O", "-r", avg_read_len, \
                 "-f", refseq_len, r1s_for_region, r2s_for_region, "-d", output_dir, "-o", base_name_reg]
         
         subprocess.run(cmd, universal_newlines=True, check=True)
