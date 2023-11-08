@@ -11,6 +11,7 @@ class ExtractMeth(ExtractData):
     def __init__(self):
         super().__init__()
         self.threshold = 0.01
+        self.verbose == "true"
 
     def get_cpg_positions(self, refseq, fwd_pos, rvs_pos):
         pos=list()
@@ -25,6 +26,9 @@ class ExtractMeth(ExtractData):
 
     def set_threshold(self, threshold): 
         self.threshold = threshold
+    
+    def set_verbose(self, verbose):
+        self.verbose = verbose
 
     #replaces the function get_all_reads
     def get_all_reads(self, file, fwd_primer, rev_primer): 

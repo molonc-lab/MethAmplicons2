@@ -88,6 +88,9 @@ class MethAmplicon:
         self.parser.add_argument('--verbose', type=str, choices=['true', 'false'], \
                                  default='true', help="Print all output after file parsing (default: true).")
         
+        self.parser.add_argument('--flash_verbose', type=str, choices=['true', 'false'], \
+                                 default='false', help="Print output of flash to command line instead of redirecting it to flash_stdout.txt (default false)")
+        
         # the save_data argument is true by default, and the user can also set it to false with --save_data false
         self.parser.add_argument('--save_data', type=str, choices=['true', 'false'], \
                                  default='true', help="Save processed data in csv format (default: true).")
@@ -362,8 +365,6 @@ class MethAmplicon:
         
         seq_freq_threshold = self.args.min_seq_freq
 
-        print(f"")
-
         self.extract_meth.set_threshold(seq_freq_threshold)
         
         #create df for short/sample name lookup from file name from the provided csv
@@ -378,6 +379,9 @@ class MethAmplicon:
         # disable print
         if self.args.verbose == "false":
             sys.stdout = open(os.devnull, 'w')
+        
+        # pass the verbose value to extract_meth to optionally redirect flash subprocess output
+        self.extract_meth.set_verbose(self.args.flash_verbose)
 
         # iterate over the paired end read files and process data 
         self.merge_loop()
