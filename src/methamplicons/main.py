@@ -174,7 +174,7 @@ class MethAmplicon:
 
         return sname
     
-    def plot_per_sample_lollipop(self, alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads, pos_rel_CDS, sname, amplicon_name):
+    def plot_per_sample_lollipop(self, alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads, pos_rel_CDS, sname, amplicon_name, output_dir):
         """
         Plots lollipop plots containing the specific epiallales for a given sample by calling methods in Plotter
         """
@@ -188,24 +188,14 @@ class MethAmplicon:
             df_below_freq.variable = df_below_freq.variable + pos_rel_CDS
             ##print(f"Dataframe 'below frequency' {df_below_freq}")
             #plot_path=f'{self.args.output_dir}{freq_min}_perc/'
-            plot_path = os.path.join(self.args.output_dir, str(freq_min) + f"_perc_{sname}")
+            
             #print(f"The plot path for the individual sample plot for {sname} is {plot_path}")
-            if not os.path.exists(plot_path):
-                os.mkdir(plot_path)
-
-            print(f"\n\n{sname} df_below_freq: \n {df_below_freq.freq}")
-            print(f"\n{sname} df_below_freq: \n {df_below_freq.freq.sum()}")
-            if df_below_freq.freq.sum() > 0:           
-                self.plotter.plot_lollipop_combined(df,df_below_freq,sname,plot_path,freq_min, amplicon_name)
-                #plot_path2=f'{self.args.output_dir}{freq_min}_perc_no_legend/'
-                plot_path2 = os.path.join(self.args.output_dir, str(freq_min) + f"_perc_{sname}_no_legend")
-                #print(f"The plot path for the individual sample plot for {sname} is {plot_path}")
-
-                if not os.path.exists(plot_path2):
-                    os.mkdir(plot_path2) 
-                self.plotter.plot_lollipop_combined(df,df_below_freq,sname,plot_path2,freq_min, amplicon_name, colbar=False)
+            
+            if df_below_freq.freq.sum() > 0:  
+                # if you have epialleles with frequency below 5%         
+                self.plotter.plot_lollipop_combined(df,df_below_freq,sname,output_dir,freq_min, amplicon_name)
             else:
-                self.plotter.plot_lollipop(df,sname,plot_path,freq_min, amplicon_name)
+                self.plotter.plot_lollipop(df,sname,output_dir,freq_min, amplicon_name)
 
     def save_dfs_to_csv(self, df_alleles_sort_all2, df_alt, df_alt_unmeth): 
         if self.args.save_data:
@@ -262,7 +252,10 @@ class MethAmplicon:
             df_alt_for_region.drop(columns=["position"], inplace=True)
             #print(f"df_alt for region {amplicon_name}: \n{df_alt_for_region}")
             #plt.style.use('default')
-            self.plotter.plot_lollipop_colour(df=df_alt_for_region, outpath=self.args.output_dir,
+            amp_out_dir = os.join(self.args.output_dir, amplicon_name)
+            if not os.path.exists(amp_out_dir):
+                os.makedirs(amp_out_dir)
+            self.plotter.plot_lollipop_colour(df=df_alt_for_region, outpath=amp_out_dir,
                              outname=f"All_samples_combined_colour_meth_{amplicon_name}.pdf")
 
         for amplicon_name, df_alt_unmeth_for_region in df_alts_unmeth_by_region.items():
@@ -276,7 +269,12 @@ class MethAmplicon:
 
             #print(f"df_alt unmeth for region {amplicon_name}: \n{df_alt_unmeth_for_region}")
             #plt.style.use('default')
-            self.plotter.plot_lollipop_colour(df=df_alt_unmeth_for_region, outpath=self.args.output_dir,
+
+            amp_out_dir = os.join(self.args.output_dir, amplicon_name)
+            if not os.path.exists(amp_out_dir):
+                os.makedirs(amp_out_dir)
+
+            self.plotter.plot_lollipop_colour(df=df_alt_unmeth_for_region, outpath=amp_out_dir,
                              outname=f"All_samples_combined_colour_unmeth_{amplicon_name}.pdf")
 
     def meth_amplicon_loop(self):
@@ -290,14 +288,20 @@ class MethAmplicon:
 
             #print(f"Identified a merged file {file}")
             amplicon_name = self.get_amp_name(file)
+            
+            # create a directory for the specific amplicon if it does not already exist
+            amp_out_dir = os.join(self.args.output_dir, amplicon_name)
+            if not os.path.exists(amp_out_dir):
+                os.makedirs(amp_out_dir)
+
             sname = self.get_sname(file, amplicon_name)
 
             file_path = os.path.join(merged_path, file)
             fwd_primer, rev_primer, fwd_pos, rev_pos, pos_rel_CDS = tuple(self.amplicon_info[amplicon_name])
 
-            # Generate dictionary with all reads
-            d=self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
+            # Generate dictionary with all reads for that amplicon in the merged file 
 
+            d=self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
             refseq = self.refseqs[amplicon_name]
 
             # Count only CpG sites in alleles
@@ -332,9 +336,8 @@ class MethAmplicon:
                 df_alt=df_alt.join(df_sample, how='outer')
                 df_alt_unmeth=df_alt_unmeth.join(df_sample_unmeth, how='outer')
 
-            # Prepare individual sample plots grouping alleles <2% and 5%
-            for freq_min in [5]:
-                self.plot_per_sample_lollipop(alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads, pos_rel_CDS, sname, amplicon_name)
+            
+            self.plot_per_sample_lollipop(alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads, pos_rel_CDS, sname, amplicon_name, amp_out_dir)
 
         dfs = [df.set_index('allele') for df in allele_sort_dfs]
         #print(f"accumulated list of allele sort dfs \n {dfs[0]} \n {dfs[1]} \n {dfs[2]} \n {dfs[3]}")

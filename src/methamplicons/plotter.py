@@ -114,8 +114,12 @@ class Plotter:
             plt.setp(ax.get_xticklabels(), fontsize=15, fontweight='bold')
             plt.xlabel('Number of meCpGs/epiallele', fontweight='bold', fontsize=15)
 
+            amp_out_dir = os.join(outpath, amplicon_name)
+            if not os.path.exists(amp_out_dir):
+                os.makedirs(amp_out_dir)
+
             filename = f"{outname}_{amplicon_name}.pdf"
-            fullpath = os.path.join(outpath, filename)
+            fullpath = os.path.join(amp_out_dir, filename)
             g.savefig(fullpath)
 
     
@@ -340,7 +344,8 @@ class Plotter:
                         labelpad=-25,
                         size=8)
             
-            fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot.pdf")
+            #fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot.pdf")
+            fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot_combined.pdf")
         else:
             fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot_nolegend.pdf")
             
