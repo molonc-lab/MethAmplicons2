@@ -142,7 +142,7 @@ class ExtractData:
         cmd = [flash_binary, "-m", "10", "-M", refseq_len, "-x", "0.25", "-O", "-r", avg_read_len, \
                 "-f", refseq_len, r1s_for_region, r2s_for_region, "-d", output_dir, "-o", base_name_reg]
         
-        subprocess.run(cmd, universal_newlines=True, check=True)
+        #subprocess.run(cmd, universal_newlines=True, check=True)
 
         if (self.verbose == "true"):
             subprocess.run(cmd, universal_newlines=True, check=True)
