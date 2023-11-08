@@ -126,6 +126,9 @@ class ExtractData:
     def get_flash_binary_path(self):
         #may need to specify specific version of tool
         return resource_filename('methamplicons', 'flash')
+    
+    def set_verbose(self, verbose):
+        self.verbose = verbose
 
     def run_flash(self, r1s_for_region, r2s_for_region, base_name_reg, out_dir, avg_read_len, refseq_len):
 
@@ -141,7 +144,7 @@ class ExtractData:
         
         subprocess.run(cmd, universal_newlines=True, check=True)
 
-        if (self.verbose == True):
+        if (self.verbose == "true"):
             subprocess.run(cmd, universal_newlines=True, check=True)
         else:
             output_file = os.path.join(out_dir, "flash_stdout.txt")
