@@ -171,9 +171,9 @@ class MethAmplicon:
             sname=self.labels_df.loc[sid]['ShortLabel']
             if pd.isnull(sname):
                 sname=self.labels_df.loc[sid]['SampleLabel']
-            sname = sname + " (" + amplicon_name + ")"
+            sname = sname # + " (" + amplicon_name + ")"
         except:
-            sname=sid + " (" + amplicon_name + ")"
+            sname=sid  # + " (" + amplicon_name + ")"
 
         return sname
     
