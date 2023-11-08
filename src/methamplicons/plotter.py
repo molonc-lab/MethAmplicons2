@@ -117,6 +117,9 @@ class Plotter:
             amp_out_dir = os.path.join(outpath, amplicon_name)
             if not os.path.exists(amp_out_dir):
                 os.makedirs(amp_out_dir)
+            
+            # want to save this df_alt_for_region in the corresponding amplicon folder
+            sorted_df.to_csv(os.path.join(amp_out_dir,f"Ridgeline_data_{amplicon_name}.csv"))
 
             filename = f"{outname}_{amplicon_name}.pdf"
             fullpath = os.path.join(amp_out_dir, filename)
