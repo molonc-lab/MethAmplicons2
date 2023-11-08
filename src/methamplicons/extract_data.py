@@ -148,7 +148,7 @@ class ExtractData:
             subprocess.run(cmd, universal_newlines=True, check=True)
         else:
             output_file = os.path.join(out_dir, "flash_stdout.txt")
-            with open(output_file, "a") as outf:
+            with open(output_file, "ab") as outf:
                 subprocess.run(cmd, stdout=outf, stderr=subprocess.PIPE, universal_newlines=True, check=True)
 
     def merge_reads(self, r1_seqs_file, r2_seqs_file, refseqs, amplicon_info, output_dir):
