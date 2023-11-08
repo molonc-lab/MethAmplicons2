@@ -114,7 +114,7 @@ class Plotter:
             plt.setp(ax.get_xticklabels(), fontsize=15, fontweight='bold')
             plt.xlabel('Number of meCpGs/epiallele', fontweight='bold', fontsize=15)
 
-            amp_out_dir = os.join(outpath, amplicon_name)
+            amp_out_dir = os.path.join(outpath, amplicon_name)
             if not os.path.exists(amp_out_dir):
                 os.makedirs(amp_out_dir)
 

@@ -252,7 +252,7 @@ class MethAmplicon:
             df_alt_for_region.drop(columns=["position"], inplace=True)
             #print(f"df_alt for region {amplicon_name}: \n{df_alt_for_region}")
             #plt.style.use('default')
-            amp_out_dir = os.join(self.args.output_dir, amplicon_name)
+            amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
             if not os.path.exists(amp_out_dir):
                 os.makedirs(amp_out_dir)
             self.plotter.plot_lollipop_colour(df=df_alt_for_region, outpath=amp_out_dir,
@@ -270,7 +270,7 @@ class MethAmplicon:
             #print(f"df_alt unmeth for region {amplicon_name}: \n{df_alt_unmeth_for_region}")
             #plt.style.use('default')
 
-            amp_out_dir = os.join(self.args.output_dir, amplicon_name)
+            amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
             if not os.path.exists(amp_out_dir):
                 os.makedirs(amp_out_dir)
 
@@ -290,7 +290,7 @@ class MethAmplicon:
             amplicon_name = self.get_amp_name(file)
             
             # create a directory for the specific amplicon if it does not already exist
-            amp_out_dir = os.join(self.args.output_dir, amplicon_name)
+            amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
             if not os.path.exists(amp_out_dir):
                 os.makedirs(amp_out_dir)
 
