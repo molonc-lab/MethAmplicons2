@@ -105,10 +105,9 @@ Example tsv file:
     ├── Ridgeline_data_RAD51C.csv
     ├── ridgeline_plot_RAD51C.pdf
     └── Specific_allele_data_RAD51C.csv
-
-- Note: samples either print out a allele_freq_w_below_5_perc_avgd_barplot or alleles_above_5_perc_freq_barplot depending on if, after filtering the reads by threshold, there are epialleles that represent <5% of the total reads. If there are epialleles with a frequency <5%, they will be shown in allele_freq_w_below_5_perc_avgd_barplot. Otherwise, the latter plot will print. 
 ```
-
+- Note: samples either print out a allele_freq_w_below_5_perc_avgd_barplot or alleles_above_5_perc_freq_barplot depending on if, after filtering the reads by threshold, there are epialleles that represent <5% of the total reads. If there are epialleles with a frequency <5%, they will be shown in allele_freq_w_below_5_perc_avgd_barplot. Otherwise, the latter plot will print.
+  
 ## Argument info 
 
 ```
