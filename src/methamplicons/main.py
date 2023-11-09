@@ -83,7 +83,7 @@ class MethAmplicon:
                                  default = os.getcwd(), help="Desired output directory")
         
         self.parser.add_argument('--min_seq_freq', type=self.valid_thresh, \
-                                 default = 0.01, help="Threshold frequency an extracted epiallele sequence must have to be included in analysis")
+                                 default = 0.01, help="Threshold frequency an extracted epiallele sequence must have to be included in analysis (default:0.01)")
         
         self.parser.add_argument('--verbose', type=str, choices=['true', 'false'], \
                                  default='true', help="Print all output after file parsing (default: true).")
