@@ -199,14 +199,6 @@ class MethAmplicon:
                 self.plotter.plot_lollipop_combined(df,df_below_freq,sname,output_dir,freq_min, amplicon_name)
             else:
                 self.plotter.plot_lollipop(df,sname,output_dir,freq_min, amplicon_name)
-
-    def save_dfs_to_csv(self, df_alleles_sort_all2, df_alt, df_alt_unmeth): 
-        if self.args.save_data:
-            # need to add in logic to split these dataframes by amplicon and save them in the corresponding directories
-            # you do basically extract each individual amplicons dataframe when plotting 
-            df_alleles_sort_all2.to_csv(os.path.join(self.args.output_dir,"df_alleles_sort_all.csv"))
-            df_alt.to_csv(os.path.join(self.args.output_dir,"df_meth_freq.csv"))
-            df_alt_unmeth.to_csv(os.path.join(self.args.output_dir,"df_exclude_unmeth-alleles_freq.csv"))
     
     def do_combined_lollipop(self, df_alt, df_alt_unmeth, amplicon_names): 
         df_alts_by_region = {}
@@ -260,9 +252,10 @@ class MethAmplicon:
             amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
             if not os.path.exists(amp_out_dir):
                 os.makedirs(amp_out_dir)
-
-            # want to save this df_alt_for_region in the corresponding amplicon folder
-            df_alt_for_region.to_csv(os.path.join(amp_out_dir,f"average_{amplicon_name}_meth_by_sample.csv"))
+            
+            if self.args.save_data:
+                # want to save this df_alt_for_region in the corresponding amplicon folder
+                df_alt_for_region.to_csv(os.path.join(amp_out_dir,f"average_{amplicon_name}_meth_by_sample.csv"))
 
             self.plotter.plot_lollipop_colour(df=df_alt_for_region, outpath=amp_out_dir,
                              outname=f"All_samples_combined_avgd_meth_{amplicon_name}.pdf")
@@ -283,8 +276,9 @@ class MethAmplicon:
             if not os.path.exists(amp_out_dir):
                 os.makedirs(amp_out_dir)
             
-            # want to save this df_alt_for_region in the corresponding amplicon folder
-            df_alt_for_region.to_csv(os.path.join(amp_out_dir,f"average_{amplicon_name}_meth_by_sample_w_unmeth.csv"))
+            if self.args.save_data:
+                # want to save this df_alt_for_region in the corresponding amplicon folder
+                df_alt_for_region.to_csv(os.path.join(amp_out_dir,f"average_{amplicon_name}_meth_by_sample_w_unmeth.csv"))
 
             self.plotter.plot_lollipop_colour(df=df_alt_unmeth_for_region, outpath=amp_out_dir,
                              outname=f"All_samples_combined_avgd_meth_{amplicon_name}_w_unmeth.pdf")
@@ -357,9 +351,7 @@ class MethAmplicon:
         #get the names of the different amplicons
         amplicon_names = self.refseqs.keys()
         #plot a ridgeline plot based on the accumulated data from multiple samples
-        self.plotter.ridgeline(df_alleles_sort_all2, amplicon_names, self.args.output_dir)
-
-        self.save_dfs_to_csv(df_alleles_sort_all2, df_alt, df_alt_unmeth)
+        self.plotter.ridgeline(df_alleles_sort_all2, amplicon_names, self.args.output_dir, self.args.save_data)
 
         self.do_combined_lollipop(df_alt, df_alt_unmeth, amplicon_names)
         

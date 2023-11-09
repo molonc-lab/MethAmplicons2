@@ -8,7 +8,7 @@ import os
 
 class Plotter:
 
-    def ridgeline(self, df_alleles_sort_all, amplicon_names, outpath, outname = "ridgeline_plot"): 
+    def ridgeline(self, df_alleles_sort_all, amplicon_names, outpath,  save_data, outname = "ridgeline_plot"): 
         # Show relative frequencies for the different numbers of methylated CpGs/epiallele by sample
         # Also we are only interested in the same region - 1 facet grid per amplicon with 1 plot per sample 
 
@@ -118,8 +118,9 @@ class Plotter:
             if not os.path.exists(amp_out_dir):
                 os.makedirs(amp_out_dir)
             
-            # want to save this df_alt_for_region in the corresponding amplicon folder
-            sorted_df.to_csv(os.path.join(amp_out_dir,f"Ridgeline_data_{amplicon_name}.csv"))
+            if save_data:
+                # want to save this df_alt_for_region in the corresponding amplicon folder
+                sorted_df.to_csv(os.path.join(amp_out_dir,f"Ridgeline_data_{amplicon_name}.csv"))
 
             filename = f"{outname}_{amplicon_name}.pdf"
             fullpath = os.path.join(amp_out_dir, filename)
