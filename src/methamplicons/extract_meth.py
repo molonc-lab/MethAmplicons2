@@ -177,6 +177,9 @@ class ExtractMeth(ExtractData):
         methylated_counts = defaultdict(int)
         methylated_fraction = defaultdict(int)
 
+        #methylated_counts = {i:0 for i,_ in enumerate(pos)}
+        #methylated_fraction = {i:0 for i,_ in enumerate(pos)}
+
         totalreads = 0
         for allele,val in alleles_s:
             if include_unmeth_alleles or any('C' == nuc for nuc in allele):
@@ -184,7 +187,12 @@ class ExtractMeth(ExtractData):
                 for i,nuc in enumerate(allele):
                     if nuc == 'C':
                         methylated_counts[i]+=val
-                            
+                    elif nuc == 'T':
+                        # this should fix it so that if several of the positions are always unmethylated, they are still included with a zero count
+                        methylated_counts[i]+=0
+                    # else - do nothing at the moment - site will be NA if there are no C or T - will be considered invalid
+        
+        # this considers the case where all positions are 0 but not some positions being 0                  
         if not methylated_counts:
             pos=self.get_cpg_positions(refseq, fwd, rev)
             for i,p in enumerate(pos):
@@ -197,6 +205,8 @@ class ExtractMeth(ExtractData):
                 methfrac = methcount/totalreads
                 methylated_fraction[i] = methfrac
 
+        print(methylated_fraction)
+
         df = pd.DataFrame.from_dict(methylated_fraction, orient = "index")
         
         return(df)
@@ -206,6 +216,7 @@ class ExtractMeth(ExtractData):
         methylated_fraction = defaultdict(int)
         
         pos=self.get_cpg_positions(refseq, fwd, rev)
+        
 
         val_sum=0
         for allele, val in alleles_sort:
