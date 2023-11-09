@@ -121,6 +121,7 @@ class Plotter:
             if save_data:
                 # want to save this df_alt_for_region in the corresponding amplicon folder
                 sorted_df.to_csv(os.path.join(amp_out_dir,f"Ridgeline_data_{amplicon_name}.csv"))
+                allele_data_by_sample.to_csv(os.path.join(amp_out_dir,f"Specific_allele_data_{amplicon_name}.csv"))
 
             filename = f"{outname}_{amplicon_name}.pdf"
             fullpath = os.path.join(amp_out_dir, filename)
