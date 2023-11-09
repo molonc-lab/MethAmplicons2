@@ -112,12 +112,12 @@ class ExtractMeth(ExtractData):
         refseq_len=len(refseq)
         
         #minimum number of reads to meet the min freq cutoff for 2nd filter
-        #min_reads=reads_n*min_freq
+        #min_reads=reads_n*self.threshold
 
         for seq,val in allele_counts.items():
             #1st and 2nd filters: exclude all indels, and minimum freq
             #print(f"seq: \n{seq}\nrefseq: \n{refseq}")
-            if (len(seq) == refseq_len): # & (val > min_reads): - logic now implemented in get_all_reads
+            if (len(seq) == refseq_len): #& (val > min_reads): 
                 allele=""
                 for i,nuc in enumerate(seq):
                     if i in pos:
