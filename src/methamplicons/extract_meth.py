@@ -205,7 +205,7 @@ class ExtractMeth(ExtractData):
                 methfrac = methcount/totalreads
                 methylated_fraction[i] = methfrac
 
-        print(methylated_fraction)
+        #print(methylated_fraction)
 
         df = pd.DataFrame.from_dict(methylated_fraction, orient = "index")
         

@@ -329,7 +329,7 @@ class MethAmplicon:
             df_sample_unmeth=self.extract_meth.calculate_meth_fraction(alleles_sort, refseq, fwd_pos, rev_pos, include_unmeth_alleles=False)
             #print(f"Sample dataframe unmeth: \n {df_sample_unmeth}")
             
-            print(f"Sample dataframe for {sname} with {amplicon_name}")
+            """ print(f"Sample dataframe for {sname} with {amplicon_name}")
             print(df_sample.to_string)
             amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
             if not os.path.exists(amp_out_dir):
@@ -338,7 +338,8 @@ class MethAmplicon:
             if self.args.save_data:
                 # want to save this df_alt_for_region in the corresponding amplicon folder
                 df_sample.to_csv(os.path.join(amp_out_dir,f"{sname}_{amplicon_name}_specific_meth.csv"))
-
+            """
+            
             df_sample.columns=[sname]
             df_sample_unmeth.columns=[sname]
             if i == 0:
