@@ -153,14 +153,14 @@ class MethAmplicon:
         """
         Get the sample name from the file name - for merged read files
         """
-        match = re.search(r'-(.*?)-(.*?)_L00[0-9]', file_name)
-        if match:
-            sid = match.group(2)
-            #print(sid)
-        else:
-            pattern = r".extendedFrags.fastq"
-            replacement = ""
-            sid = re.sub(pattern, replacement, os.path.basename(file_name))
+        # match = re.search(r'-(.*?)-(.*?)_L00[0-9]', file_name)
+        # if match:
+        #     sid = match.group(2)
+        #     #print(sid)
+        #else:
+        pattern = r".extendedFrags.fastq"
+        replacement = ""
+        sid = re.sub(pattern, replacement, os.path.basename(file_name))
 
         # with the sid, try to see if there is a corresponding sample name in the 
         # sample name csv
@@ -336,6 +336,7 @@ class MethAmplicon:
                 df_alt=df_sample
                 df_alt_unmeth=df_sample_unmeth
             elif i > 0:
+                print(df_alt.to_string())
                 df_alt=df_alt.join(df_sample, how='outer')
                 df_alt_unmeth=df_alt_unmeth.join(df_sample_unmeth, how='outer')
 
