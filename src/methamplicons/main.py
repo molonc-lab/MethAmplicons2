@@ -88,9 +88,6 @@ class MethAmplicon:
         self.parser.add_argument('--verbose', type=str, choices=['true', 'false'], \
                                  default='true', help="Print all output after file parsing (default: true).")
         
-        self.parser.add_argument('--flash_verbose', type=str, choices=['true', 'false'], \
-                                 default='false', help="Print output of flash to command line instead of redirecting it to flash_stdout.txt (default false)")
-        
         # the save_data argument is true by default, and the user can also set it to false with --save_data false
         self.parser.add_argument('--save_data', type=str, choices=['true', 'false'], \
                                  default='true', help="Save processed data in csv format (default: true).")
@@ -197,8 +194,8 @@ class MethAmplicon:
             if df_below_freq.freq.sum() > 0:  
                 # if you have epialleles with frequency below 5%         
                 self.plotter.plot_lollipop_combined(df,df_below_freq,sname,output_dir,freq_min, amplicon_name)
-            
-            self.plotter.plot_lollipop(df,sname,output_dir,freq_min, amplicon_name)
+            else:
+                self.plotter.plot_lollipop(df,sname,output_dir,freq_min, amplicon_name)
     
     def do_combined_lollipop(self, df_alt, df_alt_unmeth, amplicon_names): 
         df_alts_by_region = {}
@@ -382,7 +379,7 @@ class MethAmplicon:
             sys.stdout = open(os.devnull, 'w')
         
         # pass the verbose value to extract_meth to optionally redirect flash subprocess output
-        self.extract_meth.set_verbose(self.args.flash_verbose)
+        self.extract_meth.set_verbose(self.args.verbose)
 
         # iterate over the paired end read files and process data 
         self.merge_loop()
