@@ -336,7 +336,7 @@ class MethAmplicon:
                 df_alt=df_sample
                 df_alt_unmeth=df_sample_unmeth
             elif i > 0:
-                print(df_alt.to_string())
+                #print(df_alt.to_string())
                 df_alt=df_alt.join(df_sample, how='outer')
                 df_alt_unmeth=df_alt_unmeth.join(df_sample_unmeth, how='outer')
 
