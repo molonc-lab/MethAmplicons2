@@ -194,11 +194,11 @@ class MethAmplicon:
             
             #print(f"The plot path for the individual sample plot for {sname} is {plot_path}")
             
-            if df_below_freq.freq.sum() > 0:  
+            #if df_below_freq.freq.sum() > 0:  
                 # if you have epialleles with frequency below 5%         
-                self.plotter.plot_lollipop_combined(df,df_below_freq,sname,output_dir,freq_min, amplicon_name)
-            else:
-                self.plotter.plot_lollipop(df,sname,output_dir,freq_min, amplicon_name)
+            self.plotter.plot_lollipop_combined(df,df_below_freq,sname,output_dir,freq_min, amplicon_name)
+            
+            self.plotter.plot_lollipop(df,sname,output_dir,freq_min, amplicon_name)
     
     def do_combined_lollipop(self, df_alt, df_alt_unmeth, amplicon_names): 
         df_alts_by_region = {}
