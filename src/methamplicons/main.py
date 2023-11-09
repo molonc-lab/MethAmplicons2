@@ -190,6 +190,15 @@ class MethAmplicon:
             #plot_path=f'{self.args.output_dir}{freq_min}_perc/'
             
             #print(f"The plot path for the individual sample plot for {sname} is {plot_path}")
+
+            amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
+            if not os.path.exists(amp_out_dir):
+                os.makedirs(amp_out_dir)
+            
+            if self.args.save_data:
+                # want to save this df_alt_for_region in the corresponding amplicon folder
+                df.to_csv(os.path.join(amp_out_dir,f"{sname}_{amplicon_name}_specific_meth.csv"))
+            
             
             if df_below_freq.freq.sum() > 0:  
                 # if you have epialleles with frequency below 5%         
