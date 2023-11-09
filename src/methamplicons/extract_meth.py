@@ -76,7 +76,7 @@ class ExtractMeth(ExtractData):
         total_seq_count = sum(epiallele_counts_region.values())
         thresh_count = self.threshold * total_seq_count
 
-        print(f"self.threshold is {self.threshold} \n thresh count is {thresh_count}")
+        print(f"self.threshold is {self.threshold} \n threshold read count is {thresh_count}")
 
         delete_seqs = [] # as we cannot delete while iterating
         for extracted_seq, count in epiallele_counts_region.items():

@@ -247,18 +247,19 @@ class ExtractData:
         return primer_dict, refseqs
 
     def load_paired_read_files(self, tb_seqs_file1: str, tb_seqs_file2: str):
-
+        
+        print("\n")
         read1_seqs = self.read_fastq(tb_seqs_file1)
         if len(read1_seqs) == 0: 
             raise DataExtractionError("The read 1 sequences file was empty")
         else:
-            print(f"{len(read1_seqs)} read 1 sequences")
+            print(f"{len(read1_seqs)} read 1 sequences in {tb_seqs_file1}")
 
             read2_seqs = self.read_fastq(tb_seqs_file2)
             if len(read2_seqs) == 0: 
                 raise DataExtractionError("The read 2 sequences file was empty")
             else:
-                print(f"{len(read2_seqs)} read 2 sequences")
+                print(f"{len(read2_seqs)} read 2 sequences in {tb_seqs_file2}")
         
         return read1_seqs, read2_seqs
 
