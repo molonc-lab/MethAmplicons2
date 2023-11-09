@@ -36,9 +36,6 @@ class MethAmplicon:
         return file_path
     
     def valid_PE_read_dir(self, dir_path): 
-        """
-        Funct
-        """
         if not os.path.isdir(dir_path): 
             raise argparse.ArgumentTypeError(f'Input directory for PE reads {dir_path} is not a directory')
         return dir_path
@@ -54,15 +51,14 @@ class MethAmplicon:
     def valid_out_dir(self, dir_path): 
         #print(f"Output directory is {dir_path}")
         if not os.path.isdir(dir_path): 
-            #raise argparse.ArgumentTypeError(f'Output directory {dir_path} is not a directory')
             os.makedirs(dir_path, exist_ok=True)
 
         return dir_path
     
     def valid_thresh(self, freq_thresh):
         freq_thresh = float(freq_thresh)
-        if not (freq_thresh > 0 and freq_thresh < 1): 
-            raise argparse.ArgumentTypeError(f'{freq_thresh} is not a number between 0 and 1')
+        if not (freq_thresh >= 0 and freq_thresh < 1): 
+            raise argparse.ArgumentTypeError(f'{freq_thresh} is an invalid frequency - frequency threshold must be >= 0 and <1')
         
         return freq_thresh
 
@@ -95,15 +91,10 @@ class MethAmplicon:
         # the save_data argument is true by default, and the user can also set it to false with --save_data false
         self.parser.add_argument('--save_data', type=str, choices=['true', 'false'], \
                                  default='true', help="Save processed data in csv format (default: true).")
-
-        # the lollipop argument is true by default, and the user can also set it to false with --lollipop false
-        self.parser.add_argument('--lollipop', type=str, choices=['true', 'false'], \
-                                 default='true', help="Save a lollipop graph (default: true).")
-        # same with the ridge argument
-        self.parser.add_argument('--ridge', type=str, choices=['true', 'false'], \
-                                 default='true', help="Save a ridgeline graph (default: true).")
         
-        #Add a verbose argument
+        # add an option to save or delete intermediate files -default will be delete
+        self.parser.add_argument('--save_intermediates', type=str, choices=['true', 'false'], \
+                                 default='true', help="Save 'demultiplexed' and merged read files for all combinations of samples and amplicons (default: true).")
 
     @staticmethod
     def replace_last(source_string, replace_what, replace_with):
@@ -117,9 +108,8 @@ class MethAmplicon:
         fastq_files = [f for f in os.listdir(self.args.PE_read_dir) \
                        if f.endswith('.fastq') or f.endswith('.fq')\
                         or f.endswith('.fastq.gz') or f.endswith('.fq.gz')]
-        paired_files = []
         ##print(f"Found fastq files in input directory: {fastq_files}")
-
+        paired_files = []
         for f in fastq_files:
             if "R1" in f:
                 # Replace the last occurrence of R1 with R2 to find the pair
@@ -133,31 +123,36 @@ class MethAmplicon:
         return paired_files
         
     def merge_loop(self):
-
-        #need to iterate over all files in the given input directory, find pairs, and merge 
+        """
+        Iterate over all files in the given input directory, find paired files, and created merged read files
+        """ 
         paired_files = self.get_paired_files()
         
         for read_file_pair in paired_files: 
             # merge the reads
             self.extract_meth.merge_reads(read_file_pair[0], read_file_pair[1], self.refseqs, self.amplicon_info, self.args.output_dir)
 
-        ##print("flash finished!!")
-
     def get_amp_name(self,file_name): 
-        
+        """
+        Return the name of the amplicon based on the merged read file name
+        Use this to group amplicon data into directories with data for multiple samples
+        """
         amplicon_name = ""
         #avoid the error caused by parsing file with delimiter
         for amp_name in self.refseqs.keys(): 
-            # if the name of a region is in the file name it is most likely the name
-            # could also check that the only thing that comes after the name is .extendedFrags.fastq
             if amp_name in file_name:
+                # if the name of a region is in the file name it is most likely the name
+                # but will also check that the only thing that comes after the name is .extendedFrags.fastq
                 if file_name.split(amp_name)[-1:] == [".extendedFrags.fastq"]:
                     amplicon_name = amp_name
                     #print(f"amplicon name: {amplicon_name} in file name")
-        
+
         return amplicon_name
     
     def get_sname(self, file_name, amplicon_name): 
+        """
+        Get the sample name from the file name - for merged read files
+        """
         match = re.search(r'-(.*?)-(.*?)_L00[0-9]', file_name)
         if match:
             sid = match.group(2)
@@ -167,18 +162,24 @@ class MethAmplicon:
             replacement = ""
             sid = re.sub(pattern, replacement, os.path.basename(file_name))
 
+        # with the sid, try to see if there is a corresponding sample name in the 
+        # sample name csv
         try: 
             sname=self.labels_df.loc[sid]['ShortLabel']
             if pd.isnull(sname):
                 sname=self.labels_df.loc[sid]['SampleLabel']
-            sname = sname + " (" + amplicon_name + ")"
+            sname = sname # + " (" + amplicon_name + ")"
         except:
-            sname=sid + " (" + amplicon_name + ")"
+            sname=sid  # + " (" + amplicon_name + ")"
 
         return sname
     
-    def plot_per_sample_lollipop(self, alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads, pos_rel_CDS, sname, amplicon_name):
-        # Prepare individual sample plots grouping alleles <2% and 5%
+    def plot_per_sample_lollipop(self, alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads, pos_rel_CDS, sname, amplicon_name, output_dir):
+        """
+        Plots lollipop plots containing the specific epiallales for a given sample by calling methods in Plotter
+        """
+        # Prepare individual sample plots grouping alleles <2% and 5% - actually just 5% but will leave in a loop
+        # in the event multiple minimum frequencies are desired
         for freq_min in [5]:
             df=self.extract_meth.convert_to_df(alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads,freq_min)
             ##print(f"Dataframe for first plot {df}")
@@ -187,27 +188,14 @@ class MethAmplicon:
             df_below_freq.variable = df_below_freq.variable + pos_rel_CDS
             ##print(f"Dataframe 'below frequency' {df_below_freq}")
             #plot_path=f'{self.args.output_dir}{freq_min}_perc/'
-            plot_path = os.path.join(self.args.output_dir, str(freq_min) + f"_perc_{sname}")
+            
             #print(f"The plot path for the individual sample plot for {sname} is {plot_path}")
-            if not os.path.exists(plot_path):
-                os.mkdir(plot_path)
-            if df_below_freq.freq.sum() > 0:           
-                self.plotter.plot_lollipop_combined(df,df_below_freq,sname,plot_path,freq_min, amplicon_name)
-                #plot_path2=f'{self.args.output_dir}{freq_min}_perc_no_legend/'
-                plot_path2 = os.path.join(self.args.output_dir, str(freq_min) + f"_perc_{sname}_no_legend")
-                #print(f"The plot path for the individual sample plot for {sname} is {plot_path}")
-
-                if not os.path.exists(plot_path2):
-                    os.mkdir(plot_path2) 
-                self.plotter.plot_lollipop_combined(df,df_below_freq,sname,plot_path2,freq_min, amplicon_name, colbar=False)
+            
+            if df_below_freq.freq.sum() > 0:  
+                # if you have epialleles with frequency below 5%         
+                self.plotter.plot_lollipop_combined(df,df_below_freq,sname,output_dir,freq_min, amplicon_name)
             else:
-                self.plotter.plot_lollipop(df,sname,plot_path,freq_min, amplicon_name)
-
-    def save_dfs_to_csv(self, df_alleles_sort_all2, df_alt, df_alt_unmeth): 
-        if self.args.save_data:
-            df_alleles_sort_all2.to_csv(os.path.join(self.args.output_dir,"df_alleles_sort_all.csv"))
-            df_alt.to_csv(os.path.join(self.args.output_dir,"df_meth_freq.csv"))
-            df_alt_unmeth.to_csv(os.path.join(self.args.output_dir,"df_exclude_unmeth-alleles_freq.csv"))
+                self.plotter.plot_lollipop(df,sname,output_dir,freq_min, amplicon_name)
     
     def do_combined_lollipop(self, df_alt, df_alt_unmeth, amplicon_names): 
         df_alts_by_region = {}
@@ -258,8 +246,16 @@ class MethAmplicon:
             df_alt_for_region.drop(columns=["position"], inplace=True)
             #print(f"df_alt for region {amplicon_name}: \n{df_alt_for_region}")
             #plt.style.use('default')
-            self.plotter.plot_lollipop_colour(df=df_alt_for_region, outpath=self.args.output_dir,
-                             outname=f"All_samples_combined_colour_meth_{amplicon_name}.pdf")
+            amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
+            if not os.path.exists(amp_out_dir):
+                os.makedirs(amp_out_dir)
+            
+            if self.args.save_data:
+                # want to save this df_alt_for_region in the corresponding amplicon folder
+                df_alt_for_region.to_csv(os.path.join(amp_out_dir,f"average_{amplicon_name}_meth_by_sample.csv"))
+
+            self.plotter.plot_lollipop_colour(df=df_alt_for_region, outpath=amp_out_dir,
+                             outname=f"All_samples_combined_avgd_meth_{amplicon_name}.pdf")
 
         for amplicon_name, df_alt_unmeth_for_region in df_alts_unmeth_by_region.items():
             # it would appear -156 is the CDS site?
@@ -272,8 +268,17 @@ class MethAmplicon:
 
             #print(f"df_alt unmeth for region {amplicon_name}: \n{df_alt_unmeth_for_region}")
             #plt.style.use('default')
-            self.plotter.plot_lollipop_colour(df=df_alt_unmeth_for_region, outpath=self.args.output_dir,
-                             outname=f"All_samples_combined_colour_unmeth_{amplicon_name}.pdf")
+
+            amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
+            if not os.path.exists(amp_out_dir):
+                os.makedirs(amp_out_dir)
+            
+            if self.args.save_data:
+                # want to save this df_alt_for_region in the corresponding amplicon folder
+                df_alt_for_region.to_csv(os.path.join(amp_out_dir,f"average_{amplicon_name}_meth_by_sample_w_unmeth.csv"))
+
+            self.plotter.plot_lollipop_colour(df=df_alt_unmeth_for_region, outpath=amp_out_dir,
+                             outname=f"All_samples_combined_avgd_meth_{amplicon_name}_w_unmeth.pdf")
 
     def meth_amplicon_loop(self):
         
@@ -289,14 +294,20 @@ class MethAmplicon:
 
             #print(f"Identified a merged file {file}")
             amplicon_name = self.get_amp_name(file)
+            
+            # create a directory for the specific amplicon if it does not already exist
+            amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
+            if not os.path.exists(amp_out_dir):
+                os.makedirs(amp_out_dir)
+
             sname = self.get_sname(file, amplicon_name)
 
             file_path = os.path.join(merged_path, file)
             fwd_primer, rev_primer, fwd_pos, rev_pos, pos_rel_CDS = tuple(self.amplicon_info[amplicon_name])
 
-            # Generate dictionary with all reads
-            d=self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
+            # Generate dictionary with all reads for that amplicon in the merged file 
 
+            d=self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
             refseq = self.refseqs[amplicon_name]
 
             # Count only CpG sites in alleles
@@ -328,9 +339,8 @@ class MethAmplicon:
                 df_alt=df_alt.join(df_sample, how='outer')
                 df_alt_unmeth=df_alt_unmeth.join(df_sample_unmeth, how='outer')
 
-            # Prepare individual sample plots grouping alleles <2% and 5%
-            for freq_min in [5]:
-                self.plot_per_sample_lollipop(alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads, pos_rel_CDS, sname, amplicon_name)
+            
+            self.plot_per_sample_lollipop(alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads, pos_rel_CDS, sname, amplicon_name, amp_out_dir)
 
         dfs = [df.set_index('allele') for df in allele_sort_dfs]
         #print(f"accumulated list of allele sort dfs \n {dfs[0]} \n {dfs[1]} \n {dfs[2]} \n {dfs[3]}")
@@ -338,9 +348,7 @@ class MethAmplicon:
         #get the names of the different amplicons
         amplicon_names = self.refseqs.keys()
         #plot a ridgeline plot based on the accumulated data from multiple samples
-        self.plotter.ridgeline(df_alleles_sort_all2, amplicon_names, self.args.output_dir)
-
-        self.save_dfs_to_csv(df_alleles_sort_all2, df_alt, df_alt_unmeth)
+        self.plotter.ridgeline(df_alleles_sort_all2, amplicon_names, self.args.output_dir, self.args.save_data)
 
         self.do_combined_lollipop(df_alt, df_alt_unmeth, amplicon_names)
         
@@ -354,8 +362,6 @@ class MethAmplicon:
             raise argparse.ArgumentTypeError("--amplicon_info (amplicon info tsv file) is missing!")
         
         seq_freq_threshold = self.args.min_seq_freq
-
-        print(f"")
 
         self.extract_meth.set_threshold(seq_freq_threshold)
         
@@ -371,10 +377,25 @@ class MethAmplicon:
         # disable print
         if self.args.verbose == "false":
             sys.stdout = open(os.devnull, 'w')
+        
+        # pass the verbose value to extract_meth to optionally redirect flash subprocess output
+        self.extract_meth.set_verbose(self.args.verbose)
 
         # iterate over the paired end read files and process data 
         self.merge_loop()
         self.meth_amplicon_loop()
+
+        if self.args.save_intermediates == "false":
+            # delete the merged and demultiplexed directories and all files they contain
+            dirs_to_delete = ["merged", "demultiplexed"]
+
+            print("Deleting merged and demultiplexed read directories - to run without deleting, run with --save_intermediates true")
+
+            for dir_to_delete in dirs_to_delete:
+                full_path = os.path.join(self.args.output_dir, dir_to_delete)
+                if os.path.exists(full_path):
+                    shutil.rmtree(full_path)
+
 
 def main():   
 

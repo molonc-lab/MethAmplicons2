@@ -8,7 +8,7 @@ import os
 
 class Plotter:
 
-    def ridgeline(self, df_alleles_sort_all, amplicon_names, outpath, outname = "ridgeline_plot"): 
+    def ridgeline(self, df_alleles_sort_all, amplicon_names, outpath,  save_data, outname = "ridgeline_plot"): 
         # Show relative frequencies for the different numbers of methylated CpGs/epiallele by sample
         # Also we are only interested in the same region - 1 facet grid per amplicon with 1 plot per sample 
 
@@ -114,79 +114,23 @@ class Plotter:
             plt.setp(ax.get_xticklabels(), fontsize=15, fontweight='bold')
             plt.xlabel('Number of meCpGs/epiallele', fontweight='bold', fontsize=15)
 
-            filename = f"{outname}_{amplicon_name}.pdf"
-            fullpath = os.path.join(outpath, filename)
-            g.savefig(fullpath)
-
-    
-    def histograms(self, df_alleles_sort_all, amplicon_names, outpath, outname = "num_meCpG_per_epiallele_hist"): 
-            """
-            Same logic as ridgeline function but produces histograms
-            """
-        
-            #print(f"df_alleles_sort_all at ridgeline: \n{df_alleles_sort_all}")
-            df_alleles_sort_all= df_alleles_sort_all.rename_axis('allele').reset_index()
-            #print(f"df_alleles_sort_all {df_alleles_sort_all.columns}")
-
-            data_by_amplicon = {}
+            amp_out_dir = os.path.join(outpath, amplicon_name)
+            if not os.path.exists(amp_out_dir):
+                os.makedirs(amp_out_dir)
             
-            for amplicon_name in amplicon_names: 
-                for col_name in df_alleles_sort_all.columns: 
-                    #print(f"1. col_name is {col_name}")
-                    if amplicon_name in col_name: 
-                        #print(f"2. col_name is {col_name}, amplicon name is {amplicon_name}")
+            if save_data:
+                # want to save this df_alt_for_region in the corresponding amplicon folder
+                sorted_df.to_csv(os.path.join(amp_out_dir,f"Ridgeline_data_{amplicon_name}.csv"))
+                #melted_df.to_csv(os.path.join(amp_out_dir,f"melted_df_{amplicon_name}.csv"))
+                allele_data_by_sample.to_csv(os.path.join(amp_out_dir,f"Specific_allele_data_{amplicon_name}.csv"))
 
-                        # need to create a dataframe with alleles specific to that amplicon (remove NAN for that column)
-
-                        """
-                        Filter out NAN values for a column corresponding to a given amplicon-sample combination when creating a new dataframe for a given amplicon, e.g. RAD51C
-                        , and also before merging to an existing dataframe for a given amplicon so that only alleles corresponding to a given amplicon are included in its ridgeline plot
-                        """
-                        filtered_df = df_alleles_sort_all[df_alleles_sort_all[col_name].notna()]
-
-                        if amplicon_name not in data_by_amplicon: 
-                            data_by_amplicon[amplicon_name] = pd.DataFrame()
-                            data_by_amplicon[amplicon_name]["allele"] = filtered_df["allele"]
-                        #could change this to use only the sample name
-                        #need to remove all NAs, then merge, then convert NAs to zeros
-                        data_by_amplicon[amplicon_name][col_name] = filtered_df[col_name]
-
-            for amplicon_name, allele_data_by_sample in data_by_amplicon.items():
-                # calculate the number of Cs in each allele
-                allele_data_by_sample['cpg'] = allele_data_by_sample['allele'].str.count('C')
-                
-                melted_df = allele_data_by_sample.melt(id_vars=["allele", "cpg"], 
-                                                    var_name="sample", 
-                                                    value_name="count")
-
-                # group by sample and cpg, then count
-                grouped = melted_df.groupby(["sample", "cpg"]).count().reset_index()
-
-                # total number of alleles for each sample
-                total_alleles_by_sample = grouped.groupby("sample")["count"].transform('sum')
-
-                # calculate the percentage
-                grouped["percentage"] = (grouped["count"] / total_alleles_by_sample) * 100
-
-                # facet wrap multiple sample plots per amplicon with seaborn
-                g = sns.FacetGrid(grouped, col="sample", col_wrap=4, sharey=True, height=4)
-                g.map(plt.bar, 'cpg', 'percentage')
-                g.set_axis_labels("Number of CpGs", "Percentage")
-                g.set_titles(col_template="{col_name} Sample")
-                plt.subplots_adjust(top=0.9)
-                g.fig.suptitle(f'Allele Distribution for Amplicon: {amplicon_name}')
-
-                filename = f"{outname}_{amplicon_name}.png"
-                fullpath = os.path.join(outpath, filename)
-                g.savefig(fullpath)
-
-                plt.close()
-
-                data_by_amplicon[amplicon_name] = grouped
+            filename = f"{outname}_{amplicon_name}.pdf"
+            fullpath = os.path.join(amp_out_dir, filename)
+            g.savefig(fullpath)
 
     def plot_lollipop_colour (self, df, outpath, outname="All_samples_combined_colour.pdf"):  
         
-        print(f"Dataframe for combined samples pre-melt {df}")
+        #print(f"Dataframe for combined samples pre-melt {df}")
         # Changing default font to Arial
         plt.rcParams['font.sans-serif'] = "Arial"
         plt.rcParams['font.family'] = "sans-serif"
@@ -196,7 +140,7 @@ class Plotter:
         df_melt = df_melt.sort_index(ascending=False)
         #df_melt = df_melt.sort_values(by=['variable'])
 
-        print(f"Dataframe for combined samples melted {df_melt}")
+        #print(f"Dataframe for combined samples melted {df_melt}")
 
         plt.set_cmap('coolwarm')
         plt.figure()
@@ -248,7 +192,7 @@ class Plotter:
 
         fig.tight_layout(rect=[0, 0.03, 1, 0.9])
 
-        fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot.pdf")
+        fig.savefig(f"{outpath}/{sname}_alleles_above_{freq_min}_perc_freq_barplot.pdf")
         
         plt.close()
 
@@ -340,7 +284,8 @@ class Plotter:
                         labelpad=-25,
                         size=8)
             
-            fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot.pdf")
+            #fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot.pdf")
+            fig.savefig(f"{outpath}/{sname}_allele_freq_w_below_{freq_min}_perc_avgd_barplot.pdf")
         else:
             fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot_nolegend.pdf")
             

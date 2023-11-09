@@ -126,6 +126,9 @@ class ExtractData:
     def get_flash_binary_path(self):
         #may need to specify specific version of tool
         return resource_filename('methamplicons', 'flash')
+    
+    def set_verbose(self, verbose):
+        self.verbose = verbose
 
     def run_flash(self, r1s_for_region, r2s_for_region, base_name_reg, out_dir, avg_read_len, refseq_len):
 
@@ -139,7 +142,14 @@ class ExtractData:
         cmd = [flash_binary, "-m", "10", "-M", refseq_len, "-x", "0.25", "-O", "-r", avg_read_len, \
                 "-f", refseq_len, r1s_for_region, r2s_for_region, "-d", output_dir, "-o", base_name_reg]
         
-        subprocess.run(cmd, universal_newlines=True, check=True)
+        #subprocess.run(cmd, universal_newlines=True, check=True)
+
+        if (self.verbose == "true"):
+            subprocess.run(cmd, universal_newlines=True, check=True)
+        else:
+            output_file = os.path.join(out_dir, "flash_stdout.txt")
+            with open(output_file, "ab") as outf:
+                subprocess.run(cmd, stdout=outf, stderr=subprocess.PIPE, universal_newlines=True, check=True)
 
     def merge_reads(self, r1_seqs_file, r2_seqs_file, refseqs, amplicon_info, output_dir):
         #print(f"The R1 and R2 files at merge_reads are {r1_seqs_file} and {r2_seqs_file}")
@@ -237,18 +247,19 @@ class ExtractData:
         return primer_dict, refseqs
 
     def load_paired_read_files(self, tb_seqs_file1: str, tb_seqs_file2: str):
-
+        
+        print("\n")
         read1_seqs = self.read_fastq(tb_seqs_file1)
         if len(read1_seqs) == 0: 
             raise DataExtractionError("The read 1 sequences file was empty")
         else:
-            print(f"{len(read1_seqs)} read 1 sequences")
+            print(f"{len(read1_seqs)} read 1 sequences in {tb_seqs_file1}")
 
             read2_seqs = self.read_fastq(tb_seqs_file2)
             if len(read2_seqs) == 0: 
                 raise DataExtractionError("The read 2 sequences file was empty")
             else:
-                print(f"{len(read2_seqs)} read 2 sequences")
+                print(f"{len(read2_seqs)} read 2 sequences in {tb_seqs_file2}")
         
         return read1_seqs, read2_seqs
 

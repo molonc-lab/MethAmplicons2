@@ -25,7 +25,7 @@ class ExtractMeth(ExtractData):
 
     def set_threshold(self, threshold): 
         self.threshold = threshold
-
+    
     #replaces the function get_all_reads
     def get_all_reads(self, file, fwd_primer, rev_primer): 
         """
@@ -62,6 +62,37 @@ class ExtractMeth(ExtractData):
                 epiallele_counts_region[extracted_sequence] += 1
             else: 
                 epiallele_counts_region[extracted_sequence] = 1
+
+        print("\n")
+        print(file)
+
+        before_thresh = len(epiallele_counts_region)
+
+        # now need to add logic to remove reads lower than threshold flag
+        # rather than pass this to the function, pass this to the ExtractMeth object to make it a class
+        # attribute upon its creation? - might be easier
+
+        #get the total counts, sum all values in dict - will be for specific epiallele
+        total_seq_count = sum(epiallele_counts_region.values())
+        thresh_count = self.threshold * total_seq_count
+
+        print(f"self.threshold is {self.threshold} \n threshold read count is {thresh_count}")
+
+        delete_seqs = [] # as we cannot delete while iterating
+        for extracted_seq, count in epiallele_counts_region.items():
+            if count < thresh_count:
+                delete_seqs.append(extracted_seq)
+        
+        #delete all sequences with count lower than threshold
+        for seq in delete_seqs:
+            del epiallele_counts_region[seq]
+
+        print(f"{len(epiallele_counts_region)} sequences remain of original {before_thresh} and their counts are:")
+
+        if len(epiallele_counts_region) < 20:
+            print(sorted(epiallele_counts_region.values()))
+        else:
+            print(print(sorted(epiallele_counts_region.values())[-20:]))
                     
         return epiallele_counts_region
 
@@ -81,12 +112,12 @@ class ExtractMeth(ExtractData):
         refseq_len=len(refseq)
         
         #minimum number of reads to meet the min freq cutoff for 2nd filter
-        min_reads=reads_n*self.threshold
+        #min_reads=reads_n*self.threshold
 
         for seq,val in allele_counts.items():
             #1st and 2nd filters: exclude all indels, and minimum freq
             #print(f"seq: \n{seq}\nrefseq: \n{refseq}")
-            if (len(seq) == refseq_len) & (val > min_reads): 
+            if (len(seq) == refseq_len): #& (val > min_reads): 
                 allele=""
                 for i,nuc in enumerate(seq):
                     if i in pos:
