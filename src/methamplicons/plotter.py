@@ -128,7 +128,7 @@ class Plotter:
 
     def plot_lollipop_colour (self, df, outpath, outname="All_samples_combined_colour.pdf"):  
         
-        print(f"Dataframe for combined samples pre-melt {df}")
+        #print(f"Dataframe for combined samples pre-melt {df}")
         # Changing default font to Arial
         plt.rcParams['font.sans-serif'] = "Arial"
         plt.rcParams['font.family'] = "sans-serif"
@@ -138,7 +138,7 @@ class Plotter:
         df_melt = df_melt.sort_index(ascending=False)
         #df_melt = df_melt.sort_values(by=['variable'])
 
-        print(f"Dataframe for combined samples melted {df_melt}")
+        #print(f"Dataframe for combined samples melted {df_melt}")
 
         plt.set_cmap('coolwarm')
         plt.figure()
@@ -190,7 +190,7 @@ class Plotter:
 
         fig.tight_layout(rect=[0, 0.03, 1, 0.9])
 
-        fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot.pdf")
+        fig.savefig(f"{outpath}/{sname}_alleles_above_{freq_min}_perc_freq_barplot.pdf")
         
         plt.close()
 
@@ -283,7 +283,7 @@ class Plotter:
                         size=8)
             
             #fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot.pdf")
-            fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot_combined.pdf")
+            fig.savefig(f"{outpath}/{sname}_allele_freq_w_below_{freq_min}_perc_avgd_barplot.pdf")
         else:
             fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot_nolegend.pdf")
             
