@@ -83,7 +83,7 @@ class MethAmplicon:
                                  default = os.getcwd(), help="Desired output directory")
         
         self.parser.add_argument('--min_seq_freq', type=self.valid_thresh, \
-                                 default = 0.01, help="Threshold frequency an extracted epiallele sequence must have to be included in analysis")
+                                 default = 0.01, help="Threshold frequency an extracted epiallele sequence must have to be included in analysis (default:0.01)")
         
         self.parser.add_argument('--verbose', type=str, choices=['true', 'false'], \
                                  default='true', help="Print all output after file parsing (default: true).")
@@ -153,14 +153,14 @@ class MethAmplicon:
         """
         Get the sample name from the file name - for merged read files
         """
-        match = re.search(r'-(.*?)-(.*?)_L00[0-9]', file_name)
-        if match:
-            sid = match.group(2)
-            #print(sid)
-        else:
-            pattern = r".extendedFrags.fastq"
-            replacement = ""
-            sid = re.sub(pattern, replacement, os.path.basename(file_name))
+        # match = re.search(r'-(.*?)-(.*?)_L00[0-9]', file_name)
+        # if match:
+        #     sid = match.group(2)
+        #     #print(sid)
+        #else:
+        pattern = r".extendedFrags.fastq"
+        replacement = ""
+        sid = re.sub(pattern, replacement, os.path.basename(file_name))
 
         # with the sid, try to see if there is a corresponding sample name in the 
         # sample name csv
@@ -328,14 +328,25 @@ class MethAmplicon:
             #print(f"Sample dataframe: \n {df_sample}")
             df_sample_unmeth=self.extract_meth.calculate_meth_fraction(alleles_sort, refseq, fwd_pos, rev_pos, include_unmeth_alleles=False)
             #print(f"Sample dataframe unmeth: \n {df_sample_unmeth}")
-
-
+            
+            """ print(f"Sample dataframe for {sname} with {amplicon_name}")
+            print(df_sample.to_string)
+            amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
+            if not os.path.exists(amp_out_dir):
+                os.makedirs(amp_out_dir)
+            
+            if self.args.save_data:
+                # want to save this df_alt_for_region in the corresponding amplicon folder
+                df_sample.to_csv(os.path.join(amp_out_dir,f"{sname}_{amplicon_name}_specific_meth.csv"))
+            """
+            
             df_sample.columns=[sname]
             df_sample_unmeth.columns=[sname]
             if i == 0:
                 df_alt=df_sample
                 df_alt_unmeth=df_sample_unmeth
             elif i > 0:
+                #print(df_alt.to_string())
                 df_alt=df_alt.join(df_sample, how='outer')
                 df_alt_unmeth=df_alt_unmeth.join(df_sample_unmeth, how='outer')
 

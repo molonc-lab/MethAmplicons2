@@ -29,7 +29,11 @@ This tool uses [FLASH](https://ccb.jhu.edu/software/FLASH/) paired-end read merg
 
 ## USE: 
   ```bash
+#simple case
   methamplicons --PE_read_dir test4 --amplicon_info test4/BS_primers_amplicons_CDS_RC.tsv --sample_labels test4/SampleID_labels_amplicon_meth.csv --output_dir AOCS34059
+
+# specifying optional parameters
+methamplicons --PE_read_dir final_test_260221 --amplicon_info final_test_260221/BS_primers_amplicons_CDS_RC.tsv --sample_labels final_test_260221/SampleID_labels_amplicon_meth.csv --output_dir 260221_output --min_seq_freq 0.01 --verbose false --save_intermediates false
   ```
 - Note: the flash binary used to merge reads is only compiled for Macs (arm64 and intel). See Alternative OS Support for where to find binaries for other systems.
 
@@ -64,29 +68,46 @@ Example tsv file:
     - SampleID, SampleLabel, ShortLabel
 
 #### Example output files and directories: 
-5_perc_sample1 (BRCA1_l) <br />
-5_perc_sample1 (BRCA1_l)_no_legend <br />
-5_perc_sample1 (BRCA1_s) <br />
-5_perc_sample1 (BRCA1_s)_no_legend <br />
-5_perc_sample2 (BRCA1_s) <br />
-5_perc_sample2 (BRCA1_s)_no_legend <br />
-5_perc_sample2 (RAD51C) <br />
-5_perc_sample2 (RAD51C)_no_legend <br />
-All_samples_combined_colour_meth_BRCA1_l.pdf <br />
-All_samples_combined_colour_meth_BRCA1_s.pdf <br />
-All_samples_combined_colour_meth_RAD51C.pdf <br />
-All_samples_combined_colour_unmeth_BRCA1_l.pdf <br />
-All_samples_combined_colour_unmeth_BRCA1_s.pdf <br />
-All_samples_combined_colour_unmeth_RAD51C.pdf <br />
-demultiplexed <br />
-df_alleles_sort_all.csv <br />
-df_exclude_unmeth-alleles_freq.csv <br />
-df_meth_freq.csv <br />
-merged <br />
-ridgeline_plot_BRCA1_l.pdf <br />
-ridgeline_plot_BRCA1_s.pdf <br />
-ridgeline_plot_RAD51C.pdf <br />
-
+```
+.
+├── BRCA1_l
+│   ├── BRCA_sample1_BRCA1_l_alleles_above_5_perc_freq_barplot.pdf
+│   ├── All_samples_combined_avgd_meth_BRCA1_l.pdf
+│   ├── All_samples_combined_avgd_meth_BRCA1_l_w_unmeth.pdf
+│   ├── average_BRCA1_l_meth_by_sample.csv
+│   ├── average_BRCA1_l_meth_by_sample_w_unmeth.csv
+│   ├── multiplexed_BRCA1_l_alleles_above_5_perc_freq_barplot.pdf
+│   ├── Ridgeline_data_BRCA1_l.csv
+│   ├── ridgeline_plot_BRCA1_l.pdf
+│   └── Specific_allele_data_BRCA1_l.csv
+├── BRCA1_s
+│   ├── BRCA_sample2_BRCA1_s_alleles_above_5_perc_freq_barplot.pdf
+│   ├── BRCA_sample1_BRCA1_s_alleles_above_5_perc_freq_barplot.pdf
+│   ├── All_samples_combined_avgd_meth_BRCA1_s.pdf
+│   ├── All_samples_combined_avgd_meth_BRCA1_s_w_unmeth.pdf
+│   ├── average_BRCA1_s_meth_by_sample.csv
+│   ├── average_BRCA1_s_meth_by_sample_w_unmeth.csv
+│   ├── multiplexed_BRCA1_s_allele_freq_w_below_5_perc_avgd_barplot.pdf
+│   ├── Ridgeline_data_BRCA1_s.csv
+│   ├── ridgeline_plot_BRCA1_s.pdf
+│   └── Specific_allele_data_BRCA1_s.csv
+├── flash_stdout.txt
+└── RAD51C
+    ├── RAD51C_sample1_RAD51C_allele_freq_w_below_5_perc_avgd_barplot.pdf
+    ├── RAD51C_sample2_RAD51C_alleles_above_5_perc_freq_barplot.pdf
+    ├── multiplexed_RAD51C_alleles_above_5_perc_freq_barplot.pdf
+    ├── All_samples_combined_avgd_meth_RAD51C.pdf
+    ├── All_samples_combined_avgd_meth_RAD51C_w_unmeth.pdf
+    ├── average_RAD51C_meth_by_sample.csv
+    ├── average_RAD51C_meth_by_sample_w_unmeth.csv
+    ├── RAD51C_sample3_001_RAD51C_allele_freq_w_below_5_perc_avgd_barplot.pdf
+    ├── multiplexed_RAD51C_allele_freq_w_below_5_perc_avgd_barplot.pdf
+    ├── Ridgeline_data_RAD51C.csv
+    ├── ridgeline_plot_RAD51C.pdf
+    └── Specific_allele_data_RAD51C.csv
+```
+- Note: samples either print out a allele_freq_w_below_5_perc_avgd_barplot or alleles_above_5_perc_freq_barplot depending on if, after filtering the reads by threshold, there are epialleles that represent <5% of the total reads. If there are epialleles with a frequency <5%, they will be shown in allele_freq_w_below_5_perc_avgd_barplot. Otherwise, the latter plot will print.
+  
 ## Argument info 
 
 ```
@@ -94,16 +115,14 @@ usage: methamplicons [-h] [--PE_read_dir PE_READ_DIR]
                      [--amplicon_info AMPLICON_INFO]
                      [--sample_labels SAMPLE_LABELS] [--output_dir OUTPUT_DIR]
                      [--min_seq_freq MIN_SEQ_FREQ] [--verbose {true,false}]
-                     [--save_data {true,false}] [--lollipop {true,false}]
-                     [--ridge {true,false}]
+                     [--save_data {true,false}] [--save_intermediates {true,false}]
 
 CLI tool for plotting targeted bisulfite sequencing
 
 optional arguments:
   -h, --help            show this help message and exit
   --PE_read_dir PE_READ_DIR
-                        Desired input directory with fastq files, gzipped or
-                        not
+                        Desired input directory with fastq files, gzipped or not
   --amplicon_info AMPLICON_INFO
                         Path to the amplicon info file in tsv format, e.g.:
                         AmpliconName Primer1 Primer2 ReferenceSequence
@@ -112,15 +131,16 @@ optional arguments:
   --output_dir OUTPUT_DIR
                         Desired output directory
   --min_seq_freq MIN_SEQ_FREQ
-                        Threshold frequency an extracted epiallele sequence
-                        must have to be included in analysis
+                        Threshold frequency an extracted epiallele sequence must
+                        have to be included in analysis (default:0.01)
   --verbose {true,false}
                         Print all output after file parsing (default: true).
   --save_data {true,false}
                         Save processed data in csv format (default: true).
-  --lollipop {true,false}
-                        Save a lollipop graph (default: true).
-  --ridge {true,false}  Save a ridgeline graph (default: true).
+  --save_intermediates {true,false}
+                        Save 'demultiplexed' and merged read files for all
+                        combinations of samples and amplicons (default: true).
+
 ```
 
 ## Alternative OS support:
