@@ -34,7 +34,7 @@ class Plotter:
                     data_by_amplicon[amplicon_name][col_name] = df_alleles_sort_all[col_name]
 
         for amplicon_name, allele_data_by_sample in data_by_amplicon.items():
-            fwd_pos, rev_pos = tuple(self.amplicon_info[amplicon_name])[2:4]
+            fwd_pos, rev_pos = tuple(amplicon_info[amplicon_name])[2:4]
       
             num_cpg = len(ext_meth.get_cpg_positions(amplicon_info[amplicon_name], fwd_pos, rev_pos))
 
