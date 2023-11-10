@@ -5,10 +5,11 @@ import seaborn as sns
 import pandas as pd
 import numpy as np
 import os
+from methamplicons.extract_meth import ExtractMeth
 
 class Plotter:
 
-    def ridgeline(self, df_alleles_sort_all, amplicon_names, outpath,  save_data, outname = "ridgeline_plot"): 
+    def ridgeline(self, df_alleles_sort_all, amplicon_info, outpath,  save_data, outname = "ridgeline_plot"): 
         # Show relative frequencies for the different numbers of methylated CpGs/epiallele by sample
         # Also we are only interested in the same region - 1 facet grid per amplicon with 1 plot per sample 
 
@@ -17,16 +18,20 @@ class Plotter:
         #print(f"df_alleles_sort_all: \n{df_alleles_sort_all}")
 
         data_by_amplicon = {}
+
+        ext_meth = ExtractMeth()
         
-        for amplicon_name in amplicon_names: 
+        for amplicon_name in amplicon_info.keys(): 
             for col_name in df_alleles_sort_all.columns: 
                 if col_name.endswith(amplicon_name):  # check if amplicon_name is at the end of col_name
-                    filtered_df = df_alleles_sort_all
+                    #filtered_df = filtered_df.fillna(0) 
 
                     if amplicon_name not in data_by_amplicon: 
+                        #initialize the allele column which is like rownames
                         data_by_amplicon[amplicon_name] = pd.DataFrame()
-                        data_by_amplicon[amplicon_name]["allele"] = filtered_df["allele"]
-                    data_by_amplicon[amplicon_name][col_name] = filtered_df[col_name]
+                        data_by_amplicon[amplicon_name]["allele"] = df_alleles_sort_all["allele"]
+                    #for the corresponding amplicon dataframe, add in that sample's column
+                    data_by_amplicon[amplicon_name][col_name] = df_alleles_sort_all[col_name]
 
         for amplicon_name, allele_data_by_sample in data_by_amplicon.items():
                         
@@ -36,8 +41,9 @@ class Plotter:
             print(f"\nallele_data_by_sample:\n{allele_data_by_sample}")
 
             #print(f"Allele data by sample {allele_data_by_sample.to_string()}")
-            max_cpg = allele_data_by_sample['allele'].apply(lambda x: len(x)).max()
+            #max_cpg = allele_data_by_sample['allele'].apply(lambda x: len(x)).max()
             #print(f"The value of max cpg is {max_cpg}")
+            num_cpg = len(ext_meth.get_cpg_positions(amplicon_info[amplicon_name]))
 
 
             melted_df = allele_data_by_sample.melt(id_vars=["allele", "cpg"], 
@@ -59,7 +65,7 @@ class Plotter:
             }).reset_index()
 
             # all CpG counts for each sample
-            all_cpgs = np.arange(0, max_cpg + 1)
+            all_cpgs = np.arange(0, num_cpg + 1)
 
             # Create a dataframe with all combinations of sample and cpg count
             all_samples = melted_df['sample'].unique()
@@ -85,8 +91,8 @@ class Plotter:
 
             # Setting x-ticks to integers and adjusting x-axis limit
             for ax in g.axes.flat:
-                ax.set_xticks(np.arange(0, max_cpg + 1))
-                ax.set_xlim(0, max_cpg)
+                ax.set_xticks(np.arange(0, num_cpg + 1))
+                ax.set_xlim(0, num_cpg)
 
                 # Add sample name text to plots
                 min_x_value = min(ax.get_xlim())
