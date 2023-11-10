@@ -9,7 +9,7 @@ from methamplicons.extract_meth import ExtractMeth
 
 class Plotter:
 
-    def ridgeline(self, df_alleles_sort_all, amplicon_info, outpath,  save_data, outname = "ridgeline_plot"): 
+    def ridgeline(self, df_alleles_sort_all, refseqs, outpath,  save_data, amplicon_info, outname = "ridgeline_plot"): 
         # Show relative frequencies for the different numbers of methylated CpGs/epiallele by sample
         # Also we are only interested in the same region - 1 facet grid per amplicon with 1 plot per sample 
 
@@ -21,7 +21,7 @@ class Plotter:
 
         ext_meth = ExtractMeth()
         
-        for amplicon_name in amplicon_info.keys(): 
+        for amplicon_name in refseqs.keys(): 
             for col_name in df_alleles_sort_all.columns: 
                 if col_name.endswith(amplicon_name):  # check if amplicon_name is at the end of col_name
                     #filtered_df = filtered_df.fillna(0) 
@@ -34,7 +34,13 @@ class Plotter:
                     data_by_amplicon[amplicon_name][col_name] = df_alleles_sort_all[col_name]
 
         for amplicon_name, allele_data_by_sample in data_by_amplicon.items():
-                        
+            fwd_pos, rev_pos = tuple(self.amplicon_info[amplicon_name])[2:4]
+      
+            num_cpg = len(ext_meth.get_cpg_positions(amplicon_info[amplicon_name], fwd_pos, rev_pos))
+
+            allele_data_by_sample['allele_length'] = allele_data_by_sample['allele'].str.len()
+            allele_data_by_sample = allele_data_by_sample[allele_data_by_sample['allele_length'] == num_cpg]
+
             # number of Cs in each allele
             allele_data_by_sample['cpg'] = allele_data_by_sample['allele'].str.count('C')
 
@@ -43,7 +49,6 @@ class Plotter:
             #print(f"Allele data by sample {allele_data_by_sample.to_string()}")
             #max_cpg = allele_data_by_sample['allele'].apply(lambda x: len(x)).max()
             #print(f"The value of max cpg is {max_cpg}")
-            num_cpg = len(ext_meth.get_cpg_positions(amplicon_info[amplicon_name]))
 
 
             melted_df = allele_data_by_sample.melt(id_vars=["allele", "cpg"], 

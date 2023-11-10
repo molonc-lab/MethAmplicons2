@@ -219,14 +219,12 @@ class MethAmplicon:
                         df_alts_by_region[amplicon_name] = pd.DataFrame()
                         df_alts_by_region[amplicon_name]["position"] = df_alt["position"]
                     #could change this to use only the sample name
-                    #need to remove all NAs, then merge, then convert NAs to zeros
                     df_alts_by_region[amplicon_name][col_name] = df_alt[col_name]
 
                     if amplicon_name not in df_alts_unmeth_by_region: 
                         df_alts_unmeth_by_region[amplicon_name] = pd.DataFrame()
                         df_alts_unmeth_by_region[amplicon_name]["position"] = df_alt_unmeth["position"]
                     #could change this to use only the sample name
-                    #need to remove all NAs, then merge, then convert NAs to zeros
                     df_alts_unmeth_by_region[amplicon_name][col_name] = df_alt_unmeth[col_name]
 
         for amplicon_name, df_alt_for_region in df_alts_by_region.items():
@@ -367,7 +365,7 @@ class MethAmplicon:
         #get the names of the different amplicons
         amplicon_names = self.refseqs.keys()
         #plot a ridgeline plot based on the accumulated data from multiple samples
-        self.plotter.ridgeline(df_alleles_sort_all2, self.refseqs, self.args.output_dir, self.args.save_data)
+        self.plotter.ridgeline(df_alleles_sort_all2, self.refseqs, self.args.output_dir, self.args.save_data, self.amplicon_info)
 
         self.do_combined_lollipop(df_alt, df_alt_unmeth, amplicon_names)
         
