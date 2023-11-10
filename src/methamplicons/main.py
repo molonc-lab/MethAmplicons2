@@ -355,22 +355,17 @@ class MethAmplicon:
 
         dfs = [df.set_index('allele') for df in allele_sort_dfs]
 
-        keys = set()
-        for df in dfs:
-            keys.update(df['allele'].unique())
-
-        df_alleles_sort_all2 = reduce(
-            lambda left, right: pd.merge(left, right, on='allele', how='outer', sort=True).reindex(keys),dfs)
         #print(f"accumulated list of allele sort dfs \n {dfs[0]} \n {dfs[1]} \n {dfs[2]} \n {dfs[3]}")
-        #df_alleles_sort_all2 = reduce(lambda left, right: pd.merge(left, right, on='allele', how='outer'), dfs)
+        df_alleles_sort_all2 = reduce(lambda left, right: pd.merge(left, right, on='allele', how='outer'), dfs)
         
         #df_alleles_sort_all2 = pd.concat(dfs)
 
-        #print(f"df_alleles_all:\n{df_alleles_all}")
-
         #df_alleles_sort_all2 = df_alleles_all.pivot_table(index='allele', columns='sname', values='data', fill_value=0)
 
-        #df_alleles_sort_all2.reset_index(inplace=True)
+        df_alleles_sort_all2.reset_index(inplace=True)
+
+
+        print(f"df_alleles_sort_all:\n{df_alleles_sort_all2}")
 
 
         #get the names of the different amplicons
