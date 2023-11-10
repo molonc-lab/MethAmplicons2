@@ -355,7 +355,15 @@ class MethAmplicon:
 
         dfs = [df.set_index('allele') for df in allele_sort_dfs]
         #print(f"accumulated list of allele sort dfs \n {dfs[0]} \n {dfs[1]} \n {dfs[2]} \n {dfs[3]}")
-        df_alleles_sort_all2 = reduce(lambda left, right: pd.merge(left, right, on='allele', how='outer'), dfs)
+        #df_alleles_sort_all2 = reduce(lambda left, right: pd.merge(left, right, on='allele', how='outer'), dfs)
+        
+        df_alleles_all = pd.concat(dfs)
+
+        df_alleles_sort_all2 = df_alleles_all.pivot_table(index='allele', columns='sname', values='data', fill_value=0)
+
+        df_alleles_sort_all2.reset_index(inplace=True)
+
+
         #get the names of the different amplicons
         amplicon_names = self.refseqs.keys()
         #plot a ridgeline plot based on the accumulated data from multiple samples
