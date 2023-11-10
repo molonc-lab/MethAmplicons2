@@ -354,10 +354,17 @@ class MethAmplicon:
             self.plot_per_sample_lollipop(alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads, pos_rel_CDS, sname, amplicon_name, amp_out_dir)
 
         dfs = [df.set_index('allele') for df in allele_sort_dfs]
+
+        keys = set()
+        for df in dfs:
+            keys.update(df['allele'].unique())
+
+        df_alleles_sort_all2 = reduce(
+            lambda left, right: pd.merge(left, right, on='allele', how='outer', sort=True).reindex(keys),dfs)
         #print(f"accumulated list of allele sort dfs \n {dfs[0]} \n {dfs[1]} \n {dfs[2]} \n {dfs[3]}")
         #df_alleles_sort_all2 = reduce(lambda left, right: pd.merge(left, right, on='allele', how='outer'), dfs)
         
-        df_alleles_sort_all2 = pd.concat(dfs)
+        #df_alleles_sort_all2 = pd.concat(dfs)
 
         #print(f"df_alleles_all:\n{df_alleles_all}")
 
