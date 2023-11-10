@@ -329,6 +329,7 @@ class MethAmplicon:
             df_sample_unmeth=self.extract_meth.calculate_meth_fraction(alleles_sort, refseq, fwd_pos, rev_pos, include_unmeth_alleles=False)
             #print(f"Sample dataframe unmeth: \n {df_sample_unmeth}")
             
+            """     
             print(f"df_alleles_sort {sname} with {amplicon_name}")
             print(df_alleles_sort.to_string)
             amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
@@ -337,8 +338,8 @@ class MethAmplicon:
             
             if self.args.save_data:
                 # want to save this df_alt_for_region in the corresponding amplicon folder
-                df_alleles_sort.to_csv(os.path.join(amp_out_dir,f"{sname}_{amplicon_name}_df_alleles_sort.csv"))
-            
+                df_alleles_sort.to_csv(os.path.join(amp_out_dir,f"{sname}_{amplicon_name}_df_alleles_sort.csv")) 
+            """
             
             df_sample.columns=[sname]
             df_sample_unmeth.columns=[sname]
@@ -355,8 +356,8 @@ class MethAmplicon:
 
         dfs = [df.set_index('allele') for df in allele_sort_dfs]
 
-        for df in dfs:
-            print(f"\n{df.to_string()}")
+        #for df in dfs:
+            #print(f"\n{df.to_string()}")
 
         #print(f"accumulated list of allele sort dfs \n {dfs[0]} \n {dfs[1]} \n {dfs[2]} \n {dfs[3]}")
         df_alleles_sort_all2 = reduce(lambda left, right: pd.merge(left, right, on='allele', how='outer'), dfs)
@@ -368,7 +369,7 @@ class MethAmplicon:
         #df_alleles_sort_all2.reset_index(inplace=True)
 
 
-        print(f"df_alleles_sort_all:\n{df_alleles_sort_all2}")
+        #print(f"df_alleles_sort_all:\n{df_alleles_sort_all2}")
 
 
         #get the names of the different amplicons

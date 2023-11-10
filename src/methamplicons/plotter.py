@@ -3,6 +3,8 @@ from mpl_toolkits.axes_grid1.inset_locator import inset_axes
 import seaborn as sns
 #from joypy import joyplot
 import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
+
 import numpy as np
 import os
 from methamplicons.extract_meth import ExtractMeth
@@ -38,7 +40,7 @@ class Plotter:
       
             num_cpg = len(ext_meth.get_cpg_positions(refseqs[amplicon_name], fwd_pos, rev_pos))
 
-            print(f"the number of cpgs for {amplicon_name} is {num_cpg}")
+            #print(f"the number of cpgs for {amplicon_name} is {num_cpg}")
 
             allele_data_by_sample['allele_length'] = allele_data_by_sample['allele'].str.len()
             allele_data_by_sample = allele_data_by_sample[allele_data_by_sample['allele_length'] == num_cpg]
@@ -47,7 +49,7 @@ class Plotter:
             # number of Cs in each allele
             allele_data_by_sample['cpg'] = allele_data_by_sample['allele'].str.count('C')
 
-            print(f"\nallele_data_by_sample:\n{allele_data_by_sample}")
+            #print(f"\nallele_data_by_sample:\n{allele_data_by_sample}")
 
             #print(f"Allele data by sample {allele_data_by_sample.to_string()}")
             #max_cpg = allele_data_by_sample['allele'].apply(lambda x: len(x)).max()
