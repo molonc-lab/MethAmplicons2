@@ -359,6 +359,8 @@ class MethAmplicon:
         
         df_alleles_all = pd.concat(dfs)
 
+        print(f"df_alleles_all:\n{df_alleles_all}")
+
         df_alleles_sort_all2 = df_alleles_all.pivot_table(index='allele', columns='sname', values='data', fill_value=0)
 
         df_alleles_sort_all2.reset_index(inplace=True)
