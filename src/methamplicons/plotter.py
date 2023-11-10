@@ -36,7 +36,7 @@ class Plotter:
         for amplicon_name, allele_data_by_sample in data_by_amplicon.items():
             fwd_pos, rev_pos = tuple(amplicon_info[amplicon_name])[2:4]
       
-            num_cpg = len(ext_meth.get_cpg_positions(amplicon_info[amplicon_name], fwd_pos, rev_pos))
+            num_cpg = len(ext_meth.get_cpg_positions(refseqs[amplicon_name], fwd_pos, rev_pos))
 
             print(f"the number of cpgs for {amplicon_name} is {num_cpg}")
 
