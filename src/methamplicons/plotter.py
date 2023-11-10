@@ -20,22 +20,12 @@ class Plotter:
         
         for amplicon_name in amplicon_names: 
             for col_name in df_alleles_sort_all.columns: 
-                #print(f"1. col_name is {col_name}")
-                if amplicon_name in col_name: 
-                    #print(f"2. col_name is {col_name}, amplicon name is {amplicon_name}")
-
-                    # need to create a dataframe with alleles specific to that amplicon (remove NAN for that column)
-                    """
-                    Filter out NAN values for a column corresponding to a given amplicon-sample combination when creating a new dataframe for a given amplicon, e.g. RAD51C
-                    , and also before merging to an existing dataframe for a given amplicon so that only alleles corresponding to a given amplicon are included in its ridgeline plot
-                    """
-                    filtered_df = df_alleles_sort_all[df_alleles_sort_all[col_name].notna()]
+                if col_name.endswith(amplicon_name):  # check if amplicon_name is at the end of col_name
+                    filtered_df = df_alleles_sort_all
 
                     if amplicon_name not in data_by_amplicon: 
                         data_by_amplicon[amplicon_name] = pd.DataFrame()
                         data_by_amplicon[amplicon_name]["allele"] = filtered_df["allele"]
-                    #could change this to use only the sample name
-                    #need to remove all NAs, then merge, then convert NAs to zeros
                     data_by_amplicon[amplicon_name][col_name] = filtered_df[col_name]
 
         for amplicon_name, allele_data_by_sample in data_by_amplicon.items():
