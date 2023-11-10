@@ -38,6 +38,8 @@ class Plotter:
       
             num_cpg = len(ext_meth.get_cpg_positions(amplicon_info[amplicon_name], fwd_pos, rev_pos))
 
+            print(f"the number of cpgs for {amplicon_name} is {num_cpg}")
+
             allele_data_by_sample['allele_length'] = allele_data_by_sample['allele'].str.len()
             allele_data_by_sample = allele_data_by_sample[allele_data_by_sample['allele_length'] == num_cpg]
 
