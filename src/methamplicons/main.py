@@ -202,31 +202,39 @@ class MethAmplicon:
         df_alts_unmeth_by_region = {}
 
         df_alt= df_alt.rename_axis('position').reset_index()
-        df_alt_unmeth= df_alt_unmeth.rename_axis('position').reset_index()
         #print(f"df_alt columns {df_alt.columns}")
         
         for amplicon_name in amplicon_names: 
             for col_name in df_alt.columns: 
                 #print(f"1. col_name is {col_name}")
-                if col_name.endswith(amplicon_name):  
+                if amplicon_name in col_name: 
                     #print(f"2. col_name is {col_name}, amplicon name is {amplicon_name}")
 
+                    # need to create a dataframe with alleles specific to that amplicon (remove NAN for that column)
+                    """
+                    Filter out NAN values for a column corresponding to a given amplicon-sample combination when creating a new dataframe for a given amplicon, e.g. RAD51C
+                    , and also before merging to an existing dataframe for a given amplicon so that only alleles corresponding to a given amplicon are included in its ridgeline plot
+                    """
+                    filtered_df_alt = df_alt[df_alt[col_name].notna()]
                     #reset indices to get rid of mismatched indices warning message - index does not provide information 
                     # in this case so it should not be important
                     df_alt = df_alt.reset_index(drop=True)
                     df_alt_unmeth = df_alt_unmeth.reset_index(drop=True)
+                    filtered_df_alt_unmeth = df_alt[df_alt_unmeth[col_name].notna()]
 
                     if amplicon_name not in df_alts_by_region: 
                         df_alts_by_region[amplicon_name] = pd.DataFrame()
-                        df_alts_by_region[amplicon_name]["position"] = df_alt["position"]
+                        df_alts_by_region[amplicon_name]["position"] = filtered_df_alt["position"]
                     #could change this to use only the sample name
-                    df_alts_by_region[amplicon_name][col_name] = df_alt[col_name]
+                    #need to remove all NAs, then merge, then convert NAs to zeros
+                    df_alts_by_region[amplicon_name][col_name] = filtered_df_alt[col_name]
 
                     if amplicon_name not in df_alts_unmeth_by_region: 
                         df_alts_unmeth_by_region[amplicon_name] = pd.DataFrame()
-                        df_alts_unmeth_by_region[amplicon_name]["position"] = df_alt_unmeth["position"]
+                        df_alts_unmeth_by_region[amplicon_name]["position"] = filtered_df_alt_unmeth["position"]
                     #could change this to use only the sample name
-                    df_alts_unmeth_by_region[amplicon_name][col_name] = df_alt_unmeth[col_name]
+                    #need to remove all NAs, then merge, then convert NAs to zeros
+                    df_alts_unmeth_by_region[amplicon_name][col_name] = filtered_df_alt_unmeth[col_name]
 
         for amplicon_name, df_alt_for_region in df_alts_by_region.items():
             # it would appear -156 is the CDS site?
