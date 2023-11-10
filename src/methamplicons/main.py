@@ -202,6 +202,7 @@ class MethAmplicon:
         df_alts_unmeth_by_region = {}
 
         df_alt= df_alt.rename_axis('position').reset_index()
+        df_alt_unmeth= df_alt.rename_axis('position').reset_index()
         #print(f"df_alt columns {df_alt.columns}")
         
         for amplicon_name in amplicon_names: 

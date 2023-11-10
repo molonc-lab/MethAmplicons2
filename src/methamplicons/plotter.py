@@ -42,6 +42,7 @@ class Plotter:
 
             allele_data_by_sample['allele_length'] = allele_data_by_sample['allele'].str.len()
             allele_data_by_sample = allele_data_by_sample[allele_data_by_sample['allele_length'] == num_cpg]
+            allele_data_by_sample = allele_data_by_sample.drop(columns=['allele_length'])
 
             # number of Cs in each allele
             allele_data_by_sample['cpg'] = allele_data_by_sample['allele'].str.count('C')
