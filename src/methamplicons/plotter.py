@@ -43,6 +43,8 @@ class Plotter:
             # number of Cs in each allele
             allele_data_by_sample['cpg'] = allele_data_by_sample['allele'].str.count('C')
 
+            print(f"\nallele_data_by_sample:\n{allele_data_by_sample}")
+
             #print(f"Allele data by sample {allele_data_by_sample.to_string()}")
             max_cpg = allele_data_by_sample['allele'].apply(lambda x: len(x)).max()
             #print(f"The value of max cpg is {max_cpg}")
