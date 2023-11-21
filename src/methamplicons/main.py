@@ -321,7 +321,7 @@ class MethAmplicon:
             alleles_sort,filtered_reads=self.extract_meth.count_alleles(d, refseq, fwd_pos, rev_pos)
 
             if self.args.bs_conv_eff:
-                num_ts_obs, exp_ts = self.extract_meth.get_efficiency_vals(self, d, refseq, fwd_pos, rev_pos)
+                num_ts_obs, exp_ts = self.extract_meth.get_efficiency_vals(d, refseq, fwd_pos, rev_pos)
                 if sname in self.sample_efficiencies.keys():
                     self.sample_efficiencies[sname] = [self.sample_efficiencies[sname][0] + num_ts_obs, \
                     self.sample_efficiencies[sname][1] + exp_ts]
