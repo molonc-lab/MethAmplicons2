@@ -322,11 +322,12 @@ class MethAmplicon:
 
             if self.args.bs_conv_eff:
                 num_ts_obs, exp_ts = self.extract_meth.get_efficiency_vals(d, refseq, fwd_pos, rev_pos)
+                samp_amp = sname + "_" + amplicon_name
                 if sname in self.sample_efficiencies.keys():
-                    self.sample_efficiencies[sname] = [self.sample_efficiencies[sname][0] + num_ts_obs, \
-                    self.sample_efficiencies[sname][1] + exp_ts]
+                    self.sample_efficiencies[samp_amp] = [self.sample_efficiencies[samp_amp][0] + num_ts_obs, \
+                    self.sample_efficiencies[samp_amp][1] + exp_ts]
                 else: 
-                    self.sample_efficiencies[sname] = [num_ts_obs, exp_ts]
+                    self.sample_efficiencies[samp_amp] = [num_ts_obs, exp_ts]
 
             if alleles_sort == []: 
                 #print(f"No epialleles were found for amplified region: {amplicon_name}, trying next region")
