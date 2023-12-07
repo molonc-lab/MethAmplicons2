@@ -136,38 +136,49 @@ class Plotter:
             fullpath = os.path.join(amp_out_dir, filename)
             g.savefig(fullpath)
 
-    def plot_lollipop_colour (self, df, outpath, outname="All_samples_combined_colour.pdf"):  
-        
-        #print(f"Dataframe for combined samples pre-melt {df}")
-        # Changing default font to Arial
+    def plot_lollipop_colour(self, df, outpath, outname="All_samples_combined_colour.pdf"):  
         plt.rcParams['font.sans-serif'] = "Arial"
         plt.rcParams['font.family'] = "sans-serif"
         
         df_melt = df.melt(id_vars="pos")
-        df_melt['variable']= df_melt["variable"].str.split('_').str[0]
-        df_melt = df_melt.sort_index(ascending=False)
-        #df_melt = df_melt.sort_values(by=['variable'])
+        df_melt['variable'] = df_melt["variable"].str.split('_').str[0]
+        
+        #sort the names of the samples
+        unique_samples = sorted(df_melt['variable'].unique())
 
-        #print(f"Dataframe for combined samples melted {df_melt}")
+        #create a dictionary to enumerate the samples
+        sample_mapping = {name: i for i, name in enumerate(unique_samples)}
+
+        # create a new column with the corresponding number
+        df_melt['mapped_variable'] = df_melt['variable'].map(sample_mapping)
+
+        #change the figure height according to the number of samples
+        fig_height = max(4, len(unique_samples) * 0.4)  # Adjust 0.4 as per spacing needs
+        fig, ax = plt.subplots(figsize=(5, fig_height))
 
         plt.set_cmap('coolwarm')
-        plt.figure()
-        fig, ax = plt.subplots(figsize=(5,4))
-        ax.hlines(df_melt['variable'],min(df_melt['pos']),max(df_melt['pos']), label='_nolegend_', zorder=1)
-        im = ax.scatter(df_melt['pos'],df_melt['variable'],label="meC", c=df_melt['value'],edgecolors ="black", s=50, zorder=2)
-        im.set_clim(0,1)
-        cbar = fig.colorbar(im, ax=ax,ticks=[0.1, 0.5, 0.9])
-        cbar.ax.tick_params(labelsize=6.5, # label size
-                            length=1.5, # length of ticks
-                            pad = 0.4) # distance between ticks and labels
+
+        # use mapped_variable for y-axis values to ensure consistent spacing
+        ax.hlines(y=df_melt['mapped_variable'], xmin=min(df_melt['pos']), xmax=max(df_melt['pos']), label='_nolegend_', zorder=1)
+        im = ax.scatter(x=df_melt['pos'], y=df_melt['mapped_variable'], label="meC", c=df_melt['value'], edgecolors="black", s=50, zorder=2)
+        im.set_clim(0, 1)
+        cbar = fig.colorbar(im, ax=ax, ticks=[0.1, 0.5, 0.9])
+        cbar.ax.tick_params(labelsize=6.5,  # label size
+                            length=1.5,  # length of ticks
+                            pad=0.4)  # distance between ticks and labels
 
         ax.axes.set_xticks(list(df_melt['pos'].unique()))
         ax.tick_params(axis='x', which='major', labelsize=6.5, rotation=45)
         ax.tick_params(axis='y', which='major', labelsize=6.5)
-        
+
+        # Set y-ticks to be the names of the samples with consistent spacing
+        ax.set_yticks(range(len(unique_samples)))
+        ax.set_yticklabels(unique_samples)
+
         plt.tight_layout()
         fig.savefig(outpath + "/" + outname)
         plt.close()
+
     
     def plot_lollipop (self, df,sname,outpath,freq_min, amplicon_name):
     
