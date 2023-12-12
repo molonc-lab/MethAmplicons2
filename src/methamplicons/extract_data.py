@@ -1,8 +1,8 @@
 import gzip
 import subprocess
 import os
-import csv
 from pkg_resources import resource_filename
+import platform
 
 
 class DataExtractionError(Exception):
@@ -123,10 +123,13 @@ class ExtractData:
                 refseq_len = len(refseqs[amplicon_name])
                 # pass required aruments to run_flash, converting required arguments to strings
                 self.run_flash(r1s_for_region, r2s_for_region, base_name_reg, out_dir, str(int(avg_read_len)), str(refseq_len))
+
     def get_flash_binary_path(self):
-        #may need to specify specific version of tool
-        return resource_filename('methamplicons', 'flash')
-    
+        if platform.system() == 'Darwin':  # Darwin is the system name for macOS
+            return resource_filename('methamplicons', 'flash')
+        else:  # For Linux distributions
+            return resource_filename('methamplicons', 'linux_flash')
+        
     def set_verbose(self, verbose):
         self.verbose = verbose
 
