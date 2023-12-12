@@ -134,6 +134,7 @@ class Plotter:
 
             filename = f"{outname}_{amplicon_name}.pdf"
             fullpath = os.path.join(amp_out_dir, filename)
+            print(f"Saving file to: {fullpath}")
             g.savefig(fullpath)
 
     def plot_lollipop_colour(self, df, outpath, outname="All_samples_combined_colour.pdf"):  
@@ -177,6 +178,7 @@ class Plotter:
 
         plt.tight_layout()
         fig.savefig(outpath + "/" + outname)
+        print(f"Saving file to:{outpath}/{outname}")
         plt.close()
 
     
@@ -212,6 +214,7 @@ class Plotter:
         fig.tight_layout(rect=[0, 0.03, 1, 0.9])
 
         fig.savefig(f"{outpath}/{sname}_alleles_above_{freq_min}_perc_freq_barplot.pdf")
+        print(f"Saving file to:{outpath}/{sname}_alleles_above_{freq_min}_perc_freq_barplot.pdf")
         
         plt.close()
 
@@ -305,9 +308,10 @@ class Plotter:
             
             #fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot.pdf")
             fig.savefig(f"{outpath}/{sname}_allele_freq_w_below_{freq_min}_perc_avgd_barplot.pdf")
+            print(f"Saving file to: {outpath}/{sname}_allele_freq_w_below_{freq_min}_perc_avgd_barplot.pdf")
         else:
             fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot_nolegend.pdf")
-            
+            print(f"Saving file to: {outpath}/{sname}_{freq_min}perc_barplot_nolegend.pdf")
 
         plt.close()
         

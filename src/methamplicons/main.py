@@ -192,10 +192,13 @@ class MethAmplicon:
             #print(f"The plot path for the individual sample plot for {sname} is {plot_path}")
             
             if df_below_freq.freq.sum() > 0:  
-                # if you have epialleles with frequency below 5%         
+                # if you have epialleles with frequency below 5% 
+                print(f"making plot for {sname} + {amplicon_name} in {output_dir}")        
                 self.plotter.plot_lollipop_combined(df,df_below_freq,sname,output_dir,freq_min, amplicon_name)
             else:
+                print(f"making plot for {sname} + {amplicon_name} in {output_dir}")      
                 self.plotter.plot_lollipop(df,sname,output_dir,freq_min, amplicon_name)
+
     
     def do_combined_lollipop(self, df_alt, df_alt_unmeth, amplicon_names): 
         df_alts_by_region = {}
@@ -329,7 +332,7 @@ class MethAmplicon:
             df_sample_unmeth=self.extract_meth.calculate_meth_fraction(alleles_sort, refseq, fwd_pos, rev_pos, include_unmeth_alleles=False)
             #print(f"Sample dataframe unmeth: \n {df_sample_unmeth}")
             
-            """     
+            #"""     
             print(f"df_alleles_sort {sname} with {amplicon_name}")
             print(df_alleles_sort.to_string)
             amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
@@ -339,7 +342,7 @@ class MethAmplicon:
             if self.args.save_data:
                 # want to save this df_alt_for_region in the corresponding amplicon folder
                 df_alleles_sort.to_csv(os.path.join(amp_out_dir,f"{sname}_{amplicon_name}_df_alleles_sort.csv")) 
-            """
+            #"""
             
             df_sample.columns=[sname]
             df_sample_unmeth.columns=[sname]
@@ -347,7 +350,7 @@ class MethAmplicon:
                 df_alt=df_sample
                 df_alt_unmeth=df_sample_unmeth
             elif i > 0:
-                #print(df_alt.to_string())
+                print(df_alt.to_string())
                 df_alt=df_alt.join(df_sample, how='outer')
                 df_alt_unmeth=df_alt_unmeth.join(df_sample_unmeth, how='outer')
 
