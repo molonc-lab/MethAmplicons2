@@ -99,7 +99,7 @@ class ExtractData:
             
             #the amplicon_info dictionary contains the primers to search for in the PE read files
             #primers_to_search = primer_info[0:2]
-            primers_to_search = [primer[:15] for primer in primer_info[0:2]]
+            primers_to_search = [primer[:10] for primer in primer_info[0:2]]
 
             for read_id, read1_seq_qual in read1_seqs.items(): 
                 read2_seq_qual = read2_seqs[read_id]
