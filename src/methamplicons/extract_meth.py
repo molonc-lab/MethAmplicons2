@@ -106,7 +106,7 @@ class ExtractMeth(ExtractData):
         
         # get CpG positions
         pos=self.get_cpg_positions(refseq, fwd, rev)
-        #print(f"The cpg positions given that fwd is {fwd} and rev is {rev} are: {pos}")
+        print(f"The cpg positions given that fwd is {fwd} and rev is {rev} are: {pos}")
         
         # amplicon length for 1st filter
         refseq_len=len(refseq)
@@ -128,10 +128,10 @@ class ExtractMeth(ExtractData):
                     # this also works to either initialise a count for an allele 
                     # such as CTCT - this is agnostic to the other bases of the read
                     alleles[allele]+=val
-                #else: 
-                    #print("One of the CpG sites had an A or G")
-            #else: 
-                #print(f"Length of sequence = {len(seq)}, Length of refseq = {refseq_len}")
+                else: 
+                    print("One of the CpG sites had an A or G")
+            else: 
+                print(f"Length of sequence = {len(seq)}, Length of refseq = {refseq_len}")
                 #print(f"Number of reads = {val}, Minimum reads was {min_reads}")
 
         # Sort by number of reads supporting the allele
