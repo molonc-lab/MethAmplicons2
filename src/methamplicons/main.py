@@ -317,18 +317,19 @@ class MethAmplicon:
             alleles_sort,filtered_reads=self.extract_meth.count_alleles(d, refseq, fwd_pos, rev_pos)
 
             if alleles_sort == []: 
-                #print(f"No epialleles were found for amplified region: {amplicon_name}, trying next region")
+                print(f"No epialleles were found for amplified region: {amplicon_name} for {sname}, trying next region")
                 #should not have to use continue 
                 continue
                 
             df_alleles_sort = pd.DataFrame(alleles_sort, columns=['allele',sname])
-            #print(f"Alleles sorted as dataframe: \n {df_alleles_sort}")
+            print(f"Alleles sorted as dataframe for {sname} and {amplicon_name}: \n {df_alleles_sort.to_string()}")
 
             allele_sort_dfs.append(df_alleles_sort.copy())
 
             #Calculate methylation fraction per CpG site
             df_sample=self.extract_meth.calculate_meth_fraction(alleles_sort, refseq, fwd_pos, rev_pos)
-            #print(f"Sample dataframe: \n {df_sample}")
+            print(f"\ndf_sample for {sname} and {amplicon_name}: \n {df_sample.to_string()}")
+        
             df_sample_unmeth=self.extract_meth.calculate_meth_fraction(alleles_sort, refseq, fwd_pos, rev_pos, include_unmeth_alleles=False)
             #print(f"Sample dataframe unmeth: \n {df_sample_unmeth}")
             
