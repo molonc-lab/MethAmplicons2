@@ -139,6 +139,8 @@ class ExtractMeth(ExtractData):
 
         # Total number of reads after filtering
         filtered_reads=sum(alleles.values())
+
+        print(f"Total number of reads after filtering is: {filtered_reads}. Total before was: {reads_n}")
         
         return(alleles_sort,filtered_reads)
 
