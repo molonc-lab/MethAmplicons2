@@ -16,7 +16,7 @@ class ExtractMeth(ExtractData):
         pos=list()
         refseq_len = len(refseq)
         for i,nuc in enumerate(refseq):
-            if nuc == 'C' and i < refseq_len:
+            if nuc == 'C' and i < refseq_len - 1:
                 if refseq[i+1] == 'G':
                     if i>fwd_pos and i<rvs_pos: #exclude primers
                         pos.append(i)

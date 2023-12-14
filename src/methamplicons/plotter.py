@@ -142,7 +142,7 @@ class Plotter:
         plt.rcParams['font.family'] = "sans-serif"
         
         df_melt = df.melt(id_vars="pos")
-        df_melt['variable'] = df_melt["variable"].str.split('_').str[0]
+        #df_melt['variable'] = df_melt["variable"].str.split('_').str[0]
         
         #sort the names of the samples
         unique_samples = sorted(df_melt['variable'].unique())
