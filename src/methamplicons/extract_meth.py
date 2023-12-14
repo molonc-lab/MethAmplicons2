@@ -14,8 +14,9 @@ class ExtractMeth(ExtractData):
 
     def get_cpg_positions(self, refseq, fwd_pos, rvs_pos):
         pos=list()
+        refseq_len = len(refseq)
         for i,nuc in enumerate(refseq):
-            if nuc == 'C':
+            if nuc == 'C' and i < refseq_len:
                 if refseq[i+1] == 'G':
                     if i>fwd_pos and i<rvs_pos: #exclude primers
                         pos.append(i)
@@ -110,6 +111,7 @@ class ExtractMeth(ExtractData):
         
         # amplicon length for 1st filter
         refseq_len=len(refseq)
+        print(f"refseq:\n{refseq}")
         
         #minimum number of reads to meet the min freq cutoff for 2nd filter
         #min_reads=reads_n*self.threshold
