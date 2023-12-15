@@ -22,6 +22,8 @@ class MethAmplicon:
         self.refseq_cpgs = {}
         self.amplicon_info = {}
 
+        self.sample_efficiencies = {}
+
     def valid_file(self, file_path, seq_type, extensions):
         """
         This function checks if a file at a provided path has a given extension and does exist
@@ -95,6 +97,11 @@ class MethAmplicon:
         # add an option to save or delete intermediate files -default will be delete
         self.parser.add_argument('--save_intermediates', type=str, choices=['true', 'false'], \
                                  default='true', help="Save 'demultiplexed' and merged read files for all combinations of samples and amplicons (default: true).")
+        
+
+        # add an option to save or delete intermediate files -default will be delete
+        self.parser.add_argument('--bs_conv_eff', type=str, choices=['true', 'false'], \
+                                 default='true', help="Output the bisulfite conversion efficiencies i.e. proportion of non-CpG Cs converted to Ts, for each sample(default: true).")
 
     @staticmethod
     def replace_last(source_string, replace_what, replace_with):
@@ -316,6 +323,15 @@ class MethAmplicon:
             # Count only CpG sites in alleles
             alleles_sort,filtered_reads=self.extract_meth.count_alleles(d, refseq, fwd_pos, rev_pos)
 
+            if self.args.bs_conv_eff:
+                num_ts_obs, exp_ts = self.extract_meth.get_efficiency_vals(d, refseq, fwd_pos, rev_pos)
+                samp_amp = sname + "_" + amplicon_name
+                if sname in self.sample_efficiencies.keys():
+                    self.sample_efficiencies[samp_amp] = [self.sample_efficiencies[samp_amp][0] + num_ts_obs, \
+                    self.sample_efficiencies[samp_amp][1] + exp_ts]
+                else: 
+                    self.sample_efficiencies[samp_amp] = [num_ts_obs, exp_ts]
+
             if alleles_sort == []: 
                 print(f"No epialleles were found for amplified region: {amplicon_name} for {sname}, trying next region")
                 #should not have to use continue 
@@ -415,6 +431,15 @@ class MethAmplicon:
         # iterate over the paired end read files and process data 
         self.merge_loop()
         self.meth_amplicon_loop()
+
+        if self.args.bs_conv_eff:
+            for sample, eff_values in self.sample_efficiencies.keys():
+                self.sample_efficiencies[sample] = eff_values[0]/eff_values[1]
+            efficiency_df = pd.DataFrame.from_dict(self.sample_efficiencies)
+
+            if self.args.bs_conv_eff:
+                # want to save this df_alt_for_region in the corresponding amplicon folder
+                efficiency_df.to_csv(os.path.join(self.args.output_dir,f"bisulfite_conversion_efficiencies.csv"))
 
         if self.args.save_intermediates == "false":
             # delete the merged and demultiplexed directories and all files they contain

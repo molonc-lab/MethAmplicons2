@@ -23,6 +23,15 @@ class ExtractMeth(ExtractData):
         #print(f"CpG positions from the function are: {pos}")
         return(pos)
     
+    def get_non_cpg_positions(self, refseq, fwd_pos, rvs_pos):
+        pos=list()
+        for i,nuc in enumerate(refseq):
+            if nuc == 'C':
+                if not(refseq[i+1] == 'G'):
+                    if i>fwd_pos and i<rvs_pos: #exclude primers
+                        pos.append(i)
+        #print(f"CpG positions from the function are: {pos}")
+        return(pos)
 
     def set_threshold(self, threshold): 
         self.threshold = threshold
@@ -96,6 +105,27 @@ class ExtractMeth(ExtractData):
             print(print(sorted(epiallele_counts_region.values())[-20:]))
                     
         return epiallele_counts_region
+    
+    def get_efficiency_vals(self, allele_counts, refseq, fwd, rev):
+        # rather than look at CpG sites, we want to look at non-CpG Cs
+        # from the reference sequence 
+        # and see if a T is present in the reads 
+        pos=self.get_non_cpg_positions(refseq, fwd, rev)
+        num_ts_obs = 0 
+        exp_ts = 0 
+        non_cpg_ts_ref = len(pos)
+
+        for seq in allele_counts.keys():
+            if (len(seq) == len(refseq)): #& (val > min_reads): 
+                non_cpg_cs = ""
+                for i,nuc in enumerate(seq):
+                    if i in pos and nuc in "CT":
+                        non_cpg_cs += nuc
+                num_ts_obs += non_cpg_cs.count("C")
+                exp_ts += non_cpg_ts_ref
+            
+        return num_ts_obs, exp_ts   
+            
 
     def count_alleles(self, allele_counts, refseq, fwd, rev): 
         #instantiate new dictionary
