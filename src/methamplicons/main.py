@@ -207,9 +207,8 @@ class MethAmplicon:
                 self.plotter.plot_lollipop(df,sname,output_dir,freq_min, amplicon_name)
 
     
-    def do_combined_lollipop(self, df_alt, df_alt_unmeth, amplicon_names): 
+    def do_combined_lollipop(self, df_alt, amplicon_names): 
         df_alts_by_region = {}
-        df_alts_unmeth_by_region = {}
 
         df_alt= df_alt.rename_axis('position').reset_index()
         #print(f"df_alt columns {df_alt.columns}")
@@ -229,8 +228,6 @@ class MethAmplicon:
                     #reset indices to get rid of mismatched indices warning message - index does not provide information 
                     # in this case so it should not be important
                     df_alt = df_alt.reset_index(drop=True)
-                    df_alt_unmeth = df_alt_unmeth.reset_index(drop=True)
-                    filtered_df_alt_unmeth = df_alt[df_alt_unmeth[col_name].notna()]
 
                     if amplicon_name not in df_alts_by_region: 
                         df_alts_by_region[amplicon_name] = pd.DataFrame()
@@ -239,12 +236,6 @@ class MethAmplicon:
                     #need to remove all NAs, then merge, then convert NAs to zeros
                     df_alts_by_region[amplicon_name][col_name] = filtered_df_alt[col_name]
 
-                    if amplicon_name not in df_alts_unmeth_by_region: 
-                        df_alts_unmeth_by_region[amplicon_name] = pd.DataFrame()
-                        df_alts_unmeth_by_region[amplicon_name]["position"] = filtered_df_alt_unmeth["position"]
-                    #could change this to use only the sample name
-                    #need to remove all NAs, then merge, then convert NAs to zeros
-                    df_alts_unmeth_by_region[amplicon_name][col_name] = filtered_df_alt_unmeth[col_name]
 
         for amplicon_name, df_alt_for_region in df_alts_by_region.items():
             # it would appear -156 is the CDS site?
@@ -267,28 +258,6 @@ class MethAmplicon:
             self.plotter.plot_lollipop_colour(df=df_alt_for_region, outpath=amp_out_dir,
                              outname=f"All_samples_combined_avgd_meth_{amplicon_name}.pdf")
 
-        for amplicon_name, df_alt_unmeth_for_region in df_alts_unmeth_by_region.items():
-            # it would appear -156 is the CDS site?
-            pos_rel_CDS = self.amplicon_info[amplicon_name][-1]
-            #print(f"pos_rel_CDS: {pos_rel_CDS}")
-            #print(type(pos_rel_CDS))
-            pos_promoter = list(map(lambda x: x + pos_rel_CDS, self.extract_meth.get_cpg_positions(self.refseqs[amplicon_name], self.amplicon_info[amplicon_name][2],self.amplicon_info[amplicon_name][3] )))
-            df_alt_unmeth_for_region['pos'] = pos_promoter
-            df_alt_unmeth_for_region.drop(columns=["position"], inplace=True)
-
-            #print(f"df_alt unmeth for region {amplicon_name}: \n{df_alt_unmeth_for_region}")
-            #plt.style.use('default')
-
-            amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
-            if not os.path.exists(amp_out_dir):
-                os.makedirs(amp_out_dir)
-            
-            if self.args.save_data:
-                # want to save this df_alt_for_region in the corresponding amplicon folder
-                df_alt_for_region.to_csv(os.path.join(amp_out_dir,f"average_{amplicon_name}_meth_by_sample_w_unmeth.csv"))
-
-            self.plotter.plot_lollipop_colour(df=df_alt_unmeth_for_region, outpath=amp_out_dir,
-                             outname=f"All_samples_combined_avgd_meth_{amplicon_name}_w_unmeth.pdf")
 
     def meth_amplicon_loop(self):
         
@@ -346,7 +315,6 @@ class MethAmplicon:
             df_sample=self.extract_meth.calculate_meth_fraction(alleles_sort, refseq, fwd_pos, rev_pos)
             print(f"\ndf_sample for {sname} and {amplicon_name}: \n {df_sample.to_string()}")
         
-            df_sample_unmeth=self.extract_meth.calculate_meth_fraction(alleles_sort, refseq, fwd_pos, rev_pos, include_unmeth_alleles=False)
             #print(f"Sample dataframe unmeth: \n {df_sample_unmeth}")
             
             #"""     
@@ -362,14 +330,11 @@ class MethAmplicon:
             #"""
             
             df_sample.columns=[sname]
-            df_sample_unmeth.columns=[sname]
             if i == 0:
                 df_alt=df_sample
-                df_alt_unmeth=df_sample_unmeth
             elif i > 0:
                 print(df_alt.to_string())
                 df_alt=df_alt.join(df_sample, how='outer')
-                df_alt_unmeth=df_alt_unmeth.join(df_sample_unmeth, how='outer')
 
             
             self.plot_per_sample_lollipop(alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads, pos_rel_CDS, sname, amplicon_name, amp_out_dir)
@@ -397,7 +362,7 @@ class MethAmplicon:
         #plot a ridgeline plot based on the accumulated data from multiple samples
         self.plotter.ridgeline(df_alleles_sort_all2, self.refseqs, self.args.output_dir, self.args.save_data, self.amplicon_info)
 
-        self.do_combined_lollipop(df_alt, df_alt_unmeth, amplicon_names)
+        self.do_combined_lollipop(df_alt, amplicon_names)
         
     def run(self):
         # when the app is run from the command line, parse the arguments
