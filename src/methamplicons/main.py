@@ -434,11 +434,16 @@ class MethAmplicon:
                 # if this folder doesn't exist yet
                 self.combine_lanes()
             else:
-                self.read_dir = self.all_lanes_dir
-                print("Using fastq files in existing combined lanes directory.\n \
+                if os.listdir(self.all_lanes_dir) == []:
+                    self.combine_lanes()
+                else:
+                    print("Using fastq files in existing combined lanes directory.\n \
                      If you would like to remake these combined fastq files, either:\n \
                       1) Specify a new output directory to make a new combined lanes directory \
                       2) Delete this combined lanes directory in the given output directory")
+
+                self.read_dir = self.all_lanes_dir
+
         else:
             self.read_dir = self.args.PE_read_dir
 
