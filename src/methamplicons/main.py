@@ -7,7 +7,7 @@ import sys
 import pandas as pd
 from functools import reduce
 import re
-import platform
+from collections import defaultdict
 
 class MethAmplicon:
     
@@ -76,8 +76,8 @@ class MethAmplicon:
                                  help="Path to the amplicon info file in tsv format, e.g.: \
                                  AmpliconName   Primer1   Primer2  ReferenceSequence")
         
-        self.parser.add_argument('--sample_labels', type=self.valid_labels_file, \
-                                 help="Path to sample labels file in csv format")
+        self.parser.add_argument('--sample_labels', type=self.valid_labels_file, nargs='?', \
+                                 help="Path to sample labels file in csv format", default=None)
         
         #desired directory for all output from merged files to dataframes and graphs
         #will be current working directory by default. 
@@ -98,6 +98,10 @@ class MethAmplicon:
         self.parser.add_argument('--save_intermediates', type=str, choices=['true', 'false'], \
                                  default='true', help="Save 'demultiplexed' and merged read files for all combinations of samples and amplicons (default: true).")
         
+                # add an option to save or delete intermediate files -default will be delete
+        self.parser.add_argument('--combine_lanes', type=str, choices=['true', 'false'], \
+                                 default='true', help="Combine fastq files from different sequencing lanes (L001, L002) into single R1 and R2 files (default: true).")
+        
 
         # add an option to save or delete intermediate files -default will be delete
         self.parser.add_argument('--bs_conv_eff', type=str, choices=['true', 'false'], \
@@ -107,12 +111,50 @@ class MethAmplicon:
     def replace_last(source_string, replace_what, replace_with):
         head, _sep, tail = source_string.rpartition(replace_what)
         return head + replace_with + tail
+    
+    def combine_lanes(self):
+        """
+        Combine all lanes for R1 and R2 files with the same basename.
+        """
+        files = os.listdir(self.args.PE_read_dir)
+        grouped_files = defaultdict(lambda: {'R1': [], 'R2': []})
+
+        # group R1 R2 files by basename 
+        for file in files:
+            if file.endswith('.fastq') or file.endswith('.fq') \
+               or file.endswith('.fastq.gz') or file.endswith('.fq.gz'):
+                basename_match = re.search(r'^(.*?)_L00[0-9]', file)
+                if basename_match:
+                    basename = basename_match.group(1)
+                    if not (basename in grouped_files.keys()):
+                        read_type = 'R1' if 'R1' in file else 'R2'
+                        base_noR1R2 = self.replace_last(basename)
+                        grouped_files[basename][read_type].append(file)
+
+        # combine files for each group
+        for basename, reads in grouped_files.items():
+            for read_type, files in reads.items():
+                combined_seqs = {}
+                for file in files:
+                    seqs = self.extract_meth.read_fastq(os.path.join(self.args.PE_read_dir, file))
+                    combined_seqs.update(seqs)
+
+                # Construct the filename for the combined file
+                # this will get rid of whatever came after R1/R2 but that's probably fine
+                extension = '.fastq'  # Assuming standard extension; adjust if necessary
+                combined_file_name = f"{basename}_all_lanes_{read_type}{extension}"
+                
+                # Write combined sequences to a new file
+                with open(os.path.join(self.read_dir, combined_file_name), 'w') as f:
+                    for seq_info, (sequence, phred) in combined_seqs.items():
+                        f.write(f"@{seq_info}\n{sequence}\n+\n{phred}\n")
+
         
     def get_paired_files(self):
         """
         Get all pairs of fastq files in a directory
         """
-        fastq_files = [f for f in os.listdir(self.args.PE_read_dir) \
+        fastq_files = [f for f in os.listdir(self.read_dir) \
                        if f.endswith('.fastq') or f.endswith('.fq')\
                         or f.endswith('.fastq.gz') or f.endswith('.fq.gz')]
         ##print(f"Found fastq files in input directory: {fastq_files}")
@@ -123,7 +165,7 @@ class MethAmplicon:
                 r2_file = self.replace_last(f, "R1", "R2")
                 
                 if r2_file in fastq_files:
-                    paired_files.append((os.path.join(self.args.PE_read_dir, f), os.path.join(self.args.PE_read_dir, r2_file)))
+                    paired_files.append((os.path.join(self.read_dir, f), os.path.join(self.read_dir, r2_file)))
 
         print(f"paired files: {paired_files}")
 
@@ -156,18 +198,27 @@ class MethAmplicon:
 
         return amplicon_name
     
+    @staticmethod
+    def use_basename(file_name):
+        pattern = r".extendedFrags.fastq"
+        replacement = ""
+        sid = re.sub(pattern, replacement, os.path.basename(file_name))
+        return sid
+
     def get_sname(self, file_name, amplicon_name): 
         """
         Get the sample name from the file name - for merged read files
         """
-        # match = re.search(r'-(.*?)-(.*?)_L00[0-9]', file_name)
-        # if match:
-        #     sid = match.group(2)
-        #     #print(sid)
-        #else:
-        pattern = r".extendedFrags.fastq"
-        replacement = ""
-        sid = re.sub(pattern, replacement, os.path.basename(file_name))
+
+        if self.args.combine_lanes:
+            match = re.search(r'^(.*?)_all_lanes', file_name)
+            sid = match.group(1)
+        else:
+            match = re.search(r'^(.*?)_L00[0-9]', file_name)
+            sid = match.group(1)
+        
+        if sid == None:
+            sid = self.use_basename(file_name)
 
         # with the sid, try to see if there is a corresponding sample name in the 
         # sample name csv
@@ -175,9 +226,9 @@ class MethAmplicon:
             sname=self.labels_df.loc[sid]['ShortLabel']
             if pd.isnull(sname):
                 sname=self.labels_df.loc[sid]['SampleLabel']
-            sname = sname # + " (" + amplicon_name + ")"
+            sname = sname 
         except:
-            sname=sid  # + " (" + amplicon_name + ")"
+            sname=sid 
 
         return sname
     
@@ -363,6 +414,29 @@ class MethAmplicon:
         self.plotter.ridgeline(df_alleles_sort_all2, self.refseqs, self.args.output_dir, self.args.save_data, self.amplicon_info)
 
         self.do_combined_lollipop(df_alt, amplicon_names)
+
+    def choose_read_dir(self):
+
+        if self.args.combine_lanes:
+            # make the combine lanes directory name 
+            self.all_lanes_dir = os.path.join(self.args.output_dir, "combined_lanes")
+            # set the read directory to that value
+            self.read_dir = self.all_lanes_dir
+            if not os.path.exists(self.all_lanes_dir):
+                # if the folder doesn't exist yet, the combined fastq files haven't been made
+                os.makedirs(self.all_lanes_dir)
+                # so run the function to make them - possibly time consuming so only want to run 
+                # if this folder doesn't exist yet
+                self.combine_lanes()
+            else:
+                self.read_dir = self.all_lanes_dir
+                print("Using fastq files in existing combined lanes directory.\n \
+                     If you would like to remake these combined fastq files, either:\n \
+                      1) Specify a new output directory to make a new combined lanes directory \
+                      2) Delete this combined lanes directory in the given output directory")
+        else:
+            self.read_dir = self.args.PE_read_dir
+
         
     def run(self):
         # when the app is run from the command line, parse the arguments
@@ -374,8 +448,9 @@ class MethAmplicon:
             raise argparse.ArgumentTypeError("--amplicon_info (amplicon info tsv file) is missing!")
         
         seq_freq_threshold = self.args.min_seq_freq
-
         self.extract_meth.set_threshold(seq_freq_threshold)
+
+        self.choose_read_dir()
         
         #create df for short/sample name lookup from file name from the provided csv
         try:
@@ -392,6 +467,7 @@ class MethAmplicon:
         
         # pass the verbose value to extract_meth to optionally redirect flash subprocess output
         self.extract_meth.set_verbose(self.args.verbose)
+
 
         # iterate over the paired end read files and process data 
         self.merge_loop()

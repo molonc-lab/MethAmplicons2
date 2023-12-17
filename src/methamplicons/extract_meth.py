@@ -23,10 +23,12 @@ class ExtractMeth(ExtractData):
         #print(f"CpG positions from the function are: {pos}")
         return(pos)
     
+    #combine with above function to reduce redundancy
     def get_non_cpg_positions(self, refseq, fwd_pos, rvs_pos):
         pos=list()
+        refseq_len = len(refseq)
         for i,nuc in enumerate(refseq):
-            if nuc == 'C':
+            if nuc == 'C' and i < refseq_len - 1:
                 if not(refseq[i+1] == 'G'):
                     if i>fwd_pos and i<rvs_pos: #exclude primers
                         pos.append(i)
