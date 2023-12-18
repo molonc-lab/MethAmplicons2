@@ -126,14 +126,14 @@ class MethAmplicon:
                 basename_match = re.search(r'^(.*?)_L00[0-9]', file)
                 if basename_match:
                     basename = basename_match.group(1)
-                    if not (basename in grouped_files.keys()):
-                        #read_type = 'R1' if 'R1' in file else 'R2'
-                        #base_noR1R2 = self.replace_last(basename)
-                        if "R1" in file:
-                            r2_file = self.replace_last(file, "R1", "R2")
-                            if r2_file in files:    
-                                grouped_files[basename]["R1"].append(file)
-                                grouped_files[basename]["R2"].append(r2_file)
+                    #if not (basename in grouped_files.keys()):
+                    #read_type = 'R1' if 'R1' in file else 'R2'
+                    #base_noR1R2 = self.replace_last(basename)
+                    if "R1" in file:
+                        r2_file = self.replace_last(file, "R1", "R2")
+                        if r2_file in files:    
+                            grouped_files[basename]["R1"].append(file)
+                            grouped_files[basename]["R2"].append(r2_file)
                     #else continue
 
         print(f"grouped files:\n{grouped_files}")
