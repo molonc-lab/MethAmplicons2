@@ -343,6 +343,8 @@ class MethAmplicon:
             # Generate dictionary with all reads for that amplicon in the merged file 
 
             d=self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
+            print(f'read counts dictionary\n{d}')
+
             refseq = self.refseqs[amplicon_name]
 
             # Count only CpG sites in alleles
