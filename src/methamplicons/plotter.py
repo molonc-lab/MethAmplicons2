@@ -141,6 +141,8 @@ class Plotter:
             g.savefig(fullpath)
 
     def plot_lollipop_colour(self, df, outpath, outname="All_samples_combined_colour.pdf"):  
+        print(f"plot all sample lollipop dataframe:\n{df.to_string()}")
+
         plt.rcParams['font.sans-serif'] = "Arial"
         plt.rcParams['font.family'] = "sans-serif"
         
@@ -187,6 +189,8 @@ class Plotter:
     
     def plot_lollipop (self, df,sname,outpath,freq_min, amplicon_name):
 
+        print(f"plot lollipop dataframe:\n{df.to_string()}")
+
         df['variable'] = df["variable"].str.split('_parse_').str[0]
     
         # Changing default font to Arial
@@ -224,6 +228,8 @@ class Plotter:
         plt.close()
 
     def plot_lollipop_combined (self, df,df_below_freq,sname,outpath,freq_min, amplicon_name, colbar=True):
+
+        print(f"plot lollipop dataframe:\n{df.to_string()}")
 
         df['variable'] = df["variable"].str.split('_parse_').str[0]
         
