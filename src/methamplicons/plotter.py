@@ -275,9 +275,10 @@ class Plotter:
                 transform=ax3.transAxes)
         ax1.text(-0.14,0.9, f"≥{freq_min}% frequency", size=6.5, ha="center", 
                 transform=ax1.transAxes)
-
+        
+        sname_parsed = sname.split("_parse_")[0]
         # Figure title
-        fig.suptitle(sname.split("_parse_")[0], size=8, weight='bold')
+        fig.suptitle(sname_parsed, size=8, weight='bold')
 
         fig.tight_layout(rect=[0, 0.03, 1, 0.9])
         
@@ -314,10 +315,10 @@ class Plotter:
                         size=8)
             
             #fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot.pdf")
-            fig.savefig(f"{outpath}/{sname}_allele_freq_w_below_{freq_min}_perc_avgd_barplot.pdf")
+            fig.savefig(f"{outpath}/{sname_parsed}_allele_freq_w_below_{freq_min}_perc_avgd_barplot.pdf")
             print(f"Saving file to: {outpath}/{sname}_allele_freq_w_below_{freq_min}_perc_avgd_barplot.pdf")
         else:
-            fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot_nolegend.pdf")
+            fig.savefig(f"{outpath}/{sname_parsed}_{freq_min}perc_barplot_nolegend.pdf")
             print(f"Saving file to: {outpath}/{sname}_{freq_min}perc_barplot_nolegend.pdf")
 
         plt.close()

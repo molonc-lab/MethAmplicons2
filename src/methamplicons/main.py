@@ -362,9 +362,9 @@ class MethAmplicon:
                 # there is only one entry per sample amplicon pair in the dictionary - should not have to check if it is there
                 if not samp_amp in self.sample_efficiencies.keys():
                     if not exp_ts == 0:
-                        self.sample_efficiencies[samp_amp] = num_ts_obs/ exp_ts
+                        self.sample_efficiencies[samp_amp] = [num_ts_obs/ exp_ts]
                     else:
-                        self.sample_efficiencies[samp_amp] = "No non-CpG Cs"
+                        self.sample_efficiencies[samp_amp] = ["No non-CpG Cs"]
                 else:
                     print("Attempted to record bisulfite conversion efficiency for a \
                            sample amplicon pair twice, there should only be one of each \
