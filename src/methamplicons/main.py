@@ -136,6 +136,8 @@ class MethAmplicon:
                                 grouped_files[basename]["R2"].append(r2_file)
                     #else continue
 
+        print(f"grouped files:\n{grouped_files}")
+
         # combine files for each group
         for basename, reads in grouped_files.items():
             for read_type, files in reads.items():
