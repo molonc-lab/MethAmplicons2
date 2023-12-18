@@ -361,7 +361,10 @@ class MethAmplicon:
                 
                 # there is only one entry per sample amplicon pair in the dictionary - should not have to check if it is there
                 if not samp_amp in self.sample_efficiencies.keys():
-                    if not exp_ts == 0:
+                    if exp_ts == None:
+                        # we actually do not skip a samp_amp with no reads until if alleles_sort == []
+                        self.sample_efficiencies[samp_amp] = ["No reads for sample_amplicon pair"]
+                    elif not exp_ts == 0:
                         self.sample_efficiencies[samp_amp] = [num_ts_obs/ exp_ts]
                     else:
                         self.sample_efficiencies[samp_amp] = ["No non-CpG Cs"]

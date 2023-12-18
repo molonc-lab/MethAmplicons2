@@ -109,27 +109,31 @@ class ExtractMeth(ExtractData):
         return epiallele_counts_region
     
     def get_efficiency_vals(self, allele_counts, refseq, fwd, rev):
-        # rather than look at CpG sites, we want to look at non-CpG Cs
-        # from the reference sequence 
-        # and see if a T is present in the reads 
-        pos=self.get_non_cpg_positions(refseq, fwd, rev)
-        num_ts_obs = 0 
-        # counter for total expected non CpG Cs
-        exp_ts = 0
-        # the number of non CpG Cs in one seq 
-        non_cpg_ts_ref = len(pos)
+        num_ts_obs = 0
 
-        for seq in allele_counts.keys():
-            #should not count "dud" reads
-            if (len(seq) == len(refseq)):
-                non_cpg_cs = ""
-                for i,nuc in enumerate(seq):
-                    # if i is in non_cpg C positions list
-                    # and the nucleotide actually is a C or T
-                    if i in pos and nuc in "CT":
-                        non_cpg_cs += nuc
-                num_ts_obs += non_cpg_cs.count("T")
-                exp_ts += non_cpg_ts_ref
+        if allele_counts == {}:
+            exp_ts = None
+        else:
+            # rather than look at CpG sites, we want to look at non-CpG Cs
+            # from the reference sequence 
+            # and see if a T is present in the reads 
+            pos=self.get_non_cpg_positions(refseq, fwd, rev)
+            # counter for total expected non CpG Cs
+            exp_ts = 0
+            # the number of non CpG Cs in one seq 
+            non_cpg_ts_ref = len(pos)
+
+            for seq in allele_counts.keys():
+                #should not count "dud" reads
+                if (len(seq) == len(refseq)):
+                    non_cpg_cs = ""
+                    for i,nuc in enumerate(seq):
+                        # if i is in non_cpg C positions list
+                        # and the nucleotide actually is a C or T
+                        if i in pos and nuc in "CT":
+                            non_cpg_cs += nuc
+                    num_ts_obs += non_cpg_cs.count("T")
+                    exp_ts += non_cpg_ts_ref
             
         return num_ts_obs, exp_ts   
             
