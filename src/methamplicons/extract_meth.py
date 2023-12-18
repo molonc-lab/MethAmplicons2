@@ -143,14 +143,14 @@ class ExtractMeth(ExtractData):
         
         # amplicon length for 1st filter
         refseq_len=len(refseq)
-        print(f"refseq:\n{refseq}")
+        #print(f"refseq:\n{refseq}")
         
         #minimum number of reads to meet the min freq cutoff for 2nd filter
         #min_reads=reads_n*self.threshold
 
         for seq,val in allele_counts.items():
             #1st and 2nd filters: exclude all indels, and minimum freq
-            #print(f"seq: \n{seq}\nrefseq: \n{refseq}")
+            print(f"seq: \n{seq}\nrefseq: \n{refseq}")
             if (len(seq) == refseq_len): #& (val > min_reads): 
                 allele=""
                 for i,nuc in enumerate(seq):
