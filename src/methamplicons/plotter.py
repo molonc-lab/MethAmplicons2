@@ -36,6 +36,9 @@ class Plotter:
                     data_by_amplicon[amplicon_name][col_name] = df_alleles_sort_all[col_name]
 
         for amplicon_name, allele_data_by_sample in data_by_amplicon.items():
+
+            allele_data_by_sample['sample'] = allele_data_by_sample['sample'].str.split('_parse_').str[0]
+
             fwd_pos, rev_pos = tuple(amplicon_info[amplicon_name])[2:4]
       
             num_cpg = len(ext_meth.get_cpg_positions(refseqs[amplicon_name], fwd_pos, rev_pos))
@@ -142,7 +145,7 @@ class Plotter:
         plt.rcParams['font.family'] = "sans-serif"
         
         df_melt = df.melt(id_vars="pos")
-        #df_melt['variable'] = df_melt["variable"].str.split('_').str[0]
+        df_melt['variable'] = df_melt["variable"].str.split('_parse_').str[0]
         
         #sort the names of the samples
         unique_samples = sorted(df_melt['variable'].unique())
@@ -183,6 +186,8 @@ class Plotter:
 
     
     def plot_lollipop (self, df,sname,outpath,freq_min, amplicon_name):
+
+        df['variable'] = df["variable"].str.split('_parse_').str[0]
     
         # Changing default font to Arial
         plt.rcParams['font.sans-serif'] = "Arial"
@@ -220,6 +225,8 @@ class Plotter:
 
     def plot_lollipop_combined (self, df,df_below_freq,sname,outpath,freq_min, amplicon_name, colbar=True):
 
+        df['variable'] = df["variable"].str.split('_parse_').str[0]
+        
         # Changing default font to Arial
         plt.rcParams['font.sans-serif'] = "Arial"
         plt.rcParams['font.family'] = "sans-serif"
