@@ -216,28 +216,11 @@ class MethAmplicon:
         """
         Get the sample name from the file name - for merged read files
         """
+        pattern = r".extendedFrags.fastq"
+        replacement = ""
+        sid = re.sub(pattern, replacement, os.path.basename(file_name))
 
-        if self.args.combine_lanes:
-            match = re.search(r'^(.*?)_all_lanes', file_name)
-            sid = match.group(1)
-        else:
-            match = re.search(r'^(.*?)_L00[0-9]', file_name)
-            sid = match.group(1)
-        
-        if sid == None:
-            sid = self.use_basename(file_name)
-
-        # with the sid, try to see if there is a corresponding sample name in the 
-        # sample name csv
-        try: 
-            sname=self.labels_df.loc[sid]['ShortLabel']
-            if pd.isnull(sname):
-                sname=self.labels_df.loc[sid]['SampleLabel']
-            sname = sname 
-        except:
-            sname=sid 
-
-        return sname
+        return sid
     
     def plot_per_sample_lollipop(self, alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads, pos_rel_CDS, sname, amplicon_name, output_dir):
         """
