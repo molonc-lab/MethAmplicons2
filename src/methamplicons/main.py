@@ -358,11 +358,17 @@ class MethAmplicon:
             if self.args.bs_conv_eff:
                 num_ts_obs, exp_ts = self.extract_meth.get_efficiency_vals(d, refseq, fwd_pos, rev_pos)
                 samp_amp = sname + "_" + amplicon_name
-                if sname in self.sample_efficiencies.keys():
-                    self.sample_efficiencies[samp_amp] = [self.sample_efficiencies[samp_amp][0] + num_ts_obs, \
-                    self.sample_efficiencies[samp_amp][1] + exp_ts]
-                else: 
-                    self.sample_efficiencies[samp_amp] = [num_ts_obs, exp_ts]
+                
+                # there is only one entry per sample amplicon pair in the dictionary - should not have to check if it is there
+                if not samp_amp in self.sample_efficiencies.keys():
+                    if not exp_ts == 0:
+                        self.sample_efficiencies[samp_amp] = num_ts_obs/ exp_ts
+                    else:
+                        self.sample_efficiencies[samp_amp] = "No non-CpG Cs"
+                else:
+                    print("Attempted to record bisulfite conversion efficiency for a \
+                           sample amplicon pair twice, there should only be one of each \
+                          sample amplicon pair, if two samples have the same name, please rename one sample")
 
             if alleles_sort == []: 
                 print(f"No epialleles were found for amplified region: {amplicon_name} for {sname}, trying next region")
@@ -491,13 +497,10 @@ class MethAmplicon:
         self.meth_amplicon_loop()
 
         if self.args.bs_conv_eff:
-            for sample, eff_values in self.sample_efficiencies.keys():
-                self.sample_efficiencies[sample] = eff_values[0]/eff_values[1]
+            
             efficiency_df = pd.DataFrame.from_dict(self.sample_efficiencies)
-
-            if self.args.bs_conv_eff:
-                # want to save this df_alt_for_region in the corresponding amplicon folder
-                efficiency_df.to_csv(os.path.join(self.args.output_dir,f"bisulfite_conversion_efficiencies.csv"))
+            # want to save this df_alt_for_region in the corresponding amplicon folder
+            efficiency_df.to_csv(os.path.join(self.args.output_dir,f"bisulfite_conversion_efficiencies.csv"))
 
         if self.args.save_intermediates == "false":
             # delete the merged and demultiplexed directories and all files they contain
