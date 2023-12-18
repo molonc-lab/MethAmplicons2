@@ -37,8 +37,6 @@ class Plotter:
 
         for amplicon_name, allele_data_by_sample in data_by_amplicon.items():
 
-            allele_data_by_sample['sample'] = allele_data_by_sample['sample'].str.split('_parse_').str[0]
-
             fwd_pos, rev_pos = tuple(amplicon_info[amplicon_name])[2:4]
       
             num_cpg = len(ext_meth.get_cpg_positions(refseqs[amplicon_name], fwd_pos, rev_pos))
@@ -64,6 +62,9 @@ class Plotter:
                                                 value_name="count")
 
             melted_df = melted_df.fillna(0)
+
+            melted_df['sample'] = melted_df['sample'].str.split('_parse_').str[0]
+
 
             # counts for a given number of CpGs/epiallele for each sample
             total_counts = melted_df.groupby('sample')['count'].sum()
