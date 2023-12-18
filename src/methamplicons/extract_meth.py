@@ -114,16 +114,21 @@ class ExtractMeth(ExtractData):
         # and see if a T is present in the reads 
         pos=self.get_non_cpg_positions(refseq, fwd, rev)
         num_ts_obs = 0 
-        exp_ts = 0 
+        # counter for total expected non CpG Cs
+        exp_ts = 0
+        # the number of non CpG Cs in one seq 
         non_cpg_ts_ref = len(pos)
 
         for seq in allele_counts.keys():
-            if (len(seq) == len(refseq)): #& (val > min_reads): 
+            #should not count "dud" reads
+            if (len(seq) == len(refseq)):
                 non_cpg_cs = ""
                 for i,nuc in enumerate(seq):
+                    # if i is in non_cpg C positions list
+                    # and the nucleotide actually is a C or T
                     if i in pos and nuc in "CT":
                         non_cpg_cs += nuc
-                num_ts_obs += non_cpg_cs.count("C")
+                num_ts_obs += non_cpg_cs.count("T")
                 exp_ts += non_cpg_ts_ref
             
         return num_ts_obs, exp_ts   
