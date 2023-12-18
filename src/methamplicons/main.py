@@ -133,7 +133,7 @@ class MethAmplicon:
                             r2_file = self.replace_last(file, "R1", "R2")
                             if r2_file in files:    
                                 grouped_files[basename]["R1"].append(file)
-                                grouped_files[basename]["R2"].append(file)
+                                grouped_files[basename]["R2"].append(r2_file)
                     #else continue
 
         # combine files for each group
