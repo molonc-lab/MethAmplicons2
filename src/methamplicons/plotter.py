@@ -188,10 +188,6 @@ class Plotter:
 
     
     def plot_lollipop (self, df,sname,outpath,freq_min, amplicon_name):
-
-        print(f"plot lollipop dataframe:\n{df.to_string()}")
-
-        df['variable'] = df["variable"].str.split('_parse_').str[0]
     
         # Changing default font to Arial
         plt.rcParams['font.sans-serif'] = "Arial"
@@ -218,20 +214,17 @@ class Plotter:
         ax2.axes.set_xlabel("Frequency (%)")
         ax2.set_xlim([0, 100])
 
-        plt.suptitle(sname)# + f"\nMethylation alleles detected at >{freq_min}% frequency") 
+        sname_parsed = sname.split("_parse_")[0]
+        plt.suptitle(sname_parsed)# + f"\nMethylation alleles detected at >{freq_min}% frequency") 
 
         fig.tight_layout(rect=[0, 0.03, 1, 0.9])
 
-        fig.savefig(f"{outpath}/{sname}_alleles_above_{freq_min}_perc_freq_barplot.pdf")
-        print(f"Saving file to:{outpath}/{sname}_alleles_above_{freq_min}_perc_freq_barplot.pdf")
+        fig.savefig(f"{outpath}/{sname_parsed}_alleles_above_{freq_min}_perc_freq_barplot.pdf")
+        print(f"Saving file to:{outpath}/{sname_parsed}_alleles_above_{freq_min}_perc_freq_barplot.pdf")
         
         plt.close()
 
     def plot_lollipop_combined (self, df,df_below_freq,sname,outpath,freq_min, amplicon_name, colbar=True):
-
-        print(f"plot lollipop dataframe:\n{df.to_string()}")
-
-        df['variable'] = df["variable"].str.split('_parse_').str[0]
         
         # Changing default font to Arial
         plt.rcParams['font.sans-serif'] = "Arial"
@@ -283,7 +276,7 @@ class Plotter:
                 transform=ax1.transAxes)
 
         # Figure title
-        fig.suptitle(sname, size=8, weight='bold')
+        fig.suptitle(sname.split("_parse_")[0], size=8, weight='bold')
 
         fig.tight_layout(rect=[0, 0.03, 1, 0.9])
         
