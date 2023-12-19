@@ -361,13 +361,15 @@ class MethAmplicon:
                 
                 # there is only one entry per sample amplicon pair in the dictionary - should not have to check if it is there
                 if not samp_amp in self.sample_efficiencies.keys():
-                    if exp_ts == None:
+                    if exp_ts == "Empty":
                         # we actually do not skip a samp_amp with no reads until if alleles_sort == []
-                        self.sample_efficiencies[samp_amp] = ["No reads for sample_amplicon pair"]
+                        self.sample_efficiencies[samp_amp] = ["No reads for sample-amplicon pair"]
+                    elif exp_ts == "Badseqs":
+                        self.sample_efficiencies[samp_amp] = ["No seqs with length of refseq for sample-amplicon pair"]
                     elif not exp_ts == 0:
                         self.sample_efficiencies[samp_amp] = [num_ts_obs/ exp_ts]
                     else:
-                        self.sample_efficiencies[samp_amp] = ["No non-CpG Cs"]
+                        self.sample_efficiencies[samp_amp] = ["No non-CpG Cs in amplicon - cannot calculate bs conversion efficiency"]
                 else:
                     print("Attempted to record bisulfite conversion efficiency for a \
                            sample amplicon pair twice, there should only be one of each \
