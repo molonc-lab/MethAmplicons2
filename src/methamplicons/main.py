@@ -365,7 +365,7 @@ class MethAmplicon:
                     sample, amplicon = sname.split('_all_lanes_', 1)
                 else:
                     sample = sname
-                    amplicon = amplicon  # Default case if sname doesn't contain the expected patterns
+                    amplicon = amplicon  
 
                 key = (sample, amplicon)
 
@@ -376,6 +376,7 @@ class MethAmplicon:
                         self.sample_efficiencies[key] = ["None_w_length_refseq"]
                     elif not exp_ts == 0:
                         self.sample_efficiencies[key] = [num_ts_obs / exp_ts]
+                        print(f"for sample {sample} and amplicon {amplicon}: num_ts_obs={num_ts_obs}, exp_ts={exp_ts}")
                     else:
                         self.sample_efficiencies[key] = ["No_non_CpG_cs"]
                 else:

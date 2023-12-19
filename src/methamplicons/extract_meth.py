@@ -124,15 +124,20 @@ class ExtractMeth(ExtractData):
         for seq in allele_counts.keys():
             #should not count "dud" reads
             if (len(seq) == len(refseq)):
-                only_dud_seqs = False 
+                only_dud_seqs = False
+                # will include this sequence unless it has a sub of C or T to A or G
+                include_seq = True
                 non_cpg_cs = ""
                 for i,nuc in enumerate(seq):
                     # if i is in non_cpg C positions list
                     # and the nucleotide actually is a C or T
                     if i in pos and nuc in "CT":
                         non_cpg_cs += nuc
-                num_ts_obs += non_cpg_cs.count("T")
-                exp_ts += non_cpg_ts_ref
+                    elif i in pos and nuc in "AGN":
+                        include_seq = False
+                if include_seq:
+                    num_ts_obs += non_cpg_cs.count("T")
+                    exp_ts += non_cpg_ts_ref
 
         if allele_counts == {}:
             exp_ts = "Empty"
