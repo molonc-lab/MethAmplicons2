@@ -363,14 +363,15 @@ class MethAmplicon:
                 if not samp_amp in self.sample_efficiencies.keys():
                     if exp_ts == "Empty":
                         # we actually do not skip a samp_amp with no reads until if alleles_sort == []
-                        self.sample_efficiencies[samp_amp] = ["No reads for sample-amplicon pair"]
+                        self.sample_efficiencies[samp_amp] = ["No_reads"]
                     elif exp_ts == "Badseqs":
-                        self.sample_efficiencies[samp_amp] = ["No seqs with length of refseq for sample-amplicon pair"]
+                        self.sample_efficiencies[samp_amp] = ["None_w_length_refseq"]
                     elif not exp_ts == 0:
                         self.sample_efficiencies[samp_amp] = [num_ts_obs/ exp_ts]
                     else:
-                        self.sample_efficiencies[samp_amp] = ["No non-CpG Cs in amplicon - cannot calculate bs conversion efficiency"]
+                        self.sample_efficiencies[samp_amp] = ["No_non_CpG_cs"]
                 else:
+                    self.sample_efficiencies[samp_amp] = [f"Sample amplicon pair name is not unique but efficiency is {num_ts_obs/ exp_ts}"]
                     print("Attempted to record bisulfite conversion efficiency for a \
                            sample amplicon pair twice, there should only be one of each \
                           sample amplicon pair, if two samples have the same name, please rename one sample")
