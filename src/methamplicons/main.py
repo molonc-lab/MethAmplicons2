@@ -357,24 +357,32 @@ class MethAmplicon:
 
             if self.args.bs_conv_eff:
                 num_ts_obs, exp_ts = self.extract_meth.get_efficiency_vals(d, refseq, fwd_pos, rev_pos)
-                samp_amp = sname + "_" + amplicon_name
-                
-                # there is only one entry per sample amplicon pair in the dictionary - should not have to check if it is there
-                if not samp_amp in self.sample_efficiencies.keys():
-                    if exp_ts == "Empty":
-                        # we actually do not skip a samp_amp with no reads until if alleles_sort == []
-                        self.sample_efficiencies[samp_amp] = ["No_reads"]
-                    elif exp_ts == "Badseqs":
-                        self.sample_efficiencies[samp_amp] = ["None_w_length_refseq"]
-                    elif not exp_ts == 0:
-                        self.sample_efficiencies[samp_amp] = [num_ts_obs/ exp_ts]
-                    else:
-                        self.sample_efficiencies[samp_amp] = ["No_non_CpG_cs"]
+
+                # split sname into sample and amplicon
+                if '_parse_' in sname:
+                    sample, amplicon = sname.split('_parse_', 1)
+                elif '_all_lanes_' in sname:
+                    sample, amplicon = sname.split('_all_lanes_', 1)
                 else:
-                    self.sample_efficiencies[samp_amp] = [f"Sample amplicon pair name is not unique but efficiency is {num_ts_obs/ exp_ts}"]
+                    sample = sname
+                    amplicon = amplicon  # Default case if sname doesn't contain the expected patterns
+
+                key = (sample, amplicon)
+
+                if key not in self.sample_efficiencies:
+                    if exp_ts == "Empty":
+                        self.sample_efficiencies[key] = ["No_reads"]
+                    elif exp_ts == "Badseqs":
+                        self.sample_efficiencies[key] = ["None_w_length_refseq"]
+                    elif not exp_ts == 0:
+                        self.sample_efficiencies[key] = [num_ts_obs / exp_ts]
+                    else:
+                        self.sample_efficiencies[key] = ["No_non_CpG_cs"]
+                else:
+                    self.sample_efficiencies[key] = [f"Sample amplicon pair name is not unique but efficiency is {num_ts_obs / exp_ts}"]
                     print("Attempted to record bisulfite conversion efficiency for a \
-                           sample amplicon pair twice, there should only be one of each \
-                          sample amplicon pair, if two samples have the same name, please rename one sample")
+                        sample amplicon pair twice, there should only be one of each \
+                        sample amplicon pair, if two samples have the same name, please rename one sample")
 
             if alleles_sort == []: 
                 print(f"No epialleles were found for amplified region: {amplicon_name} for {sname}, trying next region")
@@ -421,16 +429,6 @@ class MethAmplicon:
 
         #print(f"accumulated list of allele sort dfs \n {dfs[0]} \n {dfs[1]} \n {dfs[2]} \n {dfs[3]}")
         df_alleles_sort_all2 = reduce(lambda left, right: pd.merge(left, right, on='allele', how='outer'), dfs)
-        
-        #df_alleles_sort_all2 = pd.concat(dfs)
-
-        #df_alleles_sort_all2 = df_alleles_all.pivot_table(index='allele', columns='sname', values='data', fill_value=0)
-
-        #df_alleles_sort_all2.reset_index(inplace=True)
-
-
-        #print(f"df_alleles_sort_all:\n{df_alleles_sort_all2}")
-
 
         #get the names of the different amplicons
         amplicon_names = self.refseqs.keys()
@@ -504,9 +502,11 @@ class MethAmplicon:
 
         if self.args.bs_conv_eff:
             
-            efficiency_df = pd.DataFrame.from_dict(self.sample_efficiencies)
-            # want to save this df_alt_for_region in the corresponding amplicon folder
-            efficiency_df.to_csv(os.path.join(self.args.output_dir,f"bisulfite_conversion_efficiencies.csv"))
+            efficiency_df = pd.DataFrame.from_records(list(self.sample_efficiencies.items()), columns=['Sample_Amplicon', 'BS_Conv_Eff'])
+            efficiency_df[['Sample', 'Amplicon']] = pd.DataFrame(efficiency_df['Sample_Amplicon'].tolist(), index=efficiency_df.index)
+            efficiency_df.drop('Sample_Amplicon', axis=1, inplace=True)
+
+            efficiency_df.to_csv(os.path.join(self.args.output_dir, "bisulfite_conversion_efficiencies.csv"), index=False)
 
         if self.args.save_intermediates == "false":
             # delete the merged and demultiplexed directories and all files they contain
