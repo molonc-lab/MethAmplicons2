@@ -138,12 +138,18 @@ class MethAmplicon:
 
         print(f"grouped files:\n{grouped_files}")
 
-        # combine files for each group
+        # combine files for each group (lanes for a sample)
         for basename, reads in grouped_files.items():
+
+            # will do R1 files then R2 files
             for read_type, files in reads.items():
+                #{R1: [L001_R1.fq, L002_R1.fq], R2: ..}
                 combined_seqs = {}
                 for file in files:
+                    # will get dict with {@VH01336:71:AACC3JLHV:1:1101:28570:1000:TGTTGTT+ACCTATC : ATGTG...}
+                    # the seq info will match two reads and will only correspond to one lane
                     seqs = self.extract_meth.read_fastq(os.path.join(self.args.PE_read_dir, file))
+                    # all R1 reads for multiple lanes now together 
                     combined_seqs.update(seqs)
 
                 # Construct the filename for the combined file
@@ -347,7 +353,7 @@ class MethAmplicon:
 
             # Generate dictionary with all reads for that amplicon in the merged file 
 
-            d=self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
+            d, below_thresh =self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
             print(f'read counts dictionary\n{d}')
 
             refseq = self.refseqs[amplicon_name]
@@ -371,16 +377,16 @@ class MethAmplicon:
 
                 if key not in self.sample_efficiencies:
                     if exp_ts == "Empty":
-                        self.sample_efficiencies[key] = ["No_reads", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n]
+                        self.sample_efficiencies[key] = ["No_reads", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n, below_thresh]
                     elif exp_ts == "Badseqs":
-                        self.sample_efficiencies[key] = ["None_w_length_refseq", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n]
+                        self.sample_efficiencies[key] = ["None_w_length_refseq", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n, below_thresh]
                     elif not exp_ts == 0:
-                        self.sample_efficiencies[key] = [num_ts_obs / exp_ts, num_ts_obs, exp_ts, num_reads_used, num_non_cpg_cs, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n]
+                        self.sample_efficiencies[key] = [num_ts_obs / exp_ts, num_ts_obs, exp_ts, num_reads_used, num_non_cpg_cs, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n, below_thresh]
                         print(f"for sample {sample} and amplicon {amplicon}: num_ts_obs={num_ts_obs}, exp_ts={exp_ts}")
                     else:
                         self.sample_efficiencies[key] = ["No_non_CpG_cs", None, None, None, None]
                 else:
-                    self.sample_efficiencies[key] = [f"Sample amplicon pair name is not unique but efficiency is {num_ts_obs / exp_ts}", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n]
+                    self.sample_efficiencies[key] = [f"Sample amplicon pair name is not unique but efficiency is {num_ts_obs / exp_ts}", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n, below_thresh]
                     print("Attempted to record bisulfite conversion efficiency for a \
                         sample amplicon pair twice, there should only be one of each \
                         sample amplicon pair, if two samples have the same name, please rename one sample")
@@ -504,7 +510,7 @@ class MethAmplicon:
         if self.args.bs_conv_eff:
             
             keys = pd.DataFrame.from_records(list(self.sample_efficiencies.keys()), columns=['Sample', 'Amplicon'])
-            values = pd.DataFrame.from_records(list(self.sample_efficiencies.values()), columns=['BS_Conv_Eff', 'Num_Ts_Obs', 'Num_Exp_Ts_Total', 'Num_Reads_Used_Non_CpG', 'Num_Non_CpG_Cs', "Retained_for_CpG_Total", "Excl_for_CpG_length", "Excl_for_CpG_AG", "Reads_post_merge"])
+            values = pd.DataFrame.from_records(list(self.sample_efficiencies.values()), columns=['BS_Conv_Eff', 'Num_Ts_Obs', 'Num_Exp_Ts_Total', 'Num_Reads_Used_Non_CpG', 'Num_Non_CpG_Cs', "Retained_for_CpG_Total", "Excl_for_CpG_length", "Excl_for_CpG_AG", "Reads_above_thresh", "Reads_below_thresh_ct"])
 
             efficiency_df = pd.concat([keys, values], axis=1)
 

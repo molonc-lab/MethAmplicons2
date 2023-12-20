@@ -91,9 +91,12 @@ class ExtractMeth(ExtractData):
         print(f"self.threshold is {self.threshold} \n threshold read count is {thresh_count}")
 
         delete_seqs = [] # as we cannot delete while iterating
+
+        below_thresh_total = 0 
         for extracted_seq, count in epiallele_counts_region.items():
             if count < thresh_count:
                 delete_seqs.append(extracted_seq)
+                below_thresh_total += count
         
         #delete all sequences with count lower than threshold
         for seq in delete_seqs:
@@ -106,10 +109,10 @@ class ExtractMeth(ExtractData):
         else:
             print(print(sorted(epiallele_counts_region.values())[-20:]))
                     
-        return epiallele_counts_region
+        return epiallele_counts_region, below_thresh_total
     
     def get_efficiency_vals(self, allele_counts, refseq, fwd, rev):
-        '''There should be 2109144 BRCA_l reads - need to fix this'''
+
         num_ts_obs = 0
         only_dud_seqs = True
 
