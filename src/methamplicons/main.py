@@ -504,7 +504,7 @@ class MethAmplicon:
         if self.args.bs_conv_eff:
             
             keys = pd.DataFrame.from_records(list(self.sample_efficiencies.keys()), columns=['Sample', 'Amplicon'])
-            values = pd.DataFrame.from_records(list(self.sample_efficiencies.values()), columns=['BS_Conv_Eff', 'Num_Ts_Obs', 'Num_Exp_Ts_Total', 'Num_Reads_Used_Non_CpG', 'Num_Non_CpG_Cs', "Retained_for_CpG_Total" "Excl_for_CpG_length", "Excl_for_CpG_AG", "Reads_post_merge"])
+            values = pd.DataFrame.from_records(list(self.sample_efficiencies.values()), columns=['BS_Conv_Eff', 'Num_Ts_Obs', 'Num_Exp_Ts_Total', 'Num_Reads_Used_Non_CpG', 'Num_Non_CpG_Cs', "Retained_for_CpG_Total", "Excl_for_CpG_length", "Excl_for_CpG_AG", "Reads_post_merge"])
 
             efficiency_df = pd.concat([keys, values], axis=1)
 
