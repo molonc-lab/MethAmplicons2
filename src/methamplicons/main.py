@@ -353,7 +353,7 @@ class MethAmplicon:
             refseq = self.refseqs[amplicon_name]
 
             # Count only CpG sites in alleles
-            alleles_sort,filtered_reads=self.extract_meth.count_alleles(d, refseq, fwd_pos, rev_pos)
+            alleles_sort,filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n =self.extract_meth.count_alleles(d, refseq, fwd_pos, rev_pos)
 
             if self.args.bs_conv_eff:
                 num_ts_obs, exp_ts, num_reads_used, num_non_cpg_cs = self.extract_meth.get_efficiency_vals(d, refseq, fwd_pos, rev_pos)
@@ -371,16 +371,16 @@ class MethAmplicon:
 
                 if key not in self.sample_efficiencies:
                     if exp_ts == "Empty":
-                        self.sample_efficiencies[key] = ["No_reads", None, None, None, None]
+                        self.sample_efficiencies[key] = ["No_reads", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n]
                     elif exp_ts == "Badseqs":
-                        self.sample_efficiencies[key] = ["None_w_length_refseq", None, None, None, None]
+                        self.sample_efficiencies[key] = ["None_w_length_refseq", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n]
                     elif not exp_ts == 0:
-                        self.sample_efficiencies[key] = [num_ts_obs / exp_ts, num_ts_obs, exp_ts, num_reads_used, num_non_cpg_cs]
+                        self.sample_efficiencies[key] = [num_ts_obs / exp_ts, num_ts_obs, exp_ts, num_reads_used, num_non_cpg_cs, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n]
                         print(f"for sample {sample} and amplicon {amplicon}: num_ts_obs={num_ts_obs}, exp_ts={exp_ts}")
                     else:
                         self.sample_efficiencies[key] = ["No_non_CpG_cs", None, None, None, None]
                 else:
-                    self.sample_efficiencies[key] = [f"Sample amplicon pair name is not unique but efficiency is {num_ts_obs / exp_ts}", None, None, None, None]
+                    self.sample_efficiencies[key] = [f"Sample amplicon pair name is not unique but efficiency is {num_ts_obs / exp_ts}", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n]
                     print("Attempted to record bisulfite conversion efficiency for a \
                         sample amplicon pair twice, there should only be one of each \
                         sample amplicon pair, if two samples have the same name, please rename one sample")
@@ -504,7 +504,7 @@ class MethAmplicon:
         if self.args.bs_conv_eff:
             
             keys = pd.DataFrame.from_records(list(self.sample_efficiencies.keys()), columns=['Sample', 'Amplicon'])
-            values = pd.DataFrame.from_records(list(self.sample_efficiencies.values()), columns=['BS_Conv_Eff', 'Num_Ts_Obs', 'Num_Exp_Ts_Total', 'Num_Reads_Used', 'Num_Non_CpG_Cs'])
+            values = pd.DataFrame.from_records(list(self.sample_efficiencies.values()), columns=['BS_Conv_Eff', 'Num_Ts_Obs', 'Num_Exp_Ts_Total', 'Num_Reads_Used_Non_CpG', 'Num_Non_CpG_Cs', "Retained_for_CpG_Total" "Excl_for_CpG_length", "Excl_for_CpG_AG", "Reads_post_merge"])
 
             efficiency_df = pd.concat([keys, values], axis=1)
 

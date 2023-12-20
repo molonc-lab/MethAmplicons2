@@ -179,6 +179,8 @@ class ExtractMeth(ExtractData):
         
         #minimum number of reads to meet the min freq cutoff for 2nd filter
         #min_reads=reads_n*self.threshold
+        filt_for_length = 0 
+        filt_for_CpG_AG = 0 
 
         for seq,val in allele_counts.items():
             #1st and 2nd filters: exclude all indels, and minimum freq
@@ -196,9 +198,11 @@ class ExtractMeth(ExtractData):
                     alleles[allele]+=val
                 else: 
                     print("One of the CpG sites had an A or G")
+                    filt_for_CpG_AG += val
             else: 
                 print(f"Length of sequence = {len(seq)}, Length of refseq = {refseq_len}")
                 #print(f"Number of reads = {val}, Minimum reads was {min_reads}")
+                filt_for_length += val
 
         # Sort by number of reads supporting the allele
         alleles_sort = sorted(alleles.items(), key=operator.itemgetter(1), reverse=True)
@@ -208,7 +212,7 @@ class ExtractMeth(ExtractData):
 
         print(f"Total number of reads after filtering is: {filtered_reads}. Total before was {reads_n}")
         
-        return(alleles_sort,filtered_reads)
+        return(alleles_sort,filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n)
 
     def group_alleles_by_meCpG (alleles_sort):
         d_group = defaultdict(int)
