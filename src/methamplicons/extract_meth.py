@@ -120,6 +120,8 @@ class ExtractMeth(ExtractData):
         exp_ts = 0
         # the number of non CpG Cs in one seq 
         non_cpg_ts_ref = len(pos)
+
+        useable_reads = 0 
         
         for seq in allele_counts.keys():
             #should not count "dud" reads
@@ -136,15 +138,17 @@ class ExtractMeth(ExtractData):
                     elif i in pos and nuc in "AGN":
                         include_seq = False
                 if include_seq:
+                    # no need for condition if len(non_cpg_cs) == non_cpg_ts_ref:
                     num_ts_obs += non_cpg_cs.count("T")
                     exp_ts += non_cpg_ts_ref
+                    useable_reads += 1
 
         if allele_counts == {}:
             exp_ts = "Empty"
         elif only_dud_seqs:
             exp_ts = "Badseqs"
 
-        return num_ts_obs, exp_ts   
+        return num_ts_obs, exp_ts, useable_reads, non_cpg_ts_ref
             
 
     def count_alleles(self, allele_counts, refseq, fwd, rev): 
