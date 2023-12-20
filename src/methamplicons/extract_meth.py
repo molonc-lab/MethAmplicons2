@@ -123,6 +123,7 @@ class ExtractMeth(ExtractData):
         non_cpg_ts_ref = len(pos)
 
         useable_reads = 0 
+        nonuseable_reads = 0
         
         for seq in allele_counts.keys():
             #should not count "dud" reads
@@ -144,8 +145,12 @@ class ExtractMeth(ExtractData):
                     num_ts_obs += non_cpg_cs.count("T")
                     exp_ts += non_cpg_ts_ref
                     useable_reads += 1
+                else:
+                    nonuseable_reads += 1
                 #else:
                     #print(f"bs_conv_env reject:\nseq{seq}\nnoncpgc_positions{pos}\nnon_cpg_cs{non_cpg_cs}")
+
+        print(f"The number of nonuseable reads was {nonuseable_reads}")
 
         if allele_counts == {}:
             exp_ts = "Empty"
