@@ -109,6 +109,7 @@ class ExtractMeth(ExtractData):
         return epiallele_counts_region
     
     def get_efficiency_vals(self, allele_counts, refseq, fwd, rev):
+        '''There should be 2109144 BRCA_l reads - need to fix this'''
         num_ts_obs = 0
         only_dud_seqs = True
 
@@ -143,6 +144,8 @@ class ExtractMeth(ExtractData):
                     num_ts_obs += non_cpg_cs.count("T")
                     exp_ts += non_cpg_ts_ref
                     useable_reads += 1
+                #else:
+                    #print(f"bs_conv_env reject:\nseq{seq}\nnoncpgc_positions{pos}\nnon_cpg_cs{non_cpg_cs}")
 
         if allele_counts == {}:
             exp_ts = "Empty"
