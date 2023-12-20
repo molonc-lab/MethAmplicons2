@@ -138,6 +138,7 @@ class ExtractMeth(ExtractData):
                     elif i in pos and nuc in "AGN":
                         include_seq = False
                 if include_seq:
+                    print(f"bs_conv_env:\nseq{seq}\nnoncpgc_positions{pos}\nnon_cpg_cs{non_cpg_cs}\nnum_ts_obs{num_ts_obs}\nnum_ts_exp{non_cpg_ts_ref}")
                     # no need for condition if len(non_cpg_cs) == non_cpg_ts_ref:
                     num_ts_obs += non_cpg_cs.count("T")
                     exp_ts += non_cpg_ts_ref
