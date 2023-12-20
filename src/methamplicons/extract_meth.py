@@ -125,7 +125,7 @@ class ExtractMeth(ExtractData):
         useable_reads = 0 
         nonuseable_reads = 0
         
-        for seq, count in allele_counts.values():
+        for seq in allele_counts.keys():
             #should not count "dud" reads
             if (len(seq) == len(refseq)):
                 only_dud_seqs = False
@@ -140,6 +140,7 @@ class ExtractMeth(ExtractData):
                     elif i in pos and nuc in "AGN":
                         include_seq = False
                 if include_seq:
+                    count = allele_counts[seq]
                     print(f"bs_conv_env:\nseq{seq}\nnoncpgc_positions{pos}\nnon_cpg_cs{non_cpg_cs}\nnum_ts_obs{num_ts_obs}\nnum_ts_exp{non_cpg_ts_ref}")
                     # no need for condition if len(non_cpg_cs) == non_cpg_ts_ref:
                     num_ts_obs += non_cpg_cs.count("T") * count
