@@ -508,7 +508,7 @@ class MethAmplicon:
 
             efficiency_df = pd.concat([keys, values], axis=1)
 
-            efficiency_df.to_csv(os.path.join(self.args.output_dir, "bisulfite_conversion_efficiencies.csv"), index=False)
+            efficiency_df.to_csv(os.path.join(self.args.output_dir, "bisulfite_seq_info.csv"), index=False)
 
         if self.args.save_intermediates == "false":
             # delete the merged and demultiplexed directories and all files they contain
