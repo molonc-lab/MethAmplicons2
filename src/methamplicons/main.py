@@ -362,7 +362,12 @@ class MethAmplicon:
             alleles_sort,filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n =self.extract_meth.count_alleles(d, refseq, fwd_pos, rev_pos)
 
             if self.args.bs_conv_eff:
-                num_ts_obs, exp_ts, num_reads_used, num_non_cpg_cs = self.extract_meth.get_efficiency_vals(d, refseq, fwd_pos, rev_pos)
+                
+                self.extract_meth.set_threshold(0)
+                all_reads_df, zero_reads =self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
+                self.extract_meth.set_threshold(self.args.min_seq_freq)
+                
+                num_ts_obs, exp_ts, num_reads_used, num_non_cpg_cs = self.extract_meth.get_efficiency_vals(all_reads_df, refseq, fwd_pos, rev_pos)
 
                 # split sname into sample and amplicon
                 if '_parse_' in sname:
