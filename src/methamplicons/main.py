@@ -233,13 +233,12 @@ class MethAmplicon:
         
         # with the sid, try to see if there is a corresponding sample name in the 
         # sample name csv
-        try: 
-            sname=self.labels_df.loc[sid]['ShortLabel']
+        #try: 
+        sname=self.labels_df.loc[sid]['ShortLabel']
+        if pd.isnull(sname):
+            sname=self.labels_df.loc[sid]['SampleLabel']
             if pd.isnull(sname):
-                sname=self.labels_df.loc[sid]['SampleLabel']
-            sname = sname 
-        except:
-            sname = None
+                sname = None
 
         return sname
     
@@ -344,6 +343,7 @@ class MethAmplicon:
             sname = self.get_sname(file, amplicon_name)
 
             if sname == None:
+                # a short name for the file could not be found
                 sname = self.use_basename(file)
             else:
                 sname = sname + "_parse_" + amplicon_name

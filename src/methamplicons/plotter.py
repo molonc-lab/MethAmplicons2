@@ -220,8 +220,8 @@ class Plotter:
 
         fig.tight_layout(rect=[0, 0.03, 1, 0.9])
 
-        fig.savefig(f"{outpath}/{sname_parsed}_alleles_above_{freq_min}_perc_freq_barplot.pdf")
-        print(f"Saving file to:{outpath}/{sname_parsed}_alleles_above_{freq_min}_perc_freq_barplot.pdf")
+        fig.savefig(f"{outpath}/{sname_parsed}_barplot.pdf")
+        print(f"Saving file to:{outpath}/{sname_parsed}_barplot.pdf")
         
         plt.close()
 
@@ -315,11 +315,11 @@ class Plotter:
                         size=8)
             
             #fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot.pdf")
-            fig.savefig(f"{outpath}/{sname_parsed}_allele_freq_w_below_{freq_min}_perc_avgd_barplot.pdf")
-            print(f"Saving file to: {outpath}/{sname}_allele_freq_w_below_{freq_min}_perc_avgd_barplot.pdf")
+            fig.savefig(f"{outpath}/{sname_parsed}_barplot.pdf")
+            print(f"Saving file to: {outpath}/{sname_parsed}_barplot.pdf")
         else:
-            fig.savefig(f"{outpath}/{sname_parsed}_{freq_min}perc_barplot_nolegend.pdf")
-            print(f"Saving file to: {outpath}/{sname}_{freq_min}perc_barplot_nolegend.pdf")
+            fig.savefig(f"{outpath}/{sname_parsed}_barplot.pdf")
+            print(f"Saving file to: {outpath}/{sname_parsed}_barplot.pdf")
 
         plt.close()
         
