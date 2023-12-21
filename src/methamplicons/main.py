@@ -420,8 +420,9 @@ class MethAmplicon:
                 os.makedirs(amp_out_dir)
             
             if self.args.save_data:
+                sname_parsed = sname.split("_parse_")[0]
                 # want to save this df_alt_for_region in the corresponding amplicon folder
-                df_alleles_sort.to_csv(os.path.join(amp_out_dir,f"{sname}_{amplicon_name}_df_alleles_sort.csv")) 
+                df_alleles_sort.to_csv(os.path.join(amp_out_dir,f"{sname_parsed}_df_alleles_sort.csv")) 
             #"""
             
             df_sample.columns=[sname]
