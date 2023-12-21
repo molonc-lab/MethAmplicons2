@@ -69,8 +69,8 @@ class ExtractData:
             os.makedirs(parsed_out_dir)
 
         # will have read 1 and read 2 files for a given sample and will later append the gene name
-        new_r1_base_name = os.path.join(parsed_out_dir, base_name + "_R1")
-        new_r2_base_name = os.path.join(parsed_out_dir, base_name + "_R2")
+        new_r1_base_name = os.path.join(parsed_out_dir, base_name + "R1")
+        new_r2_base_name = os.path.join(parsed_out_dir, base_name + "R2")
 
         #print(f"The new base names from the demulitplexed function (point 1) are {new_r1_base_name} and {new_r2_base_name}")
 
