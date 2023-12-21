@@ -233,12 +233,12 @@ class MethAmplicon:
         
         # with the sid, try to see if there is a corresponding sample name in the 
         # sample name csv
-        #try: 
-        sname=self.labels_df.loc[sid]['ShortLabel']
-        if pd.isnull(sname):
-            sname=self.labels_df.loc[sid]['SampleLabel']
+        try: 
+            sname=self.labels_df.loc[sid]['ShortLabel']
             if pd.isnull(sname):
-                sname = None
+                sname=self.labels_df.loc[sid]['SampleLabel']
+        except:
+            sname = None
 
         return sname
     
