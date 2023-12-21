@@ -345,8 +345,10 @@ class MethAmplicon:
             if sname == None:
                 # a short name for the file could not be found
                 sname = self.use_basename(file)
+                print(f"full file sname:{sname}")
             else:
                 sname = sname + "_parse_" + amplicon_name
+                print(f"short sname:{sname}")
 
             file_path = os.path.join(merged_path, file)
             fwd_primer, rev_primer, fwd_pos, rev_pos, pos_rel_CDS = tuple(self.amplicon_info[amplicon_name])
