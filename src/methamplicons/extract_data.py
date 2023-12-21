@@ -118,7 +118,7 @@ class ExtractData:
             new_fastq_r2.close()
 
             if runflash: 
-                base_name_reg = base_name + "_" + amplicon_name
+                base_name_reg = base_name + amplicon_name
                 #print(f"The base name for the merged file is {base_name_reg}")
                 refseq_len = len(refseqs[amplicon_name])
                 # pass required aruments to run_flash, converting required arguments to strings
