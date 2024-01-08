@@ -72,8 +72,6 @@ class ExtractData:
         new_r1_base_name = os.path.join(parsed_out_dir, base_name + "R1")
         new_r2_base_name = os.path.join(parsed_out_dir, base_name + "R2")
 
-        #print(f"The new base names from the demulitplexed function (point 1) are {new_r1_base_name} and {new_r2_base_name}")
-
         # get average read length
         if runflash: 
             read_lengths = [len(lst[0]) for lst in read1_seqs.values()]
@@ -144,9 +142,7 @@ class ExtractData:
         # ALL ARGUMENTS MUST BE STRINGS
         cmd = [flash_binary, "-m", "10", "-M", refseq_len, "-x", "0.25", "-O", "-r", avg_read_len, \
                 "-f", refseq_len, r1s_for_region, r2s_for_region, "-d", output_dir, "-o", base_name_reg]
-        
-        #subprocess.run(cmd, universal_newlines=True, check=True)
-
+    
         if (self.verbose == "true"):
             subprocess.run(cmd, universal_newlines=True, check=True)
         else:
@@ -230,8 +226,6 @@ class ExtractData:
                 primer_dict[amplicon_name] = [primer1, primer2, fwd_pos, rev_pos, int(pos_relative_CDS)]
                 #remove newline character if applicable
                 refseqs[amplicon_name] = refseq
-
-        #print(f"primer_dict:\n {primer_dict}\nRefseqs:\n{refseqs}")
 
         return primer_dict, refseqs
 

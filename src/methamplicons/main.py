@@ -43,15 +43,12 @@ class MethAmplicon:
         return dir_path
 
     def valid_amplicon_info_file(self, file_path):
-        #print(f"Amplicon info file is {file_path}")
         return self.valid_file(file_path, "Primers and Reference Sequences", ['.tsv'])
     
     def valid_labels_file(self, file_path):
-        #print(f"Labels file is {file_path}")
         return self.valid_file(file_path, "Labels", ['.csv'])
     
     def valid_out_dir(self, dir_path): 
-        #print(f"Output directory is {dir_path}")
         if not os.path.isdir(dir_path): 
             os.makedirs(dir_path, exist_ok=True)
 
@@ -98,14 +95,9 @@ class MethAmplicon:
         self.parser.add_argument('--save_intermediates', type=str, choices=['true', 'false'], \
                                  default='true', help="Save 'demultiplexed' and merged read files for all combinations of samples and amplicons (default: true).")
         
-                # add an option to save or delete intermediate files -default will be delete
+        # add an option to save or delete intermediate files -default will be delete
         self.parser.add_argument('--combine_lanes', type=str, choices=['true', 'false'], \
                                  default='true', help="Combine fastq files from different sequencing lanes (L001, L002) into single R1 and R2 files (default: true).")
-        
-
-        # add an option to save or delete intermediate files -default will be delete
-        self.parser.add_argument('--bs_conv_eff', type=str, choices=['true', 'false'], \
-                                 default='true', help="Output the bisulfite conversion efficiencies i.e. proportion of non-CpG Cs converted to Ts, for each sample(default: true).")
 
     @staticmethod
     def replace_last(source_string, replace_what, replace_with):
@@ -126,9 +118,6 @@ class MethAmplicon:
                 basename_match = re.search(r'^(.*?)_L00[0-9]', file)
                 if basename_match:
                     basename = basename_match.group(1)
-                    #if not (basename in grouped_files.keys()):
-                    #read_type = 'R1' if 'R1' in file else 'R2'
-                    #base_noR1R2 = self.replace_last(basename)
                     if "R1" in file:
                         r2_file = self.replace_last(file, "R1", "R2")
                         if r2_file in files:    
@@ -230,7 +219,6 @@ class MethAmplicon:
             match = re.search(r'^(.*?)_L00[0-9]', file_name)
             sid = match.group(1)
 
-        
         # with the sid, try to see if there is a corresponding sample name in the 
         # sample name csv
         try: 
@@ -254,17 +242,11 @@ class MethAmplicon:
             df_below_freq=self.extract_meth.calculate_meth_fraction_min(alleles_sort, refseq, fwd_pos, rev_pos, filtered_reads,freq_min)
             df.variable = df.variable + pos_rel_CDS
             df_below_freq.variable = df_below_freq.variable + pos_rel_CDS
-            ##print(f"Dataframe 'below frequency' {df_below_freq}")
-            #plot_path=f'{self.args.output_dir}{freq_min}_perc/'
-            
-            #print(f"The plot path for the individual sample plot for {sname} is {plot_path}")
             
             if df_below_freq.freq.sum() > 0:  
-                # if you have epialleles with frequency below 5% 
-                print(f"making plot for {sname} + {amplicon_name} in {output_dir}")        
+                # if you have epialleles with frequency below 5%      
                 self.plotter.plot_lollipop_combined(df,df_below_freq,sname,output_dir,freq_min, amplicon_name)
-            else:
-                print(f"making plot for {sname} + {amplicon_name} in {output_dir}")      
+            else:     
                 self.plotter.plot_lollipop(df,sname,output_dir,freq_min, amplicon_name)
 
     
@@ -278,8 +260,6 @@ class MethAmplicon:
             for col_name in df_alt.columns: 
                 #print(f"1. col_name is {col_name}")
                 if amplicon_name in col_name: 
-                    #print(f"2. col_name is {col_name}, amplicon name is {amplicon_name}")
-
                     # need to create a dataframe with alleles specific to that amplicon (remove NAN for that column)
                     """
                     Filter out NAN values for a column corresponding to a given amplicon-sample combination when creating a new dataframe for a given amplicon, e.g. RAD51C
@@ -297,18 +277,13 @@ class MethAmplicon:
                     #need to remove all NAs, then merge, then convert NAs to zeros
                     df_alts_by_region[amplicon_name][col_name] = filtered_df_alt[col_name]
 
-
         for amplicon_name, df_alt_for_region in df_alts_by_region.items():
-            # it would appear -156 is the CDS site?
             pos_rel_CDS = self.amplicon_info[amplicon_name][-1]
-            #print(f"pos_rel_CDS: {pos_rel_CDS}")
-            #print(type(pos_rel_CDS))
             pos_promoter = list(map(lambda x: x + pos_rel_CDS, self.extract_meth.get_cpg_positions(self.refseqs[amplicon_name], self.amplicon_info[amplicon_name][2],self.amplicon_info[amplicon_name][3] )))
             df_alt_for_region['pos'] = pos_promoter
             df_alt_for_region.drop(columns=["position"], inplace=True)
-            #print(f"df_alt for region {amplicon_name}: \n{df_alt_for_region}")
-            #plt.style.use('default')
             amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
+
             if not os.path.exists(amp_out_dir):
                 os.makedirs(amp_out_dir)
             
@@ -325,7 +300,6 @@ class MethAmplicon:
         allele_sort_dfs = []
 
         df_alt = pd.DataFrame() 
-        df_alt_unmeth = pd.DataFrame()
         merged_path = os.path.join(self.args.output_dir, "merged")
 
         #After merging of reads is completed, program flow is essentially the same as in MethAmplicon
@@ -345,78 +319,72 @@ class MethAmplicon:
             if sname == None:
                 # a short name for the file could not be found
                 sname = self.use_basename(file)
-                print(f"full file sname:{sname}")
+                #print(f"full file sname:{sname}")
             else:
                 sname = sname + "_parse_" + amplicon_name
-                print(f"short sname:{sname}")
+                #print(f"short sname:{sname}")
 
             file_path = os.path.join(merged_path, file)
             fwd_primer, rev_primer, fwd_pos, rev_pos, pos_rel_CDS = tuple(self.amplicon_info[amplicon_name])
 
             # Generate dictionary with all reads for that amplicon in the merged file 
-
             d, below_thresh =self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
-            print(f'read counts dictionary\n{d}')
+            #print(f'read counts dictionary\n{d}')
 
             refseq = self.refseqs[amplicon_name]
 
             # Count only CpG sites in alleles
             alleles_sort,filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n =self.extract_meth.count_alleles(d, refseq, fwd_pos, rev_pos)
 
-            if self.args.bs_conv_eff:
+            ### make this a function - save_info() in the future
                 
-                self.extract_meth.set_threshold(0)
-                all_reads_df, zero_reads =self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
-                self.extract_meth.set_threshold(self.args.min_seq_freq)
-                
-                num_ts_obs, exp_ts, num_reads_used, num_non_cpg_cs = self.extract_meth.get_efficiency_vals(all_reads_df, refseq, fwd_pos, rev_pos)
+            self.extract_meth.set_threshold(0)
+            all_reads_df, zero_reads =self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
+            self.extract_meth.set_threshold(self.args.min_seq_freq)
+            
+            num_ts_obs, exp_ts, num_reads_used, num_non_cpg_cs = self.extract_meth.get_efficiency_vals(all_reads_df, refseq, fwd_pos, rev_pos)
 
-                # split sname into sample and amplicon
-                if '_parse_' in sname:
-                    sample, amplicon = sname.split('_parse_', 1)
-                elif '_all_lanes_' in sname:
-                    sample, amplicon = sname.split('_all_lanes_', 1)
+            # split sname into sample and amplicon
+            if '_parse_' in sname:
+                sample, amplicon = sname.split('_parse_', 1)
+            elif '_all_lanes_' in sname:
+                sample, amplicon = sname.split('_all_lanes_', 1)
+            else:
+                sample = sname
+                amplicon = amplicon  
+
+            key = (sample, amplicon)
+
+            if key not in self.sample_efficiencies:
+                if exp_ts == "Empty":
+                    self.sample_efficiencies[key] = ["No_reads", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n, below_thresh]
+                elif exp_ts == "Badseqs":
+                    self.sample_efficiencies[key] = ["None_w_length_refseq", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n, below_thresh]
+                elif not exp_ts == 0:
+                    self.sample_efficiencies[key] = [num_ts_obs / exp_ts, num_ts_obs, exp_ts, num_reads_used, num_non_cpg_cs, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n, below_thresh]
+                    # print(f"for sample {sample} and amplicon {amplicon}: num_ts_obs={num_ts_obs}, exp_ts={exp_ts}")
                 else:
-                    sample = sname
-                    amplicon = amplicon  
-
-                key = (sample, amplicon)
-
-                if key not in self.sample_efficiencies:
-                    if exp_ts == "Empty":
-                        self.sample_efficiencies[key] = ["No_reads", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n, below_thresh]
-                    elif exp_ts == "Badseqs":
-                        self.sample_efficiencies[key] = ["None_w_length_refseq", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n, below_thresh]
-                    elif not exp_ts == 0:
-                        self.sample_efficiencies[key] = [num_ts_obs / exp_ts, num_ts_obs, exp_ts, num_reads_used, num_non_cpg_cs, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n, below_thresh]
-                        print(f"for sample {sample} and amplicon {amplicon}: num_ts_obs={num_ts_obs}, exp_ts={exp_ts}")
-                    else:
-                        self.sample_efficiencies[key] = ["No_non_CpG_cs", None, None, None, None]
-                else:
-                    self.sample_efficiencies[key] = [f"Sample amplicon pair name is not unique but efficiency is {num_ts_obs / exp_ts}", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n, below_thresh]
-                    print("Attempted to record bisulfite conversion efficiency for a \
-                        sample amplicon pair twice, there should only be one of each \
-                        sample amplicon pair, if two samples have the same name, please rename one sample")
-
+                    self.sample_efficiencies[key] = ["No_non_CpG_cs", None, None, None, None]
+            else:
+                self.sample_efficiencies[key] = [f"Sample amplicon pair name is not unique but efficiency is {num_ts_obs / exp_ts}", None, None, None, None, filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n, below_thresh]
+                print("Attempted to record bisulfite conversion efficiency for a \
+                    sample amplicon pair twice, there should only be one of each \
+                    sample amplicon pair, if two samples have the same name, please rename one sample")
+            ### end of save_info function 
+                    
             if alleles_sort == []: 
                 print(f"No epialleles were found for amplified region: {amplicon_name} for {sname}, trying next region")
                 #should not have to use continue 
                 continue
                 
             df_alleles_sort = pd.DataFrame(alleles_sort, columns=['allele',sname])
-            print(f"Alleles sorted as dataframe for {sname} and {amplicon_name}: \n {df_alleles_sort.to_string()}")
+            #print(f"Alleles sorted as dataframe for {sname} and {amplicon_name}: \n {df_alleles_sort.to_string()}")
 
             allele_sort_dfs.append(df_alleles_sort.copy())
 
             #Calculate methylation fraction per CpG site
             df_sample=self.extract_meth.calculate_meth_fraction(alleles_sort, refseq, fwd_pos, rev_pos)
-            print(f"\ndf_sample for {sname} and {amplicon_name}: \n {df_sample.to_string()}")
-        
-            #print(f"Sample dataframe unmeth: \n {df_sample_unmeth}")
-            
-            #"""     
-            print(f"df_alleles_sort {sname} with {amplicon_name}")
-            print(df_alleles_sort.to_string)
+
             amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
             if not os.path.exists(amp_out_dir):
                 os.makedirs(amp_out_dir)
@@ -425,24 +393,17 @@ class MethAmplicon:
                 sname_parsed = sname.split("_parse_")[0]
                 # want to save this df_alt_for_region in the corresponding amplicon folder
                 df_alleles_sort.to_csv(os.path.join(amp_out_dir,f"{sname_parsed}_df_alleles_sort.csv")) 
-            #"""
             
             df_sample.columns=[sname]
             if i == 0:
                 df_alt=df_sample
             elif i > 0:
-                print(df_alt.to_string())
                 df_alt=df_alt.join(df_sample, how='outer')
 
-            
             self.plot_per_sample_lollipop(alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads, pos_rel_CDS, sname, amplicon_name, amp_out_dir)
 
         dfs = [df.set_index('allele') for df in allele_sort_dfs]
 
-        #for df in dfs:
-            #print(f"\n{df.to_string()}")
-
-        #print(f"accumulated list of allele sort dfs \n {dfs[0]} \n {dfs[1]} \n {dfs[2]} \n {dfs[3]}")
         df_alleles_sort_all2 = reduce(lambda left, right: pd.merge(left, right, on='allele', how='outer'), dfs)
 
         #get the names of the different amplicons
@@ -479,6 +440,17 @@ class MethAmplicon:
         else:
             self.read_dir = self.args.PE_read_dir
 
+    def save_info_csv(self):
+        keys = pd.DataFrame.from_records(list(self.sample_efficiencies.keys()), columns=['Sample', 'Amplicon'])
+        values = pd.DataFrame.from_records(list(self.sample_efficiencies.values()), \
+                                            columns=['BS_Conv_Eff', 'Num_Ts_Obs', \
+                                                    'Num_Exp_Ts_Total', 'Num_Reads_Used_Non_CpG', \
+                                                    'Num_Non_CpG_Cs', "Retained_for_CpG_Total", \
+                                                    "Excl_for_CpG_length", "Excl_for_CpG_AG", \
+                                                    "Reads_above_thresh", "Reads_below_thresh_ct"])
+        efficiency_df = pd.concat([keys, values], axis=1)
+        efficiency_df.to_csv(os.path.join(self.args.output_dir, "bisulfite_seq_info.csv"), index=False)
+
         
     def run(self):
         # when the app is run from the command line, parse the arguments
@@ -500,35 +472,25 @@ class MethAmplicon:
         except:
             self.labels_df = pd.DataFrame()
         
-        #print("Processing tsv file")
+        # process tsv file
         self.amplicon_info, self.refseqs = self.extract_meth.read_primer_seq_file(self.args.amplicon_info)
         
         # disable print
         if self.args.verbose == "false":
             sys.stdout = open(os.devnull, 'w')
-        
         # pass the verbose value to extract_meth to optionally redirect flash subprocess output
         self.extract_meth.set_verbose(self.args.verbose)
-
 
         # iterate over the paired end read files and process data 
         self.merge_loop()
         self.meth_amplicon_loop()
 
-        if self.args.bs_conv_eff:
-            
-            keys = pd.DataFrame.from_records(list(self.sample_efficiencies.keys()), columns=['Sample', 'Amplicon'])
-            values = pd.DataFrame.from_records(list(self.sample_efficiencies.values()), columns=['BS_Conv_Eff', 'Num_Ts_Obs', 'Num_Exp_Ts_Total', 'Num_Reads_Used_Non_CpG', 'Num_Non_CpG_Cs', "Retained_for_CpG_Total", "Excl_for_CpG_length", "Excl_for_CpG_AG", "Reads_above_thresh", "Reads_below_thresh_ct"])
-
-            efficiency_df = pd.concat([keys, values], axis=1)
-
-            efficiency_df.to_csv(os.path.join(self.args.output_dir, "bisulfite_seq_info.csv"), index=False)
+        self.save_info_csv()
 
         if self.args.save_intermediates == "false":
             # delete the merged and demultiplexed directories and all files they contain
             dirs_to_delete = ["merged", "demultiplexed", "combined_lanes"]
-
-            print("Deleting merged and demultiplexed read directories - to run without deleting, run with --save_intermediates true")
+            print("Deleting combined lane, merged and demultiplexed read directories - to run without deleting, run with --save_intermediates true")
 
             for dir_to_delete in dirs_to_delete:
                 full_path = os.path.join(self.args.output_dir, dir_to_delete)

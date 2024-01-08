@@ -142,7 +142,7 @@ class Plotter:
             g.savefig(fullpath)
 
     def plot_lollipop_colour(self, df, outpath, outname="All_samples_combined_colour.pdf"):  
-        print(f"plot all sample lollipop dataframe:\n{df.to_string()}")
+        #print(f"plot all sample lollipop dataframe:\n{df.to_string()}")
 
         plt.rcParams['font.sans-serif'] = "Arial"
         plt.rcParams['font.family'] = "sans-serif"

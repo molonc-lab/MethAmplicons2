@@ -75,14 +75,9 @@ class ExtractMeth(ExtractData):
             else: 
                 epiallele_counts_region[extracted_sequence] = 1
 
-        print("\n")
-        print(file)
-
         before_thresh = len(epiallele_counts_region)
 
         # now need to add logic to remove reads lower than threshold flag
-        # rather than pass this to the function, pass this to the ExtractMeth object to make it a class
-        # attribute upon its creation? - might be easier
 
         #get the total counts, sum all values in dict - will be for specific epiallele
         total_seq_count = sum(epiallele_counts_region.values())
@@ -144,17 +139,12 @@ class ExtractMeth(ExtractData):
                         include_seq = False
                 if include_seq:
                     count = allele_counts[seq]
-                    print(f"bs_conv_env:\nseq{seq}\nnoncpgc_positions{pos}\nnon_cpg_cs{non_cpg_cs}\nnum_ts_obs{num_ts_obs}\nnum_ts_exp{non_cpg_ts_ref}")
                     # no need for condition if len(non_cpg_cs) == non_cpg_ts_ref:
                     num_ts_obs += non_cpg_cs.count("T") * count
                     exp_ts += non_cpg_ts_ref * count
                     useable_reads += count
                 else:
                     nonuseable_reads += count
-                #else:
-                    #print(f"bs_conv_env reject:\nseq{seq}\nnoncpgc_positions{pos}\nnon_cpg_cs{non_cpg_cs}")
-
-        print(f"The number of nonuseable reads was {nonuseable_reads}")
 
         if allele_counts == {}:
             exp_ts = "Empty"
@@ -174,20 +164,18 @@ class ExtractMeth(ExtractData):
         
         # get CpG positions
         pos=self.get_cpg_positions(refseq, fwd, rev)
-        print(f"The cpg positions given that fwd is {fwd} and rev is {rev} are: {pos}")
+        #print(f"The cpg positions given that fwd is {fwd} and rev is {rev} are: {pos}")
         
         # amplicon length for 1st filter
         refseq_len=len(refseq)
         #print(f"refseq:\n{refseq}")
         
-        #minimum number of reads to meet the min freq cutoff for 2nd filter
-        #min_reads=reads_n*self.threshold
         filt_for_length = 0 
         filt_for_CpG_AG = 0 
 
         for seq,val in allele_counts.items():
             #1st and 2nd filters: exclude all indels, and minimum freq
-            print(f"seq: \n{seq}\nrefseq: \n{refseq}")
+            #print(f"seq: \n{seq}\nrefseq: \n{refseq}")
             if (len(seq) == refseq_len): #& (val > min_reads): 
                 allele=""
                 for i,nuc in enumerate(seq):
@@ -200,10 +188,10 @@ class ExtractMeth(ExtractData):
                     # such as CTCT - this is agnostic to the other bases of the read
                     alleles[allele]+=val
                 else: 
-                    print("One of the CpG sites had an A or G")
+                    #print("One of the CpG sites had an A or G")
                     filt_for_CpG_AG += val
             else: 
-                print(f"Length of sequence = {len(seq)}, Length of refseq = {refseq_len}")
+                #print(f"Length of sequence = {len(seq)}, Length of refseq = {refseq_len}")
                 #print(f"Number of reads = {val}, Minimum reads was {min_reads}")
                 filt_for_length += val
 
@@ -213,8 +201,6 @@ class ExtractMeth(ExtractData):
         # Total number of reads after filtering
         filtered_reads=sum(alleles.values())
 
-        print(f"Total number of reads after filtering is: {filtered_reads}. Total before was {reads_n}")
-        
         return(alleles_sort,filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n)
 
     def group_alleles_by_meCpG (alleles_sort):
@@ -252,9 +238,6 @@ class ExtractMeth(ExtractData):
         methylated_counts = defaultdict(int)
         methylated_fraction = defaultdict(int)
 
-        #methylated_counts = {i:0 for i,_ in enumerate(pos)}
-        #methylated_fraction = {i:0 for i,_ in enumerate(pos)}
-
         totalreads = 0
         for allele,val in alleles_s:
             if include_unmeth_alleles or any('C' == nuc for nuc in allele):
@@ -279,8 +262,6 @@ class ExtractMeth(ExtractData):
             else:
                 methfrac = methcount/totalreads
                 methylated_fraction[i] = methfrac
-
-        #print(methylated_fraction)
 
         df = pd.DataFrame.from_dict(methylated_fraction, orient = "index")
         
