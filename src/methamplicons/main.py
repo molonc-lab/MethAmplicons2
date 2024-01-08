@@ -376,6 +376,7 @@ class MethAmplicon:
                     
             if alleles_sort == []: 
                 print(f"No epialleles were found for amplified region: {amplicon_name} for {sname}, trying next region")
+                print("\n")
                 #should not have to use continue 
                 continue
                 
