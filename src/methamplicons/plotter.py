@@ -65,7 +65,7 @@ class Plotter:
             melted_df = melted_df.fillna(0)
 
             #melted_df['sample'] = melted_df['sample'].str.split('_parse_').str[0]
-            melted_df['sample'] = melted_df['sample'].str.replace('(_all_lanes_|_parse_)', '', regex=True)
+            melted_df['sample'] = melted_df['sample'].str.split('(_parse_|_all_lanes_)').str[0]
 
 
 
@@ -152,7 +152,7 @@ class Plotter:
         
         df_melt = df.melt(id_vars="pos")
         #df_melt['variable'] = df_melt["variable"].str.split('_parse_').str[0]
-        df_melt['variable'] = df_melt['variable'].str.replace('(_all_lanes_|_parse_)', '', regex=True)
+        df_melt['variable'] = df_melt['variable'].str.split('(_parse_|_all_lanes_)').str[0]
 
         
         #sort the names of the samples
