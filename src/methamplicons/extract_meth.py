@@ -304,6 +304,16 @@ class ExtractMeth(ExtractData):
         df['val'] = val_sum
             
         return(df)
+    
+    def parse_name(self, sname): 
+        if "_parse_" in sname: 
+            new_name = sname.split("_parse_")[0]
+        elif "all_lanes" in sname:
+            new_name = sname.split("_all_lanes_")[0]
+        else:
+            new_name = sname
+
+        return new_name
 
     
     
