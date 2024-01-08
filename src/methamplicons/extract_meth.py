@@ -39,7 +39,7 @@ class ExtractMeth(ExtractData):
         self.threshold = threshold
     
     #replaces the function get_all_reads
-    def get_all_reads(self, file, fwd_primer, rev_primer): 
+    def get_all_reads(self, file, fwd_primer, rev_primer, printout = True): 
         """
         From the output directory, go into merged and read all files that end with extended.fastq
         Also use the appended "region"/gene name to then get the refseq for that gene
@@ -83,7 +83,8 @@ class ExtractMeth(ExtractData):
         total_seq_count = sum(epiallele_counts_region.values())
         thresh_count = self.threshold * total_seq_count
 
-        print(f"self.threshold is {self.threshold} \n threshold read count is {thresh_count}")
+        if printout:
+            print(f"self.threshold is {self.threshold} \n threshold read count is {thresh_count}")
 
         delete_seqs = [] # as we cannot delete while iterating
 
@@ -97,7 +98,8 @@ class ExtractMeth(ExtractData):
         for seq in delete_seqs:
             del epiallele_counts_region[seq]
 
-        print(f"{len(epiallele_counts_region)} sequences remain of original {before_thresh} and their counts are:")
+        if printout:
+            print(f"{len(epiallele_counts_region)} sequences remain of original {before_thresh} and their counts are:")
 
         if len(epiallele_counts_region) < 20:
             print(sorted(epiallele_counts_region.values()))

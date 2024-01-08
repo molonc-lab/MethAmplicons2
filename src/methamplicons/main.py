@@ -341,7 +341,7 @@ class MethAmplicon:
             ### make this a function - save_info() in the future
                 
             self.extract_meth.set_threshold(0)
-            all_reads_df, zero_reads =self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
+            all_reads_df, zero_reads =self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer,printout=False)
             self.extract_meth.set_threshold(self.args.min_seq_freq)
             
             num_ts_obs, exp_ts, num_reads_used, num_non_cpg_cs = self.extract_meth.get_efficiency_vals(all_reads_df, refseq, fwd_pos, rev_pos)
