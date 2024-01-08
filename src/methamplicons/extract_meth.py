@@ -100,11 +100,11 @@ class ExtractMeth(ExtractData):
 
         if printout:
             print(f"{len(epiallele_counts_region)} sequences remain of original {before_thresh} and their counts are:")
-
-        if len(epiallele_counts_region) < 20:
-            print(sorted(epiallele_counts_region.values()))
-        else:
-            print(print(sorted(epiallele_counts_region.values())[-20:]))
+        
+            if len(epiallele_counts_region) < 20:
+                print(sorted(epiallele_counts_region.values()))
+            else:
+                print(print(sorted(epiallele_counts_region.values())[-20:]))
                     
         return epiallele_counts_region, below_thresh_total
     
