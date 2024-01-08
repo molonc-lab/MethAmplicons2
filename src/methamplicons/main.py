@@ -327,6 +327,8 @@ class MethAmplicon:
             file_path = os.path.join(merged_path, file)
             fwd_primer, rev_primer, fwd_pos, rev_pos, pos_rel_CDS = tuple(self.amplicon_info[amplicon_name])
 
+            print(f"Getting epiallele counts for sample '{sname}' for amplicon '{amplicon}'")
+
             # Generate dictionary with all reads for that amplicon in the merged file 
             d, below_thresh =self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
             #print(f'read counts dictionary\n{d}')
@@ -401,6 +403,8 @@ class MethAmplicon:
                 df_alt=df_alt.join(df_sample, how='outer')
 
             self.plot_per_sample_lollipop(alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads, pos_rel_CDS, sname, amplicon_name, amp_out_dir)
+            
+            print("\n")
 
         dfs = [df.set_index('allele') for df in allele_sort_dfs]
 
