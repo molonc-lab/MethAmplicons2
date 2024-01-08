@@ -526,7 +526,7 @@ class MethAmplicon:
 
         if self.args.save_intermediates == "false":
             # delete the merged and demultiplexed directories and all files they contain
-            dirs_to_delete = ["merged", "demultiplexed"]
+            dirs_to_delete = ["merged", "demultiplexed", "combined_lanes"]
 
             print("Deleting merged and demultiplexed read directories - to run without deleting, run with --save_intermediates true")
 
