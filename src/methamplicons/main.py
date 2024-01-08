@@ -327,7 +327,7 @@ class MethAmplicon:
             file_path = os.path.join(merged_path, file)
             fwd_primer, rev_primer, fwd_pos, rev_pos, pos_rel_CDS = tuple(self.amplicon_info[amplicon_name])
 
-            print(f"Getting epiallele counts for sample '{sname}' for amplicon '{amplicon}'")
+            print(f"Getting epiallele counts for sample '{sname}' for amplicon '{amplicon_name}'")
 
             # Generate dictionary with all reads for that amplicon in the merged file 
             d, below_thresh =self.extract_meth.get_all_reads(file_path, fwd_primer, rev_primer)
