@@ -83,11 +83,10 @@ Example tsv file:
 
 ```
 bisulfite_seq_info.csv example:
-[Uploading bisulfite_seSample,Amplicon,BS_Conv_Eff,Num_Ts_Obs,Num_Exp_Ts_Total,Num_Reads_Used_Non_CpG,Num_Non_CpG_Cs,Retained_for_CpG_Total,Excl_for_CpG_length,Excl_for_CpG_AG,Reads_above_thresh,Reads_below_thresh_ct
-MDAMB436_S1,BRCA1_l,0.9969260065185391,5267763.0,5284006.0,754858.0,7.0,635056,37431,0,672487,141959
-HCC38,BRCA1_l,0.9959434935848994,13805206.0,13861435.0,1980205.0,7.0,1551691,77233,0,1628924,473517
-q_info.csv…]()
-
+| Sample | Amplicon | BS_Conv_Eff | Num_Ts_Obs | Num_Exp_Ts_Total | Num_Reads_Used_Non_CpG | Num_Non_CpG_Cs | Retained_for_CpG_Total | Excl_for_CpG_length | Excl_for_CpG_AG | Reads_above_thresh | Reads_below_thresh_ct |
+|--------|----------|-------------|------------|------------------|-----------------------|----------------|-----------------------|---------------------|-----------------|--------------------|----------------------|
+| HCC38 | RAD51C | None_w_length_refseq |  |  |  |  | 0 | 3102 | 0 | 3102 | 0 |
+| HCC38 | BRCA1_l | 0.9959434935848990 | 13805206.0 | 13861435.0 | 1980205.0 | 7.0 | 1551691 | 77233 | 0 | 1628924 | 473517 |
 
 - Note: barplots may or may not include epialleles that represent <5% of the total reads. If there are epialleles with a frequency <5%, they will be shown in the barplot.
   
