@@ -1,4 +1,4 @@
-[bisulfite_seq_info.csv](https://github.com/molonc-lab/MethAmplicons2/files/13882957/bisulfite_seq_info.csv)# MethAmplicons2
+# MethAmplicons2
 Command line tool written in Python for generation of lollipop and ridgleline plots from targeted bisulfite sequencing.
 
 Generate lollipop plots that show the most frequent epialleles for a region of interest as well as a "combined" epiallele that is an average of less frequent (<5%) epialleles e.g. the RAD51C promoter region: 
