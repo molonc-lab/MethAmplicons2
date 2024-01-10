@@ -146,6 +146,7 @@ class ExtractMeth(ExtractData):
                     exp_ts += non_cpg_ts_ref * count
                     useable_reads += count
                 else:
+                    count = allele_counts[seq]
                     nonuseable_reads += count
 
         if allele_counts == {}:

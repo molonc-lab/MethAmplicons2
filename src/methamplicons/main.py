@@ -7,6 +7,7 @@ import sys
 import pandas as pd
 from functools import reduce
 import re
+import numpy as np
 from collections import defaultdict
 
 class MethAmplicon:
@@ -240,8 +241,11 @@ class MethAmplicon:
             df=self.extract_meth.convert_to_df(alleles_sort,refseq, fwd_pos, rev_pos, filtered_reads,freq_min)
             ##print(f"Dataframe for first plot {df}")
             df_below_freq=self.extract_meth.calculate_meth_fraction_min(alleles_sort, refseq, fwd_pos, rev_pos, filtered_reads,freq_min)
-            df.variable = df.variable + pos_rel_CDS
-            df_below_freq.variable = df_below_freq.variable + pos_rel_CDS
+
+            sum_variable = df.variable + pos_rel_CDS
+            df.variable = np.where(sum_variable >= 0, sum_variable + 1, sum_variable)
+            sum_variable_below = df_below_freq.variable + pos_rel_CDS
+            df_below_freq.variable = np.where(sum_variable_below >= 0, sum_variable_below + 1, sum_variable_below)
             
             if df_below_freq.freq.sum() > 0:  
                 # if you have epialleles with frequency below 5%      
@@ -279,7 +283,7 @@ class MethAmplicon:
 
         for amplicon_name, df_alt_for_region in df_alts_by_region.items():
             pos_rel_CDS = self.amplicon_info[amplicon_name][-1]
-            pos_promoter = list(map(lambda x: x + pos_rel_CDS, self.extract_meth.get_cpg_positions(self.refseqs[amplicon_name], self.amplicon_info[amplicon_name][2],self.amplicon_info[amplicon_name][3] )))
+            pos_promoter = list(map(lambda x: x + pos_rel_CDS + 1 if (x + pos_rel_CDS) >= 0 else x + pos_rel_CDS, self.extract_meth.get_cpg_positions(self.refseqs[amplicon_name], self.amplicon_info[amplicon_name][2],self.amplicon_info[amplicon_name][3] )))
             df_alt_for_region['pos'] = pos_promoter
             df_alt_for_region.drop(columns=["position"], inplace=True)
             amp_out_dir = os.path.join(self.args.output_dir, amplicon_name)
