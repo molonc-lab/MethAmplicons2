@@ -59,9 +59,9 @@ methamplicons --PE_read_dir final_test_260221 --amplicon_info final_test_260221/
 Example tsv file:  
 | Amplicon_Name |	Primer1  | 	Primer2  | 	Sequence | CDS |
 | ------------- | ------------- | ------------- | ------------- | ------------- |
-| RAD51C	| GAAAATTTATAAGATTGCGTAAAGTTGTAAGG |	CTAACCCCGAAACAACCAAACTCC | GAAAATTTACAAGACTGCGCAAAGCTGCAAGGCCCGGAGCCCCGTGCGGCCAGGCCGCAGAGCCGGCCCCTTCCGCTTTACGTCTGACGTCACGCCGCACGCCCCAGCGAGGGCGTGCGGAGTTTGGCTGCTCCGGGGTTAG	| -156 |
-| BRCA1_l	| TTGTTGTTTAGCGGTAGTTTTTTGGTT	| AACCTATCCCCCGTCCAAAAA |	CTGCTGCTTAGCGGTAGCCCCTTGGTTTCCGTGGCAACGGAAAAGCGCGGGAATTACAGATAAATTAAAACTGCGACTGCGCGGCGTGAGCTCGCTGAGACTTCCTGGACGGGGGACAGGCT |	-1361 |
-| BRCA1_s	| TTGTTGTTTAGCGGTAGTTTTTTGGTT	| CAATCGCAATTTTAATTTATCTATAATTCCC |	CTGCTGCTTAGCGGTAGCCCCTTGGTTTCCGTGGCAACGGAAAAGCGCGGGAATTACAGATAAATTAAAACTGCGACTG	| -1361 |
+| RAD51C	| GAAAATTTATAAGATTGCGTAAAGTTGTAAGG |	CTAACCCCGAAACAACCAAACTCC | GAAAATTTACAAGACTGCGCAAAGCTGCAAGGCCCGGAGCCCCGTGCGGCCAGGCCGCAGAGCCGGCCCCTTCCGCTTTACGTCTGACGTCACGCCGCACGCCCCAGCGAGGGCGTGCGGAGTTTGGCTGCTCCGGGGTTAG	| -84 |
+| BRCA1_l	| TTGTTGTTTAGCGGTAGTTTTTTGGTT	| AACCTATCCCCCGTCCAAAAA |	CTGCTGCTTAGCGGTAGCCCCTTGGTTTCCGTGGCAACGGAAAAGCGCGGGAATTACAGATAAATTAAAACTGCGACTGCGCGGCGTGAGCTCGCTGAGACTTCCTGGACGGGGGACAGGCT |	-87 |
+| BRCA1_s	| TTGTTGTTTAGCGGTAGTTTTTTGGTT	| CAATCGCAATTTTAATTTATCTATAATTCCC |	CTGCTGCTTAGCGGTAGCCCCTTGGTTTCCGTGGCAACGGAAAAGCGCGGGAATTACAGATAAATTAAAACTGCGACTG	| -87 |
 
 ##### --sample_labels - csv file containing sample label information (optional):
 - This file is not required, however it can be used to map the Sample Id (name used in the fastq files) to the SampleLabel or ShortLabel if the CSV includes the following columns:
@@ -71,40 +71,16 @@ Example tsv file:
 ```
 .
 ├── BRCA1_l
-│   ├── BRCA_sample1_BRCA1_l_alleles_above_5_perc_freq_barplot.pdf
+│   ├── sample1_barplot.pdf
+│   ├── sample2_barplot.pdf
 │   ├── All_samples_combined_avgd_meth_BRCA1_l.pdf
-│   ├── All_samples_combined_avgd_meth_BRCA1_l_w_unmeth.pdf
 │   ├── average_BRCA1_l_meth_by_sample.csv
-│   ├── average_BRCA1_l_meth_by_sample_w_unmeth.csv
-│   ├── multiplexed_BRCA1_l_alleles_above_5_perc_freq_barplot.pdf
 │   ├── Ridgeline_data_BRCA1_l.csv
 │   ├── ridgeline_plot_BRCA1_l.pdf
 │   └── Specific_allele_data_BRCA1_l.csv
-├── BRCA1_s
-│   ├── BRCA_sample2_BRCA1_s_alleles_above_5_perc_freq_barplot.pdf
-│   ├── BRCA_sample1_BRCA1_s_alleles_above_5_perc_freq_barplot.pdf
-│   ├── All_samples_combined_avgd_meth_BRCA1_s.pdf
-│   ├── All_samples_combined_avgd_meth_BRCA1_s_w_unmeth.pdf
-│   ├── average_BRCA1_s_meth_by_sample.csv
-│   ├── average_BRCA1_s_meth_by_sample_w_unmeth.csv
-│   ├── multiplexed_BRCA1_s_allele_freq_w_below_5_perc_avgd_barplot.pdf
-│   ├── Ridgeline_data_BRCA1_s.csv
-│   ├── ridgeline_plot_BRCA1_s.pdf
-│   └── Specific_allele_data_BRCA1_s.csv
-├── flash_stdout.txt
-└── RAD51C
-    ├── RAD51C_sample1_RAD51C_allele_freq_w_below_5_perc_avgd_barplot.pdf
-    ├── RAD51C_sample2_RAD51C_alleles_above_5_perc_freq_barplot.pdf
-    ├── multiplexed_RAD51C_alleles_above_5_perc_freq_barplot.pdf
-    ├── All_samples_combined_avgd_meth_RAD51C.pdf
-    ├── All_samples_combined_avgd_meth_RAD51C_w_unmeth.pdf
-    ├── average_RAD51C_meth_by_sample.csv
-    ├── average_RAD51C_meth_by_sample_w_unmeth.csv
-    ├── RAD51C_sample3_001_RAD51C_allele_freq_w_below_5_perc_avgd_barplot.pdf
-    ├── multiplexed_RAD51C_allele_freq_w_below_5_perc_avgd_barplot.pdf
-    ├── Ridgeline_data_RAD51C.csv
-    ├── ridgeline_plot_RAD51C.pdf
-    └── Specific_allele_data_RAD51C.csv
+├── bisulfite_seq_info.csv
+└── flash_stdout.txt
+
 ```
 - Note: samples either print out a allele_freq_w_below_5_perc_avgd_barplot or alleles_above_5_perc_freq_barplot depending on if, after filtering the reads by threshold, there are epialleles that represent <5% of the total reads. If there are epialleles with a frequency <5%, they will be shown in allele_freq_w_below_5_perc_avgd_barplot. Otherwise, the latter plot will print.
   
@@ -113,26 +89,29 @@ Example tsv file:
 ```
 usage: methamplicons [-h] [--PE_read_dir PE_READ_DIR]
                      [--amplicon_info AMPLICON_INFO]
-                     [--sample_labels SAMPLE_LABELS] [--output_dir OUTPUT_DIR]
-                     [--min_seq_freq MIN_SEQ_FREQ] [--verbose {true,false}]
-                     [--save_data {true,false}] [--save_intermediates {true,false}]
+                     [--sample_labels [SAMPLE_LABELS]]
+                     [--output_dir OUTPUT_DIR] [--min_seq_freq MIN_SEQ_FREQ]
+                     [--verbose {true,false}] [--save_data {true,false}]
+                     [--save_intermediates {true,false}]
+                     [--combine_lanes {true,false}]
 
 CLI tool for plotting targeted bisulfite sequencing
 
 optional arguments:
   -h, --help            show this help message and exit
   --PE_read_dir PE_READ_DIR
-                        Desired input directory with fastq files, gzipped or not
+                        Desired input directory with fastq files, gzipped or
+                        not
   --amplicon_info AMPLICON_INFO
                         Path to the amplicon info file in tsv format, e.g.:
                         AmpliconName Primer1 Primer2 ReferenceSequence
-  --sample_labels SAMPLE_LABELS
+  --sample_labels [SAMPLE_LABELS]
                         Path to sample labels file in csv format
   --output_dir OUTPUT_DIR
                         Desired output directory
   --min_seq_freq MIN_SEQ_FREQ
-                        Threshold frequency an extracted epiallele sequence must
-                        have to be included in analysis (default:0.01)
+                        Threshold frequency an extracted epiallele sequence
+                        must have to be included in analysis (default:0.01)
   --verbose {true,false}
                         Print all output after file parsing (default: true).
   --save_data {true,false}
@@ -140,6 +119,10 @@ optional arguments:
   --save_intermediates {true,false}
                         Save 'demultiplexed' and merged read files for all
                         combinations of samples and amplicons (default: true).
+  --combine_lanes {true,false}
+                        Combine fastq files from different sequencing lanes
+                        (L001, L002) into single R1 and R2 files (default:
+                        true).
 
 ```
 

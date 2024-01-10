@@ -11,6 +11,9 @@ from methamplicons.extract_meth import ExtractMeth
 
 class Plotter:
 
+    def __init__(self):
+        self.ext_meth = ExtractMeth()
+
     def ridgeline(self, df_alleles_sort_all, refseqs, outpath,  save_data, amplicon_info, outname = "ridgeline_plot"): 
         # Show relative frequencies for the different numbers of methylated CpGs/epiallele by sample
         # Also we are only interested in the same region - 1 facet grid per amplicon with 1 plot per sample 
@@ -20,8 +23,6 @@ class Plotter:
         #print(f"df_alleles_sort_all: \n{df_alleles_sort_all}")
 
         data_by_amplicon = {}
-
-        ext_meth = ExtractMeth()
         
         for amplicon_name in refseqs.keys(): 
             for col_name in df_alleles_sort_all.columns: 
@@ -36,9 +37,10 @@ class Plotter:
                     data_by_amplicon[amplicon_name][col_name] = df_alleles_sort_all[col_name]
 
         for amplicon_name, allele_data_by_sample in data_by_amplicon.items():
+
             fwd_pos, rev_pos = tuple(amplicon_info[amplicon_name])[2:4]
       
-            num_cpg = len(ext_meth.get_cpg_positions(refseqs[amplicon_name], fwd_pos, rev_pos))
+            num_cpg = len(self.ext_meth.get_cpg_positions(refseqs[amplicon_name], fwd_pos, rev_pos))
 
             #print(f"the number of cpgs for {amplicon_name} is {num_cpg}")
 
@@ -61,6 +63,11 @@ class Plotter:
                                                 value_name="count")
 
             melted_df = melted_df.fillna(0)
+
+            #melted_df['sample'] = melted_df['sample'].str.split('_parse_').str[0]
+            melted_df['sample'] = melted_df['sample'].str.split('(_parse_|_all_lanes_)').str[0]
+
+
 
             # counts for a given number of CpGs/epiallele for each sample
             total_counts = melted_df.groupby('sample')['count'].sum()
@@ -134,14 +141,19 @@ class Plotter:
 
             filename = f"{outname}_{amplicon_name}.pdf"
             fullpath = os.path.join(amp_out_dir, filename)
+            print(f"Saving file to: {fullpath}")
             g.savefig(fullpath)
 
     def plot_lollipop_colour(self, df, outpath, outname="All_samples_combined_colour.pdf"):  
+        #print(f"plot all sample lollipop dataframe:\n{df.to_string()}")
+
         plt.rcParams['font.sans-serif'] = "Arial"
         plt.rcParams['font.family'] = "sans-serif"
         
         df_melt = df.melt(id_vars="pos")
-        df_melt['variable'] = df_melt["variable"].str.split('_').str[0]
+        #df_melt['variable'] = df_melt["variable"].str.split('_parse_').str[0]
+        df_melt['variable'] = df_melt['variable'].str.split('(_parse_|_all_lanes_)').str[0]
+
         
         #sort the names of the samples
         unique_samples = sorted(df_melt['variable'].unique())
@@ -177,6 +189,7 @@ class Plotter:
 
         plt.tight_layout()
         fig.savefig(outpath + "/" + outname)
+        print(f"Saving file to:{outpath}/{outname}")
         plt.close()
 
     
@@ -207,16 +220,18 @@ class Plotter:
         ax2.axes.set_xlabel("Frequency (%)")
         ax2.set_xlim([0, 100])
 
-        plt.suptitle(sname)# + f"\nMethylation alleles detected at >{freq_min}% frequency") 
+        sname_parsed = self.ext_meth.parse_name(sname)
+        plt.suptitle(sname_parsed)# + f"\nMethylation alleles detected at >{freq_min}% frequency") 
 
         fig.tight_layout(rect=[0, 0.03, 1, 0.9])
 
-        fig.savefig(f"{outpath}/{sname}_alleles_above_{freq_min}_perc_freq_barplot.pdf")
+        fig.savefig(f"{outpath}/{sname_parsed}_barplot.pdf")
+        print(f"Saving file to:{outpath}/{sname_parsed}_barplot.pdf")
         
         plt.close()
 
     def plot_lollipop_combined (self, df,df_below_freq,sname,outpath,freq_min, amplicon_name, colbar=True):
-
+        
         # Changing default font to Arial
         plt.rcParams['font.sans-serif'] = "Arial"
         plt.rcParams['font.family'] = "sans-serif"
@@ -265,9 +280,10 @@ class Plotter:
                 transform=ax3.transAxes)
         ax1.text(-0.14,0.9, f"≥{freq_min}% frequency", size=6.5, ha="center", 
                 transform=ax1.transAxes)
-
+        
+        sname_parsed = self.ext_meth.parse_name(sname)
         # Figure title
-        fig.suptitle(sname, size=8, weight='bold')
+        fig.suptitle(sname_parsed, size=8, weight='bold')
 
         fig.tight_layout(rect=[0, 0.03, 1, 0.9])
         
@@ -304,10 +320,11 @@ class Plotter:
                         size=8)
             
             #fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot.pdf")
-            fig.savefig(f"{outpath}/{sname}_allele_freq_w_below_{freq_min}_perc_avgd_barplot.pdf")
+            fig.savefig(f"{outpath}/{sname_parsed}_barplot.pdf")
+            print(f"Saving file to: {outpath}/{sname_parsed}_barplot.pdf")
         else:
-            fig.savefig(f"{outpath}/{sname}_{freq_min}perc_barplot_nolegend.pdf")
-            
+            fig.savefig(f"{outpath}/{sname_parsed}_barplot.pdf")
+            print(f"Saving file to: {outpath}/{sname_parsed}_barplot.pdf")
 
         plt.close()
         

@@ -1,8 +1,8 @@
 import gzip
 import subprocess
 import os
-import csv
 from pkg_resources import resource_filename
+import platform
 
 
 class DataExtractionError(Exception):
@@ -69,10 +69,8 @@ class ExtractData:
             os.makedirs(parsed_out_dir)
 
         # will have read 1 and read 2 files for a given sample and will later append the gene name
-        new_r1_base_name = os.path.join(parsed_out_dir, base_name + "_R1")
-        new_r2_base_name = os.path.join(parsed_out_dir, base_name + "_R2")
-
-        #print(f"The new base names from the demulitplexed function (point 1) are {new_r1_base_name} and {new_r2_base_name}")
+        new_r1_base_name = os.path.join(parsed_out_dir, base_name + "R1")
+        new_r2_base_name = os.path.join(parsed_out_dir, base_name + "R2")
 
         # get average read length
         if runflash: 
@@ -118,15 +116,18 @@ class ExtractData:
             new_fastq_r2.close()
 
             if runflash: 
-                base_name_reg = base_name + "_" + amplicon_name
+                base_name_reg = base_name + amplicon_name
                 #print(f"The base name for the merged file is {base_name_reg}")
                 refseq_len = len(refseqs[amplicon_name])
                 # pass required aruments to run_flash, converting required arguments to strings
                 self.run_flash(r1s_for_region, r2s_for_region, base_name_reg, out_dir, str(int(avg_read_len)), str(refseq_len))
+
     def get_flash_binary_path(self):
-        #may need to specify specific version of tool
-        return resource_filename('methamplicons', 'flash')
-    
+        if platform.system() == 'Darwin':  # Darwin is the system name for macOS
+            return resource_filename('methamplicons', 'flash')
+        else:  # For Linux distributions
+            return resource_filename('methamplicons', 'linux_flash')
+        
     def set_verbose(self, verbose):
         self.verbose = verbose
 
@@ -141,9 +142,7 @@ class ExtractData:
         # ALL ARGUMENTS MUST BE STRINGS
         cmd = [flash_binary, "-m", "10", "-M", refseq_len, "-x", "0.25", "-O", "-r", avg_read_len, \
                 "-f", refseq_len, r1s_for_region, r2s_for_region, "-d", output_dir, "-o", base_name_reg]
-        
-        #subprocess.run(cmd, universal_newlines=True, check=True)
-
+    
         if (self.verbose == "true"):
             subprocess.run(cmd, universal_newlines=True, check=True)
         else:
@@ -227,8 +226,6 @@ class ExtractData:
                 primer_dict[amplicon_name] = [primer1, primer2, fwd_pos, rev_pos, int(pos_relative_CDS)]
                 #remove newline character if applicable
                 refseqs[amplicon_name] = refseq
-
-        #print(f"primer_dict:\n {primer_dict}\nRefseqs:\n{refseqs}")
 
         return primer_dict, refseqs
 

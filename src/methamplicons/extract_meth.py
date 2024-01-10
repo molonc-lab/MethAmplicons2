@@ -14,20 +14,32 @@ class ExtractMeth(ExtractData):
 
     def get_cpg_positions(self, refseq, fwd_pos, rvs_pos):
         pos=list()
+        refseq_len = len(refseq)
         for i,nuc in enumerate(refseq):
-            if nuc == 'C':
+            if nuc == 'C' and i < refseq_len - 1:
                 if refseq[i+1] == 'G':
                     if i>fwd_pos and i<rvs_pos: #exclude primers
                         pos.append(i)
         #print(f"CpG positions from the function are: {pos}")
         return(pos)
     
+    #combine with above function to reduce redundancy
+    def get_non_cpg_positions(self, refseq, fwd_pos, rvs_pos):
+        pos=list()
+        refseq_len = len(refseq)
+        for i,nuc in enumerate(refseq):
+            if nuc == 'C' and i < refseq_len - 1:
+                if not(refseq[i+1] == 'G'):
+                    if i>fwd_pos and i<rvs_pos: #exclude primers
+                        pos.append(i)
+        #print(f"CpG positions from the function are: {pos}")
+        return(pos)
 
     def set_threshold(self, threshold): 
         self.threshold = threshold
     
     #replaces the function get_all_reads
-    def get_all_reads(self, file, fwd_primer, rev_primer): 
+    def get_all_reads(self, file, fwd_primer, rev_primer, printout = True): 
         """
         From the output directory, go into merged and read all files that end with extended.fastq
         Also use the appended "region"/gene name to then get the refseq for that gene
@@ -63,38 +75,87 @@ class ExtractMeth(ExtractData):
             else: 
                 epiallele_counts_region[extracted_sequence] = 1
 
-        print("\n")
-        print(file)
-
         before_thresh = len(epiallele_counts_region)
 
         # now need to add logic to remove reads lower than threshold flag
-        # rather than pass this to the function, pass this to the ExtractMeth object to make it a class
-        # attribute upon its creation? - might be easier
 
         #get the total counts, sum all values in dict - will be for specific epiallele
         total_seq_count = sum(epiallele_counts_region.values())
         thresh_count = self.threshold * total_seq_count
 
-        print(f"self.threshold is {self.threshold} \n threshold read count is {thresh_count}")
+        if printout:
+            print(f"self.threshold is {self.threshold} \n threshold read count is {thresh_count}")
 
         delete_seqs = [] # as we cannot delete while iterating
+
+        below_thresh_total = 0 
         for extracted_seq, count in epiallele_counts_region.items():
             if count < thresh_count:
                 delete_seqs.append(extracted_seq)
+                below_thresh_total += count
         
         #delete all sequences with count lower than threshold
         for seq in delete_seqs:
             del epiallele_counts_region[seq]
 
-        print(f"{len(epiallele_counts_region)} sequences remain of original {before_thresh} and their counts are:")
-
-        if len(epiallele_counts_region) < 20:
-            print(sorted(epiallele_counts_region.values()))
-        else:
-            print(print(sorted(epiallele_counts_region.values())[-20:]))
+        if printout:
+            print(f"{len(epiallele_counts_region)} sequences remain of original {before_thresh} and their counts are:")
+        
+            if len(epiallele_counts_region) < 20:
+                print(sorted(epiallele_counts_region.values()))
+            else:
+                print(print(sorted(epiallele_counts_region.values())[-20:]))
                     
-        return epiallele_counts_region
+        return epiallele_counts_region, below_thresh_total
+    
+    def get_efficiency_vals(self, allele_counts, refseq, fwd, rev):
+
+        num_ts_obs = 0
+        only_dud_seqs = True
+
+        # rather than look at CpG sites, we want to look at non-CpG Cs
+        # from the reference sequence 
+        # and see if a T is present in the reads 
+        pos=self.get_non_cpg_positions(refseq, fwd, rev)
+        # counter for total expected non CpG Cs
+        exp_ts = 0
+        # the number of non CpG Cs in one seq 
+        non_cpg_ts_ref = len(pos)
+
+        useable_reads = 0 
+        nonuseable_reads = 0
+        
+        for seq in allele_counts.keys():
+            #should not count "dud" reads
+            if (len(seq) == len(refseq)):
+                only_dud_seqs = False
+                # will include this sequence unless it has a sub of C or T to A or G
+                include_seq = True
+                non_cpg_cs = ""
+                for i,nuc in enumerate(seq):
+                    # if i is in non_cpg C positions list
+                    # and the nucleotide actually is a C or T
+                    if i in pos and nuc in "CT":
+                        non_cpg_cs += nuc
+                    elif i in pos and nuc in "AGN":
+                        include_seq = False
+                if include_seq:
+                    count = allele_counts[seq]
+                    # no need for condition if len(non_cpg_cs) == non_cpg_ts_ref:
+                    num_ts_obs += non_cpg_cs.count("T") * count
+                    exp_ts += non_cpg_ts_ref * count
+                    useable_reads += count
+                else:
+                    count = allele_counts[seq]
+                    nonuseable_reads += count
+
+        if allele_counts == {}:
+            exp_ts = "Empty"
+        elif only_dud_seqs:
+            exp_ts = "Badseqs"
+
+        return num_ts_obs, exp_ts, useable_reads, non_cpg_ts_ref
+            
 
     def count_alleles(self, allele_counts, refseq, fwd, rev): 
         #instantiate new dictionary
@@ -110,9 +171,10 @@ class ExtractMeth(ExtractData):
         
         # amplicon length for 1st filter
         refseq_len=len(refseq)
+        #print(f"refseq:\n{refseq}")
         
-        #minimum number of reads to meet the min freq cutoff for 2nd filter
-        #min_reads=reads_n*self.threshold
+        filt_for_length = 0 
+        filt_for_CpG_AG = 0 
 
         for seq,val in allele_counts.items():
             #1st and 2nd filters: exclude all indels, and minimum freq
@@ -128,19 +190,21 @@ class ExtractMeth(ExtractData):
                     # this also works to either initialise a count for an allele 
                     # such as CTCT - this is agnostic to the other bases of the read
                     alleles[allele]+=val
-                #else: 
+                else: 
                     #print("One of the CpG sites had an A or G")
-            #else: 
+                    filt_for_CpG_AG += val
+            else: 
                 #print(f"Length of sequence = {len(seq)}, Length of refseq = {refseq_len}")
                 #print(f"Number of reads = {val}, Minimum reads was {min_reads}")
+                filt_for_length += val
 
         # Sort by number of reads supporting the allele
         alleles_sort = sorted(alleles.items(), key=operator.itemgetter(1), reverse=True)
 
         # Total number of reads after filtering
         filtered_reads=sum(alleles.values())
-        
-        return(alleles_sort,filtered_reads)
+
+        return(alleles_sort,filtered_reads, filt_for_length, filt_for_CpG_AG, reads_n)
 
     def group_alleles_by_meCpG (alleles_sort):
         d_group = defaultdict(int)
@@ -177,9 +241,6 @@ class ExtractMeth(ExtractData):
         methylated_counts = defaultdict(int)
         methylated_fraction = defaultdict(int)
 
-        #methylated_counts = {i:0 for i,_ in enumerate(pos)}
-        #methylated_fraction = {i:0 for i,_ in enumerate(pos)}
-
         totalreads = 0
         for allele,val in alleles_s:
             if include_unmeth_alleles or any('C' == nuc for nuc in allele):
@@ -204,8 +265,6 @@ class ExtractMeth(ExtractData):
             else:
                 methfrac = methcount/totalreads
                 methylated_fraction[i] = methfrac
-
-        #print(methylated_fraction)
 
         df = pd.DataFrame.from_dict(methylated_fraction, orient = "index")
         
@@ -246,6 +305,16 @@ class ExtractMeth(ExtractData):
         df['val'] = val_sum
             
         return(df)
+    
+    def parse_name(self, sname): 
+        if "_parse_" in sname: 
+            new_name = sname.split("_parse_")[0]
+        elif "all_lanes" in sname:
+            new_name = sname.split("_all_lanes_")[0]
+        else:
+            new_name = sname
+
+        return new_name
 
     
     
