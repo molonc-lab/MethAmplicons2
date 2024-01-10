@@ -1,4 +1,4 @@
-# MethAmplicons2
+[bisulfite_seq_info.csv](https://github.com/molonc-lab/MethAmplicons2/files/13882957/bisulfite_seq_info.csv)# MethAmplicons2
 Command line tool written in Python for generation of lollipop and ridgleline plots from targeted bisulfite sequencing.
 
 Generate lollipop plots that show the most frequent epialleles for a region of interest as well as a "combined" epiallele that is an average of less frequent (<5%) epialleles e.g. the RAD51C promoter region: 
@@ -82,7 +82,14 @@ Example tsv file:
 └── flash_stdout.txt
 
 ```
-- Note: samples either print out a allele_freq_w_below_5_perc_avgd_barplot or alleles_above_5_perc_freq_barplot depending on if, after filtering the reads by threshold, there are epialleles that represent <5% of the total reads. If there are epialleles with a frequency <5%, they will be shown in allele_freq_w_below_5_perc_avgd_barplot. Otherwise, the latter plot will print.
+bisulfite_seq_info.csv example:
+[Uploading bisulfite_seSample,Amplicon,BS_Conv_Eff,Num_Ts_Obs,Num_Exp_Ts_Total,Num_Reads_Used_Non_CpG,Num_Non_CpG_Cs,Retained_for_CpG_Total,Excl_for_CpG_length,Excl_for_CpG_AG,Reads_above_thresh,Reads_below_thresh_ct
+MDAMB436_S1,BRCA1_l,0.9969260065185391,5267763.0,5284006.0,754858.0,7.0,635056,37431,0,672487,141959
+HCC38,BRCA1_l,0.9959434935848994,13805206.0,13861435.0,1980205.0,7.0,1551691,77233,0,1628924,473517
+q_info.csv…]()
+
+
+- Note: barplots may or may not include epialleles that represent <5% of the total reads. If there are epialleles with a frequency <5%, they will be shown in the barplot.
   
 ## Argument info 
 
