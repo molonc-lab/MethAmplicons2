@@ -165,6 +165,7 @@ class Plotter:
         unique_samples = df_melt['variable'].unique()
         ordered_samples = [x for x in order if x in unique_samples]
         ordered_samples += [x for x in unique_samples if x not in order]
+        ordered_samples.reverse()
 
         #create a dictionary to enumerate the samples
         sample_mapping = {name: i for i, name in enumerate(ordered_samples)}
