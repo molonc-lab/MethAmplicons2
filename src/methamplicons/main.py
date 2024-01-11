@@ -480,6 +480,9 @@ class MethAmplicon:
             self.labels_df = pd.read_csv(self.args.sample_labels, index_col = 0)
         except:
             self.labels_df = pd.DataFrame()
+
+        # want to get the column for shortlabels in order
+        self.plotter.set_labels(self.labels_df)
         
         # process tsv file
         self.amplicon_info, self.refseqs = self.extract_meth.read_primer_seq_file(self.args.amplicon_info)

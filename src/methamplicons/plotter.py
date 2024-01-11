@@ -14,6 +14,9 @@ class Plotter:
     def __init__(self):
         self.ext_meth = ExtractMeth()
 
+    def set_labels(self, labels):
+        self.labels = labels
+
     def ridgeline(self, df_alleles_sort_all, refseqs, outpath,  save_data, amplicon_info, outname = "ridgeline_plot"): 
         # Show relative frequencies for the different numbers of methylated CpGs/epiallele by sample
         # Also we are only interested in the same region - 1 facet grid per amplicon with 1 plot per sample 
@@ -67,8 +70,6 @@ class Plotter:
             #melted_df['sample'] = melted_df['sample'].str.split('_parse_').str[0]
             melted_df['sample'] = melted_df['sample'].str.split('(_parse_|_all_lanes_)').str[0]
 
-
-
             # counts for a given number of CpGs/epiallele for each sample
             total_counts = melted_df.groupby('sample')['count'].sum()
 
@@ -84,15 +85,19 @@ class Plotter:
             # all CpG counts for each sample
             all_cpgs = np.arange(0, num_cpg + 1)
 
+            order = self.labels['ShortLabel'].tolist()
+
             # Create a dataframe with all combinations of sample and cpg count
             all_samples = melted_df['sample'].unique()
-            all_combinations = pd.MultiIndex.from_product([all_samples, all_cpgs], names=['sample', 'cpg']).to_frame(index=False)
+
+            # Reorder all_samples based on order, adding those not in order at the end
+            ordered_samples = [x for x in order if x in all_samples]
+            ordered_samples += [x for x in all_samples if x not in order]
+
+            all_combinations = pd.MultiIndex.from_product([ordered_samples, all_cpgs], names=['sample', 'cpg']).to_frame(index=False)
 
             # Merge this with the grouped_df to ensure all combinations exist
-            grouped_df = all_combinations.merge(grouped_df, on=['sample', 'cpg'], how='left').fillna(0)
-
-            # sort by sample and cpg for plotting
-            sorted_df = grouped_df.sort_values(by=['sample', 'cpg'])
+            sorted_df = all_combinations.merge(grouped_df, on=['sample', 'cpg'], how='left').fillna(0)
 
             pal = sns.color_palette(palette='Set2', n_colors=len(all_samples)) 
             g = sns.FacetGrid(sorted_df, row="sample", hue="sample", height=2, aspect=15, palette=pal)
@@ -155,17 +160,21 @@ class Plotter:
         df_melt['variable'] = df_melt['variable'].str.split('(_parse_|_all_lanes_)').str[0]
 
         
+        order = self.labels['ShortLabel'].tolist()
         #sort the names of the samples
-        unique_samples = sorted(df_melt['variable'].unique())
+        unique_samples = df_melt['variable'].unique()
+        ordered_samples = [x for x in order if x in unique_samples]
+        ordered_samples += [x for x in unique_samples if x not in order]
+        ordered_samples.reverse()
 
         #create a dictionary to enumerate the samples
-        sample_mapping = {name: i for i, name in enumerate(unique_samples)}
+        sample_mapping = {name: i for i, name in enumerate(ordered_samples)}
 
         # create a new column with the corresponding number
         df_melt['mapped_variable'] = df_melt['variable'].map(sample_mapping)
 
         #change the figure height according to the number of samples
-        fig_height = max(4, len(unique_samples) * 0.4)  # Adjust 0.4 as per spacing needs
+        fig_height = max(4, len(ordered_samples) * 0.4)  # Adjust 0.4 as per spacing needs
         fig, ax = plt.subplots(figsize=(5, fig_height))
 
         plt.set_cmap('coolwarm')
@@ -184,8 +193,8 @@ class Plotter:
         ax.tick_params(axis='y', which='major', labelsize=6.5)
 
         # Set y-ticks to be the names of the samples with consistent spacing
-        ax.set_yticks(range(len(unique_samples)))
-        ax.set_yticklabels(unique_samples)
+        ax.set_yticks(range(len(ordered_samples)))
+        ax.set_yticklabels(ordered_samples)
 
         plt.tight_layout()
         fig.savefig(outpath + "/" + outname)
