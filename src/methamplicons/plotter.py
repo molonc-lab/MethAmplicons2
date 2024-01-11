@@ -70,8 +70,6 @@ class Plotter:
             #melted_df['sample'] = melted_df['sample'].str.split('_parse_').str[0]
             melted_df['sample'] = melted_df['sample'].str.split('(_parse_|_all_lanes_)').str[0]
 
-
-
             # counts for a given number of CpGs/epiallele for each sample
             total_counts = melted_df.groupby('sample')['count'].sum()
 
@@ -87,17 +85,19 @@ class Plotter:
             # all CpG counts for each sample
             all_cpgs = np.arange(0, num_cpg + 1)
 
+            order = self.labels['ShortLabel'].tolist()
+
             # Create a dataframe with all combinations of sample and cpg count
             all_samples = melted_df['sample'].unique()
-            all_combinations = pd.MultiIndex.from_product([all_samples, all_cpgs], names=['sample', 'cpg']).to_frame(index=False)
+
+            # Reorder all_samples based on order, adding those not in order at the end
+            ordered_samples = [x for x in order if x in all_samples]
+            ordered_samples += [x for x in all_samples if x not in order]
+
+            all_combinations = pd.MultiIndex.from_product([ordered_samples, all_cpgs], names=['sample', 'cpg']).to_frame(index=False)
 
             # Merge this with the grouped_df to ensure all combinations exist
-            grouped_df = all_combinations.merge(grouped_df, on=['sample', 'cpg'], how='left').fillna(0)
-
-            # sort samples in order specified by labels df i.e. the csv file provided 
-            order = pd.Categorical(grouped_df['sample'], categories=self.labels['ShortLabel'], ordered=True)
-
-            sorted_df = grouped_df.assign(sample=order).sort_values('sample', ignore_index=True)
+            sorted_df = all_combinations.merge(grouped_df, on=['sample', 'cpg'], how='left').fillna(0)
 
             pal = sns.color_palette(palette='Set2', n_colors=len(all_samples)) 
             g = sns.FacetGrid(sorted_df, row="sample", hue="sample", height=2, aspect=15, palette=pal)
